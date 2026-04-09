@@ -1,0 +1,263 @@
+:root {
+    --bg: #050505;
+    --panel-bg: #111111;
+    --text: #e0e0e0;
+    --accent: #FF6B00; /* Safety Orange */
+    --border: #333333;
+    --sidebar-width: 260px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: var(--bg);
+    color: var(--text);
+    display: flex;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* --- SIDEBAR --- */
+.sidebar {
+    width: var(--sidebar-width);
+    background-color: var(--panel-bg);
+    border-right: 2px solid var(--border);
+    position: fixed;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 30px 20px;
+    z-index: 100;
+    transition: transform 0.3s ease;
+}
+
+.sidebar-header h2 {
+    color: var(--accent);
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+}
+
+.version {
+    font-size: 0.7rem;
+    color: #666;
+    letter-spacing: 2px;
+}
+
+.nav-links {
+    list-style: none;
+    margin-top: 50px;
+    flex-grow: 1;
+}
+
+.nav-links li {
+    margin-bottom: 20px;
+}
+
+.nav-links a {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 1.1rem;
+    display: block;
+    transition: color 0.2s;
+}
+
+.nav-links a:hover {
+    color: var(--accent);
+}
+
+.sidebar-footer {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+/* --- MAIN CONTENT --- */
+.content {
+    margin-left: var(--sidebar-width);
+    padding: 50px;
+    width: calc(100% - var(--sidebar-width));
+    max-width: 1000px;
+}
+
+/* Hide mobile header on desktop */
+.mobile-header { display: none; }
+.nav-toggle { display: none; }
+
+/* --- HEADER & GRAPHIC --- */
+.main-header {
+    margin-bottom: 50px;
+}
+
+.graphic-placeholder {
+    background-color: var(--panel-bg);
+    border: 1px solid var(--border);
+    padding: 20px;
+    margin-bottom: 30px;
+    overflow: hidden;
+    color: var(--accent);
+}
+
+.ascii-art {
+    font-size: 12px;
+    line-height: 1.2;
+}
+
+h1 {
+    font-size: 3.5rem;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: -1px;
+}
+
+.subtitle {
+    color: #888;
+    font-size: 1.2rem;
+}
+
+.divider {
+    border: 0;
+    border-bottom: 2px dashed var(--border);
+    margin: 40px 0;
+}
+
+/* --- SECTIONS & CARDS --- */
+.panel {
+    margin-bottom: 60px;
+}
+
+.panel h2 {
+    color: var(--accent);
+    font-size: 1.5rem;
+    margin-bottom: 25px;
+    letter-spacing: 2px;
+}
+
+.panel p {
+    line-height: 1.6;
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+}
+
+.project-card {
+    background-color: var(--panel-bg);
+    border: 1px solid var(--border);
+    padding: 30px;
+    margin-bottom: 20px;
+}
+
+.project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+}
+
+.project-header h3 {
+    font-size: 1.3rem;
+}
+
+.status {
+    font-size: 0.8rem;
+    background: var(--border);
+    padding: 4px 8px;
+    color: #aaa;
+}
+
+.locked {
+    opacity: 0.5;
+    filter: grayscale(100%);
+}
+
+.highlight-panel {
+    border-left: 4px solid var(--accent);
+    padding-left: 25px;
+}
+
+/* --- BUTTONS --- */
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    border: 1px solid var(--text);
+    color: var(--text);
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 15px;
+    transition: all 0.2s;
+}
+
+.btn:hover {
+    background-color: var(--text);
+    color: var(--bg);
+}
+
+.accent-btn {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.accent-btn:hover {
+    background-color: var(--accent);
+    color: var(--bg);
+}
+
+footer {
+    margin-top: 100px;
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* --- MOBILE RESPONSIVENESS (CSS HACK) --- */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%); /* Hide sidebar offscreen */
+    }
+
+    /* When the hidden checkbox is checked, slide the sidebar in */
+    .nav-toggle:checked ~ .sidebar {
+        transform: translateX(0);
+    }
+
+    .content {
+        margin-left: 0;
+        width: 100%;
+        padding: 20px;
+        padding-top: 80px; /* Make room for mobile header */
+    }
+
+    .mobile-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background-color: var(--panel-bg);
+        border-bottom: 2px solid var(--border);
+        padding: 15px 20px;
+        z-index: 90;
+    }
+
+    .menu-btn {
+        color: var(--accent);
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .mobile-title {
+        color: var(--text);
+        font-weight: bold;
+    }
+
+    h1 { font-size: 2.2rem; }
+    
+    .ascii-art { display: none; } /* Hide complex ASCII on tiny screens */
+}
