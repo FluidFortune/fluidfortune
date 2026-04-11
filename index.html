@@ -31,6 +31,7 @@
         <li><a href="#media">&gt; MEDIA</a></li>
         <li><a href="#roast">&gt; ROAST</a></li>
         <li><a href="#comms">&gt; COMMS</a></li>
+        <li><a href="https://blog.fluidfortune.com" target="_blank">&gt; BLOG</a></li>
       </ul>
     </div>
   </nav>
@@ -85,61 +86,87 @@
       <div class="section-inner">
         <h2 class="section-title">[ CURRENT PROJECTS ]</h2>
 
-        <!-- THE PHANTOM -->
-        <article class="project-card">
-          <div class="project-header">
-            <h3 class="project-name">THE PHANTOM</h3>
-            <span class="project-badge project-badge--alpha">v0.1.0-alpha</span>
-          </div>
-          <p class="project-desc">A local AI assistant that runs entirely on your own hardware. No API keys. No data leaving your machine. You talk to it through a web browser, but the intelligence lives in your RAM. Customizable to your needs and buildable to your preferred platform. It's a coder. It's a marketing materials maker. It's a mind mapping assistant. It just needs to be trained. Don't bend to the will of AI. Make AI bend to the will of you.</p>
-          <div class="project-links">
-            <a href="https://github.com/fluidfortune/phantom" class="btn" target="_blank" rel="noopener">VIEW ON GITHUB</a>
-          </div>
-        </article>
+        <!-- PROJECT GRID — 2 col desktop, 1 col mobile, built for 4 -->
+        <div class="project-grid">
 
-        <!-- WOZBOT -->
-        <article class="project-card project-card--featured" id="wozbot">
-          <div class="project-header">
-            <h3 class="project-name">WOZBOT</h3>
-            <span class="project-badge project-badge--live">● LIVE SYSTEM</span>
-          </div>
-          <p class="project-desc">A highly quantized, localized AI trained exclusively to deliver terrible 1970s hardware puns. This is a living proof-of-concept for the Fluid Fortune architecture. WozBot isn't hosted in a corporate data center; he is running on a bare-metal micro-node within our private perimeter, piped to the web via a secure tunnel. No cloud compute was harmed in the making of this joke.</p>
-          <div class="project-links">
-            <a href="https://github.com/fluidfortune/wozbot" class="btn" target="_blank" rel="noopener">VIEW ON GITHUB</a>
-            <a href="https://wozbot.fluidfortune.com" class="btn btn--primary" target="_blank" rel="noopener">INITIATE CHAT</a>
-          </div>
-
-          <!-- VIDEO EMBED — swap src when ready -->
-          <div class="video-block">
-            <div class="video-block-label">
-              <span class="label-icon">▶</span>
-              BROADCAST SIGNAL — FRICTION ECONOMY SERIES
+          <!-- THE PHANTOM -->
+          <article class="project-card">
+            <div class="project-header">
+              <h3 class="project-name">THE PHANTOM</h3>
+              <span class="project-badge project-badge--alpha">v0.1.0-alpha</span>
             </div>
-            <div class="video-wrapper" id="videoWrapper">
-              <iframe
-                src="https://www.youtube.com/embed/uBRtHnzRDLo"
-                title="Friction Economy — WozBot | Tech, Lies &amp; Videotape"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowfullscreen>
-              </iframe>
+            <p class="project-desc">A local AI assistant that runs entirely on your own hardware. No API keys. No data leaving your machine. You talk to it through a web browser, but the intelligence lives in your RAM. Customizable to your needs and buildable to your preferred platform. It's a coder. It's a marketing materials maker. It's a mind mapping assistant. It just needs to be trained. Don't bend to the will of AI. Make AI bend to the will of you.</p>
+            <div class="project-links">
+              <a href="https://github.com/FluidFortune/The-Phantom" class="btn" target="_blank" rel="noopener">VIEW ON GITHUB</a>
             </div>
-            <div class="video-block-footer">
-              From <a href="https://techliesandvideotape.com" target="_blank" rel="noopener">Tech, Lies &amp; Videotape</a> — our propaganda arm.
+          </article>
+
+          <!-- SPADRA SMELTER -->
+          <article class="project-card">
+            <div class="project-header">
+              <h3 class="project-name">SPADRA SMELTER</h3>
+              <span class="project-badge project-badge--version">v1.0.0</span>
             </div>
-          </div>
-        </article>
+            <p class="project-desc">RF intelligence analysis platform for wardriving datasets. Drop in a WiGLE-format CSV and get a full intelligence picture — interactive heatmap, anomaly detection, OUI vendor enrichment, persistent device tracking, and export-ready reports. No installation. No server. One HTML file.</p>
+            <div class="project-links">
+              <a href="https://github.com/FluidFortune/spadra_smelter" class="btn" target="_blank" rel="noopener">VIEW ON GITHUB</a>
+            </div>
+          </article>
 
-        <!-- TROJAN HORSE -->
-        <article class="project-card">
-          <div class="project-header">
-            <h3 class="project-name">TROJAN HORSE</h3>
-            <span class="project-badge project-badge--dev">IN DEVELOPMENT</span>
-          </div>
-          <p class="project-desc">The universal deployment wrapper. A framework that turns local AI and web-based interfaces into native, installable applications across macOS, Windows, Linux, Android, and iOS.</p>
-          <p class="project-note"><em>Public GIT to follow. For examples of how Trojan Horse works in practice right now, check out the platform builds inside The Phantom repository.</em></p>
-        </article>
+          <!-- WOZBOT — spans full width to accommodate the video -->
+          <article class="project-card project-card--featured project-card--wide" id="wozbot">
+            <div class="project-header">
+              <h3 class="project-name">WOZBOT</h3>
+              <span class="project-badge project-badge--live">● LIVE SYSTEM</span>
+            </div>
+            <p class="project-desc">A highly quantized, localized AI trained exclusively to deliver terrible 1970s hardware puns. This is a living proof-of-concept for the Fluid Fortune architecture. WozBot isn't hosted in a corporate data center; he is running on a bare-metal micro-node within our private perimeter, piped to the web via a secure tunnel. No cloud compute was harmed in the making of this joke.</p>
+            <div class="project-links">
+              <a href="https://github.com/fluidfortune/wozbot" class="btn" target="_blank" rel="noopener">VIEW ON GITHUB</a>
+              <a href="https://wozbot.fluidfortune.com" class="btn btn--primary" target="_blank" rel="noopener">INITIATE CHAT</a>
+            </div>
+            <div class="video-block">
+              <div class="video-block-label">
+                <span class="label-icon">▶</span>
+                BROADCAST SIGNAL — FRICTION ECONOMY SERIES
+              </div>
+              <div class="video-wrapper" id="videoWrapper">
+                <iframe
+                  src="https://www.youtube.com/embed/uBRtHnzRDLo"
+                  title="Friction Economy — WozBot | Tech, Lies &amp; Videotape"
+                  frameborder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowfullscreen>
+                </iframe>
+              </div>
+              <div class="video-block-footer">
+                From <a href="https://techliesandvideotape.com" target="_blank" rel="noopener">Tech, Lies &amp; Videotape</a> — our propaganda arm.
+              </div>
+            </div>
+          </article>
 
+          <!-- PUNKY -->
+          <article class="project-card">
+            <div class="project-header">
+              <h3 class="project-name">PUNKY</h3>
+              <span class="project-badge project-badge--alpha">v0.1.0-alpha</span>
+            </div>
+            <p class="project-desc">A lightweight, GitHub-native blog editor that runs as a single HTML file in your browser. Write posts in a clean word-processor-style interface, then publish directly to your GitHub Pages blog with one click. No server. No install. No subscription. No bloat.</p>
+            <div class="project-links">
+              <a href="https://github.com/FluidFortune/punky" class="btn" target="_blank" rel="noopener">VIEW ON GITHUB</a>
+            </div>
+          </article>
+
+          <!-- TROJAN HORSE -->
+          <article class="project-card">
+            <div class="project-header">
+              <h3 class="project-name">TROJAN HORSE</h3>
+              <span class="project-badge project-badge--dev">IN DEVELOPMENT</span>
+            </div>
+            <p class="project-desc">The universal deployment wrapper. A framework that turns local AI and web-based interfaces into native, installable applications across macOS, Windows, Linux, Android, and iOS.</p>
+            <p class="project-note"><em>Public GIT to follow. For examples of how Trojan Horse works in practice right now, check out the platform builds inside The Phantom repository.</em></p>
+          </article>
+
+        </div><!-- /project-grid -->
       </div>
     </section>
 
@@ -212,7 +239,7 @@
           <p>While our releases include documentation, we are a small forge and cannot provide individual technical support for open-source software.</p>
           <p>For enterprise licensing, architectural consulting, or partnership inquiries regarding Trojan Horse, The Phantom, or any of our other projects and ventures, initiate contact below.</p>
         </div>
-        <a href="/cdn-cgi/l/email-protection#e3858c918486a3858f968a87858c9197968d86cd808c8e" class="btn btn--primary">TRANSMIT MESSAGE</a>
+        <a href="/cdn-cgi/l/email-protection#cfa9a0bda8aa8fa9a3baa6aba9a0bdbbbaa1aae1aca0a2" class="btn btn--primary">TRANSMIT MESSAGE</a>
       </div>
     </section>
 
@@ -268,7 +295,7 @@
     </div>
   </footer>
 
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
     // Year
     document.getElementById('year').textContent = new Date().getFullYear();
 
@@ -346,8 +373,4 @@
     // Typewriter effect on hero sub
     const sub = document.querySelector('.tagline-sub');
     if (sub) {
-      const original = sub.innerHTML;
-      sub.innerHTML = '';
-      sub.style.opacity = '1';
-      let i = 0;
-      const text = original.replace(/<br>/g, '\n'
+      co
