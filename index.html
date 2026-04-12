@@ -295,24 +295,34 @@
     </div>
   </footer>
 
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  <script>
     // Year
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Mobile nav toggle
+    // Mobile nav toggle — hardened
     const toggle = document.getElementById('navToggle');
-    const links = document.getElementById('navLinks');
-    toggle.addEventListener('click', () => {
-      links.classList.toggle('nav-links--open');
-      toggle.textContent = links.classList.contains('nav-links--open') ? '[ CLOSE ]' : '[ MENU ]';
+    const links  = document.getElementById('navLinks');
+
+    toggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const isOpen = links.classList.toggle('nav-links--open');
+      toggle.textContent = isOpen ? '[ CLOSE ]' : '[ MENU ]';
     });
 
-    // Close nav on link click (mobile)
+    // Close on link click
     links.querySelectorAll('a').forEach(a => {
       a.addEventListener('click', () => {
         links.classList.remove('nav-links--open');
         toggle.textContent = '[ MENU ]';
       });
+    });
+
+    // Close on outside tap (mobile)
+    document.addEventListener('click', function(e) {
+      if (!toggle.contains(e.target) && !links.contains(e.target)) {
+        links.classList.remove('nav-links--open');
+        toggle.textContent = '[ MENU ]';
+      }
     });
 
     // Sticky nav shadow on scroll
