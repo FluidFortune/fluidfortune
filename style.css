@@ -215,6 +215,115 @@ p:last-child { margin-bottom: 0; }
   animation: bounce 2s ease-in-out infinite;
 }
 
+/* ── ABOUT LAYOUT ── */
+.about-layout {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 3rem;
+  align-items: start;
+}
+.about-text { display: flex; flex-direction: column; gap: 1.5rem; }
+
+/* Jester identity block */
+.jester-identity {
+  border-left: 2px solid var(--green-mute);
+  padding-left: 1.25rem;
+}
+.jester-tag {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.2em;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+}
+.jester-title {
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  color: var(--green);
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+  margin-bottom: 0.75rem;
+  text-shadow: 0 0 20px rgba(0,255,65,0.2);
+}
+.jester-desc {
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* Image frame */
+.about-image-wrap { position: relative; }
+.jester-frame {
+  border: 1px solid var(--border-bright);
+  background: var(--surface);
+  position: relative;
+  overflow: hidden;
+}
+.jester-frame::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.08) 2px,
+    rgba(0,0,0,0.08) 4px
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+.jester-frame-label {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+  padding: 0.4rem 0.75rem;
+  background: var(--black);
+  border-bottom: 1px solid var(--border);
+}
+.jester-img {
+  width: 100%;
+  display: block;
+  filter: saturate(1.1) contrast(1.05);
+  transition: filter 0.3s;
+}
+.jester-frame:hover .jester-img {
+  filter: saturate(1.3) contrast(1.1);
+}
+.jester-frame-footer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  background: var(--black);
+  border-top: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 0.52rem;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+}
+.jester-scan {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 6px var(--green);
+  animation: pulse 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@media (max-width: 700px) {
+  .about-layout {
+    grid-template-columns: 1fr;
+  }
+  .about-image-wrap {
+    max-width: 280px;
+    margin: 0 auto;
+  }
+}
+
 /* ── SECTIONS ── */
 .section { padding: 5rem 1.5rem; }
 .section--dark { background: var(--deep); }
