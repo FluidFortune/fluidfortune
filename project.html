@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Fluid Fortune Project | A Living Document</title>
+  <meta name="description" content="A philosophical and technical account of the Fluid Fortune project — what it is, why it exists, and what it is becoming.">
+  <link rel="canonical" href="https://fluidfortune.com/project.html">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://fluidfortune.com/project.html">
+  <meta property="og:title" content="The Fluid Fortune Project | A Living Document">
+  <meta property="og:description" content="A philosophical and technical account of the Fluid Fortune project — what it is, why it exists, and what it is becoming.">
+  <meta property="og:image" content="https://fluidfortune.com/courtjester.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700;900&family=Inter:wght@400;500;600&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700;900&family=Inter:wght@400;500;600&family=Lora:ital,wght@0,400;0,600;1,400&display=swap"></noscript>
+  <style>
+    :root {
+      --black:      #050a05;
+      --deep:       #0d1117;
+      --surface:    #161b22;
+      --border:     #30363d;
+      --green:      #00ff41;
+      --green-dim:  #00c032;
+      --green-mute: #1a3a1a;
+      --amber:      #ffb700;
+      --amber-dim:  #cc9200;
+      --blue:       #58a6ff;
+      --text:       #e6edf3;
+      --text-dim:   #8b949e;
+      --text-muted: #484f58;
+      --font-mono:  'Share Tech Mono', monospace;
+      --font-ui:    'Inter', sans-serif;
+      --font-disp:  'Orbitron', monospace;
+      --font-serif: 'Lora', Georgia, serif;
+      --max-w:      720px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--deep);
+      color: var(--text);
+      font-family: var(--font-serif);
+      line-height: 1.85;
+      font-size: 1.05rem;
+    }
+
+    /* ── NAV ── */
+    nav {
+      background: var(--black);
+      border-bottom: 1px solid var(--border);
+      padding: .75rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    nav a { font-family: var(--font-disp); font-size: .75rem; color: var(--green); text-decoration: none; letter-spacing: .12em; }
+    nav a:hover { color: #fff; }
+    nav .back { color: var(--text-dim); font-family: var(--font-mono); font-size: .68rem; }
+    nav .back:hover { color: var(--green-dim); }
+    nav .nav-spacer { flex: 1; }
+    nav .doc-label { font-family: var(--font-mono); font-size: .55rem; color: var(--text-muted); letter-spacing: .15em; border: 1px solid var(--border); padding: .15rem .5rem; }
+
+    /* ── HERO ── */
+    .doc-hero {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 5rem 1.5rem 3rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .doc-kicker {
+      font-family: var(--font-mono);
+      font-size: .6rem;
+      letter-spacing: .2em;
+      color: var(--green-dim);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+    }
+    .doc-kicker::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--green-mute);
+    }
+    .doc-title {
+      font-family: var(--font-disp);
+      font-size: clamp(1.6rem, 5vw, 2.4rem);
+      color: #fff;
+      font-weight: 900;
+      letter-spacing: .04em;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+    .doc-subtitle {
+      font-family: var(--font-serif);
+      font-size: 1.1rem;
+      color: var(--text-dim);
+      font-style: italic;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+      max-width: 580px;
+    }
+    .doc-meta {
+      font-family: var(--font-mono);
+      font-size: .6rem;
+      color: var(--text-muted);
+      letter-spacing: .1em;
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .doc-meta .live { color: var(--green-dim); display: flex; align-items: center; gap: .4rem; }
+    .doc-meta .live::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--green); box-shadow: 0 0 5px var(--green); animation: pulse 2s ease-in-out infinite; display: inline-block; }
+
+    /* ── TOC ── */
+    .doc-toc {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .toc-label {
+      font-family: var(--font-mono);
+      font-size: .58rem;
+      letter-spacing: .2em;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+    .toc-list {
+      list-style: none;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .3rem .5rem;
+    }
+    .toc-list li a {
+      font-family: var(--font-mono);
+      font-size: .72rem;
+      color: var(--text-dim);
+      text-decoration: none;
+      letter-spacing: .04em;
+      transition: color .15s;
+      display: flex;
+      align-items: baseline;
+      gap: .4rem;
+    }
+    .toc-list li a::before { content: '//'; color: var(--text-muted); font-size: .6rem; }
+    .toc-list li a:hover { color: var(--green-dim); }
+
+    /* ── BODY ── */
+    .doc-body {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 1.5rem 6rem;
+    }
+
+    /* Sections */
+    .doc-section {
+      padding: 3.5rem 0 0;
+      border-top: 1px solid var(--border);
+      margin-top: 3.5rem;
+    }
+    .doc-section:first-child { margin-top: 2rem; border-top: none; }
+
+    .section-num {
+      font-family: var(--font-mono);
+      font-size: .55rem;
+      letter-spacing: .2em;
+      color: var(--text-muted);
+      margin-bottom: .5rem;
+    }
+    .section-title {
+      font-family: var(--font-disp);
+      font-size: clamp(.95rem, 2.5vw, 1.2rem);
+      color: var(--green);
+      font-weight: 700;
+      letter-spacing: .08em;
+      margin-bottom: 1.75rem;
+      line-height: 1.3;
+    }
+
+    /* Prose */
+    p { margin-bottom: 1.4rem; color: var(--text); }
+    p:last-child { margin-bottom: 0; }
+    em { color: var(--text-dim); font-style: italic; }
+    strong { color: #fff; font-weight: 600; font-family: var(--font-ui); }
+    a { color: var(--blue); text-decoration: underline; text-underline-offset: 3px; transition: color .15s; }
+    a:hover { color: #fff; }
+
+    /* Pull quote */
+    blockquote {
+      border-left: 3px solid var(--green-dim);
+      margin: 2rem 0;
+      padding: 1rem 1.5rem;
+      background: var(--surface);
+      font-style: italic;
+      color: var(--text-dim);
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+    blockquote strong { color: var(--green-dim); font-family: var(--font-serif); }
+
+    /* Technical callout */
+    .tech-callout {
+      background: var(--black);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--amber-dim);
+      padding: 1.25rem 1.5rem;
+      margin: 2rem 0;
+      font-family: var(--font-ui);
+      font-size: .85rem;
+      line-height: 1.7;
+      color: var(--text-dim);
+    }
+    .tech-callout-label {
+      font-family: var(--font-mono);
+      font-size: .55rem;
+      letter-spacing: .2em;
+      color: var(--amber-dim);
+      margin-bottom: .6rem;
+    }
+    .tech-callout p { color: var(--text-dim); font-size: .85rem; margin-bottom: .6rem; }
+    .tech-callout p:last-child { margin-bottom: 0; }
+
+    /* Project entry */
+    .project-entry {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+      position: relative;
+    }
+    .project-entry::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px; height: 100%;
+      background: var(--green-mute);
+    }
+    .project-entry-header {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      margin-bottom: .6rem;
+      flex-wrap: wrap;
+    }
+    .project-entry-name {
+      font-family: var(--font-disp);
+      font-size: .85rem;
+      color: #fff;
+      font-weight: 700;
+      letter-spacing: .08em;
+    }
+    .project-entry-badge {
+      font-family: var(--font-mono);
+      font-size: .55rem;
+      letter-spacing: .12em;
+      padding: .1rem .5rem;
+      border: 1px solid;
+    }
+    .badge-live   { color: var(--green-dim); border-color: var(--green-mute); }
+    .badge-alpha  { color: var(--amber); border-color: var(--amber-dim); }
+    .badge-dev    { color: var(--text-muted); border-color: var(--border); }
+    .badge-ver    { color: var(--blue); border-color: #1a3a6a; }
+    .project-entry p { font-family: var(--font-ui); font-size: .85rem; color: var(--text-dim); margin-bottom: 0; line-height: 1.65; }
+
+    /* Timeline marker */
+    .timeline-entry {
+      display: flex;
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+      align-items: flex-start;
+    }
+    .timeline-date {
+      font-family: var(--font-mono);
+      font-size: .6rem;
+      color: var(--text-muted);
+      letter-spacing: .08em;
+      min-width: 80px;
+      padding-top: .2rem;
+      flex-shrink: 0;
+    }
+    .timeline-content { font-family: var(--font-ui); font-size: .88rem; color: var(--text-dim); line-height: 1.6; }
+    .timeline-content strong { color: var(--text); }
+
+    /* Update log */
+    .update-log {
+      background: var(--black);
+      border: 1px solid var(--border);
+      padding: 1.25rem;
+      margin-top: 2rem;
+      font-family: var(--font-mono);
+      font-size: .7rem;
+    }
+    .update-log-label {
+      color: var(--text-muted);
+      letter-spacing: .15em;
+      font-size: .55rem;
+      margin-bottom: .75rem;
+    }
+    .update-entry { display: flex; gap: 1rem; margin-bottom: .4rem; line-height: 1.5; }
+    .update-entry:last-child { margin-bottom: 0; }
+    .update-entry .date { color: var(--text-muted); min-width: 90px; flex-shrink: 0; }
+    .update-entry .note { color: var(--text-dim); }
+    .update-entry .note em { color: var(--green-dim); font-style: normal; }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: .62rem;
+      color: var(--text-muted);
+    }
+    footer a { color: var(--green-dim); text-decoration: none; }
+    footer a:hover { color: var(--green); }
+
+    @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.5} }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)} }
+    .doc-hero { animation: fadeIn .5s ease both; }
+
+    @media(max-width:600px) {
+      .toc-list { grid-template-columns: 1fr; }
+      .doc-title { font-size: 1.6rem; }
+      .timeline-entry { flex-direction: column; gap: .25rem; }
+      .timeline-date { min-width: auto; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="https://fluidfortune.com">FLUID FORTUNE</a>
+  <a href="https://fluidfortune.com" class="back">← MAIN SITE</a>
+  <div class="nav-spacer"></div>
+  <span class="doc-label">LIVING DOCUMENT</span>
+</nav>
+
+<div class="doc-hero">
+  <div class="doc-kicker">THE FLUID FORTUNE PROJECT</div>
+  <h1 class="doc-title">A Resource.<br>Not a Dependency.</h1>
+  <p class="doc-subtitle">A philosophical and technical account of what Fluid Fortune is, why it exists, what has been built so far, and where it is going — written for anyone curious enough to ask.</p>
+  <div class="doc-meta">
+    <span class="live">ACTIVE PROJECT</span>
+    <span>STARTED APRIL 2026</span>
+    <span>LAST UPDATED APRIL 2026</span>
+    <span>VERSION 1.0</span>
+  </div>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<div class="doc-toc">
+  <div class="toc-label">CONTENTS</div>
+  <ul class="toc-list">
+    <li><a href="#philosophy">The Philosophy</a></li>
+    <li><a href="#problem">The Problem We're Solving</a></li>
+    <li><a href="#architecture">The Architecture</a></li>
+    <li><a href="#projects">The Projects</a></li>
+    <li><a href="#media">The Media Arm</a></li>
+    <li><a href="#tools">The Tools We Built to Build It</a></li>
+    <li><a href="#identity">The Identity</a></li>
+    <li><a href="#timeline">The Timeline</a></li>
+    <li><a href="#whats-next">What's Next</a></li>
+    <li><a href="#log">Update Log</a></li>
+  </ul>
+</div>
+
+<div class="doc-body">
+
+  <!-- ── 01 PHILOSOPHY ── -->
+  <div class="doc-section" id="philosophy">
+    <div class="section-num">01</div>
+    <h2 class="section-title">THE PHILOSOPHY</h2>
+
+    <p>Fluid Fortune begins with a single belief: <strong>the internet should be a resource, not a dependency.</strong></p>
+
+    <p>That sentence sounds simple. It isn't. It is a direct challenge to the dominant model of how technology is built and sold in the twenty-first century — a model that has quietly replaced ownership with access, replaced software with subscriptions, and replaced your computer with someone else's computer that you rent by the month and lose the moment you stop paying.</p>
+
+    <p>Think about what you actually own on your devices right now. Your photos are on iCloud. Your documents are on Google Drive. Your music is on Spotify. Your creative tools are on Adobe's servers. Your AI assistant phones home to a data center in Virginia every time you ask it a question. None of these things work without a continuous connection to systems you do not control, operated by companies whose interests are not yours.</p>
+
+    <blockquote>
+      <strong>"Living by the subscription model should be a choice, not a requirement."</strong><br>
+      This is not anti-technology. It is pro-human. It is the belief that technology serves people best when people retain sovereignty over it.
+    </blockquote>
+
+    <p>Fluid Fortune was built to demonstrate that another way is possible — and to build the tools that make it practical. The goal is not to live off the grid. The goal is to use the grid deliberately, on your own terms, rather than being used by it.</p>
+
+    <p>We connect to the network to download what we need. But the thinking, the computing, the intelligence — that can stay on your machine. In your RAM. Under your control. That is the premise. Everything else follows from it.</p>
+  </div>
+
+  <!-- ── 02 THE PROBLEM ── -->
+  <div class="doc-section" id="problem">
+    <div class="section-num">02</div>
+    <h2 class="section-title">THE PROBLEM WE'RE SOLVING</h2>
+
+    <p>There is a pattern in modern technology that repeats itself so reliably it has become invisible. A company builds something useful. It gives it away for free, or nearly free, to build an audience. Then, once the audience is large enough and dependent enough, it begins to extract value from that audience through subscriptions, data harvesting, feature removal, or simple price increases. The product does not get better. The company gets richer.</p>
+
+    <p>This is not a conspiracy. It is an economic logic — and it is the default mode of operation for almost every major technology platform in existence. It is also, quietly, a form of infrastructure capture. When your creative tools, your communication, your files, and your thinking are all housed in systems you do not own, you have handed someone else enormous leverage over your professional and personal life.</p>
+
+    <div class="tech-callout">
+      <div class="tech-callout-label">FOR THE NON-TECHNICAL READER</div>
+      <p>When we say "runs on your machine" or "local compute," we mean software that actually lives and operates on your own computer — not software that sends your data to another company's computers to process it. The difference matters for privacy, for cost, for reliability, and for who ultimately controls your tools.</p>
+      <p>A calculator on your desk is local. A calculator that requires you to be connected to the internet, charges you monthly, and sends your calculations to a server somewhere — that is a dependency. Most modern "AI" is the second kind. Fluid Fortune is building the first kind.</p>
+    </div>
+
+    <p>The artificial intelligence revolution has accelerated this problem dramatically. The most capable AI systems currently require enormous infrastructure — thousands of specialized processors, vast amounts of electricity, and corporate investment measured in the billions of dollars. The companies building this infrastructure are not doing so out of charity. They are building leverage. Every query you send to a cloud AI is a data point. Every subscription you pay is a dependency that deepens.</p>
+
+    <p>And yet: the models themselves — the actual intelligence, the weights and parameters that encode what an AI knows and how it reasons — can be made small enough to run on a consumer laptop. A quantized model is a compressed version of a larger AI, trading some capability for a dramatic reduction in size. It runs locally. It costs nothing per query. It does not report back to anyone. It is, in the most literal sense, yours.</p>
+
+    <p>Fluid Fortune was built on this insight. The network is useful. The corporate infrastructure is not always necessary. The question is knowing the difference.</p>
+  </div>
+
+  <!-- ── 03 ARCHITECTURE ── -->
+  <div class="doc-section" id="architecture">
+    <div class="section-num">03</div>
+    <h2 class="section-title">THE ARCHITECTURE</h2>
+
+    <p>Fluid Fortune is built on three interlocking principles that apply across every project in the stack:</p>
+
+    <p><strong>Single-file tools.</strong> Where possible, Fluid Fortune software ships as a single HTML file. This is not a limitation — it is a deliberate design choice. A single file has no installation friction. It can be audited entirely by anyone who opens it. It can be shared, copied, stored on a USB drive, and opened a decade from now without dependency on a package manager, a runtime, or a company that may no longer exist. It is the most durable form of software.</p>
+
+    <div class="tech-callout">
+      <div class="tech-callout-label">TECHNICAL NOTE</div>
+      <p>HTML, CSS, and JavaScript are the three languages of the web browser — the most universally available runtime environment in history. Every device with a screen has a browser. Writing software in these languages means writing software that runs everywhere, forever, without requiring anything to be installed. The Fluid Fortune tools exploit this deliberately.</p>
+    </div>
+
+    <p><strong>GitHub as infrastructure.</strong> Rather than building or renting servers, Fluid Fortune uses GitHub — a platform owned by Microsoft, which is an irony not lost on us — as its deployment and storage layer. GitHub Pages serves static websites for free. The GitHub API allows files to be created and updated programmatically from a browser, without any server in between. This means Fluid Fortune tools can publish content, update manifests, and maintain feeds entirely from a user's browser, with no backend infrastructure required. The cost of running the entire Fluid Fortune web presence is, at present, zero dollars per month in hosting.</p>
+
+    <p><strong>Trojan Horse compatibility.</strong> Every tool Fluid Fortune builds is designed to run natively inside Trojan Horse — our forthcoming universal deployment wrapper — without modification. The same HTML file that runs in a browser can be wrapped into a native application for macOS, Windows, Linux, Android, or iOS, gaining filesystem access and operating system integration in the process. This means the tools are not permanently web-dependent. They are web-first by convenience, native by choice.</p>
+
+    <blockquote>
+      The architecture is not a technical decision. It is a political one. It says: we will use the tools of the existing infrastructure where they serve us, and build around them where they do not.
+    </blockquote>
+  </div>
+
+  <!-- ── 04 PROJECTS ── -->
+  <div class="doc-section" id="projects">
+    <div class="section-num">04</div>
+    <h2 class="section-title">THE PROJECTS</h2>
+
+    <p>The following are the active and in-development projects in the Fluid Fortune stack as of April 2026. Each is open source, MIT licensed, and built according to the architectural principles described above.</p>
+
+    <div class="project-entry">
+      <div class="project-entry-header">
+        <span class="project-entry-name">THE PHANTOM</span>
+        <span class="project-entry-badge badge-alpha">v0.1.0-alpha</span>
+      </div>
+      <p>A local AI assistant that runs entirely on your own hardware. No API keys. No data leaving your machine. You speak to it through a web browser, but the intelligence lives in your RAM — a quantized language model running on consumer hardware, customizable to your specific needs. The Phantom is the flagship proof that sovereign AI is not a fantasy. It is a present-tense reality available to anyone willing to download a model file.</p>
+    </div>
+
+    <div class="project-entry" style="border-left-color: var(--green-dim); --tw: var(--green-dim);">
+      <div class="project-entry-header">
+        <span class="project-entry-name">WOZBOT</span>
+        <span class="project-entry-badge badge-live">● LIVE SYSTEM</span>
+      </div>
+      <p>A highly quantized local AI trained exclusively to deliver terrible 1970s hardware puns. WozBot is not a joke about AI — it is a joke <em>using</em> AI to make a serious point. It runs on bare metal within the Fluid Fortune private perimeter, tunneled to the public internet. No cloud compute was used. No data is logged. It is a living demonstration that a functional, publicly accessible AI service requires neither AWS nor a venture capital term sheet.</p>
+    </div>
+
+    <div class="project-entry">
+      <div class="project-entry-header">
+        <span class="project-entry-name">SPADRA SMELTER</span>
+        <span class="project-entry-badge badge-ver">v1.0.0</span>
+      </div>
+      <p>An RF intelligence analysis platform for wardriving datasets. Drop a WiGLE-format CSV — the standard output of mobile network scanning tools — into Smelter and receive a full intelligence picture: interactive heatmap, anomaly detection, OUI vendor enrichment, persistent device tracking, and export-ready reports. One HTML file. No installation. No server. Built for security researchers, network engineers, and anyone who wants to understand the wireless environment around them.</p>
+    </div>
+
+    <div class="project-entry">
+      <div class="project-entry-header">
+        <span class="project-entry-name">PUNKY</span>
+        <span class="project-entry-badge badge-alpha">v0.1.0-alpha</span>
+      </div>
+      <p>A lightweight, GitHub-native blog editor. Punky is what happens when you ask "why does publishing a blog post require a database, a server, a CMS, and a monthly fee?" The answer, it turns out, is that it doesn't. Punky is a single HTML file that runs in your browser. You write. You click publish. The post lands in your GitHub repository, the manifest updates, the RSS feed regenerates, and the sitemap refreshes — all automatically, all from a browser, with no infrastructure between you and your words.</p>
+    </div>
+
+    <div class="project-entry">
+      <div class="project-entry-header">
+        <span class="project-entry-name">STATIC</span>
+        <span class="project-entry-badge badge-alpha">v0.1.0-alpha</span>
+      </div>
+      <p>Punky's sibling, built for audio. Static is a podcast publishing tool that follows the same philosophy: one HTML file, no server, GitHub as infrastructure. Add an episode, enter the archive.org URL of your audio file, hit publish. Static generates the episode page with an inline audio player, updates the show index, and produces a valid RSS feed compatible with Apple Podcasts, Spotify, and every other podcast directory. The audio lives on archive.org — free, permanent, uncensorable. The pages live on GitHub Pages — free, fast, yours.</p>
+    </div>
+
+    <div class="project-entry">
+      <div class="project-entry-header">
+        <span class="project-entry-name">TROJAN HORSE</span>
+        <span class="project-entry-badge badge-dev">IN DEVELOPMENT</span>
+      </div>
+      <p>The universal deployment wrapper. Trojan Horse is the layer that transforms any Fluid Fortune web tool into a native application — with full filesystem access, OS integration, and no browser required. The same Punky that runs in Chrome becomes a native macOS app. The same Phantom that serves responses via localhost becomes an integrated desktop assistant. Trojan Horse does not change the tools. It changes where they live. Public repository forthcoming; early examples are visible inside The Phantom repository.</p>
+    </div>
+  </div>
+
+  <!-- ── 05 MEDIA ── -->
+  <div class="doc-section" id="media">
+    <div class="section-num">05</div>
+    <h2 class="section-title">THE MEDIA ARM</h2>
+
+    <p>Fluid Fortune has a propaganda arm. This is not a metaphor.</p>
+
+    <p>The technical work described in this document exists within a cultural context — and that context is one in which the dominant narrative about technology is written almost entirely by the people who profit from it. The story that AI requires cloud subscriptions, that software must be rented, that your data is the price of admission — these are not laws of nature. They are business models dressed up as inevitability.</p>
+
+    <p>Challenging that narrative requires more than building better tools. It requires a voice. Fluid Fortune's media division exists to provide that voice, with the understanding that the most effective criticism is the one that makes you laugh before it makes you think.</p>
+
+    <div class="project-entry" style="--left: var(--red);">
+      <div class="project-entry-header">
+        <span class="project-entry-name">TECH, LIES &amp; VIDEOTAPE</span>
+        <span class="project-entry-badge badge-live">● LIVE</span>
+      </div>
+      <p>A YouTube channel dedicated to the satirical teardown of Silicon Valley's broken promises, data harvesting practices, and cloud-based grifts. The Friction Economy series examines the deliberate introduction of friction into technology systems as a mechanism of user control and revenue extraction. It is comedy. It is also journalism.</p>
+    </div>
+
+    <div class="project-entry">
+      <div class="project-entry-header">
+        <span class="project-entry-name">FIELD NOTES</span>
+        <span class="project-entry-badge badge-live">● LIVE</span>
+      </div>
+      <p>The written dispatch. Long-form essays on technology, AI, hardware, software development, pop culture, politics, philosophy, and music — and the ways in which these subjects are not separate things but facets of the same question: what kind of relationship do we want to have with the systems we build? Published at blog.fluidfortune.com. Powered by Punky.</p>
+    </div>
+
+    <div class="project-entry">
+      <div class="project-entry-header">
+        <span class="project-entry-name">AUDIO DISPATCHES</span>
+        <span class="project-entry-badge badge-live">● LIVE</span>
+      </div>
+      <p>Two podcast feeds, published via Static and hosted on archive.org. <em>Tech, Lies and Audiotape</em> is the audio companion to the video channel — longer conversations, deeper dives, more room for the argument to breathe. <em>The Forge</em> adapts Field Notes essays into audio, for listeners who prefer to absorb ideas while doing something else. A third show — human interviews — is in development.</p>
+    </div>
+
+    <p>The relationship between the technical work and the media work is not incidental. Fluid Fortune builds the tools. The media arm explains why the tools matter. They are the same project.</p>
+  </div>
+
+  <!-- ── 06 TOOLS ── -->
+  <div class="doc-section" id="tools">
+    <div class="section-num">06</div>
+    <h2 class="section-title">THE TOOLS WE BUILT TO BUILD IT</h2>
+
+    <p>One of the more unusual aspects of the Fluid Fortune project is that the infrastructure supporting it — the blog, the podcast, the publishing workflow — was itself built as part of the project, using the same philosophy that governs everything else.</p>
+
+    <p>The website at fluidfortune.com is two files: an HTML file and a CSS file. It has no framework, no build process, no node_modules directory containing seventeen thousand packages of questionable provenance. It is deployed by pushing those two files to a GitHub repository. It costs nothing to host.</p>
+
+    <p>The blog at blog.fluidfortune.com is a collection of static HTML files, an automatically maintained JSON manifest, an RSS feed, and a sitemap — all generated by Punky on publish. There is no WordPress installation. There is no database. There is no server to patch, no plugin to update, no subscription to maintain. A blog post is a file. Files are simple. Simple things last.</p>
+
+    <p>The podcast at podcast.fluidfortune.com follows the same logic. Audio files live on archive.org — the Internet Archive, a non-profit digital library that has been preserving the web since 1996 and shows no signs of stopping. Episode pages and RSS feeds are generated by Static and served by GitHub Pages. The shows are independent of any podcast hosting platform. They cannot be deplatformed by a hosting company changing its terms of service.</p>
+
+    <div class="tech-callout">
+      <div class="tech-callout-label">WHY THIS MATTERS</div>
+      <p>Every dependency in a technology stack is a potential point of failure and a potential point of control. Fluid Fortune's publishing infrastructure was designed to minimize both. The tools that power this website are the same tools we are releasing publicly. If they work well enough for us to use daily, they work well enough to share.</p>
+    </div>
+
+    <p>This is perhaps the clearest expression of the Fluid Fortune philosophy in practice: we needed a tool, we could not find one that met our standards, so we built it — and then we gave it away.</p>
+  </div>
+
+  <!-- ── 07 IDENTITY ── -->
+  <div class="doc-section" id="identity">
+    <div class="section-num">07</div>
+    <h2 class="section-title">THE IDENTITY</h2>
+
+    <p>The person behind Fluid Fortune has adopted a working identity: <strong>The Court Jester of Vibe Coding.</strong></p>
+
+    <p>This requires some unpacking.</p>
+
+    <p>"Vibe coding" is a term that emerged in the AI era to describe a style of development in which the programmer works in close collaboration with AI assistants — describing what they want in natural language, iterating on the output, directing rather than dictating. It is sometimes used dismissively, as if coding that involves AI assistance is less legitimate than coding that doesn't. This is a mistake. The ability to direct a complex technical system toward a specific creative and functional outcome — to hold the architecture in your head, to know what to ask for and how to evaluate what you receive — is a genuine and demanding skill. The tools change. The judgment does not.</p>
+
+    <p>"Court Jester" is the other half. In medieval courts, the jester held a unique position: the only person in the room permitted to tell the king he was wrong. The costume — the bells, the motley, the exaggerated hat — was not decoration. It was armor. Absurdity was the license that made honesty survivable. The jester who made the court laugh could say the thing that the courtiers were too frightened to say plainly.</p>
+
+    <blockquote>
+      The bells on the hat are load-bearing. The humor is not a distraction from the seriousness of the work. It is the delivery mechanism that makes the seriousness legible to people who would otherwise tune it out.
+    </blockquote>
+
+    <p>Fluid Fortune is, among other things, a demonstration that technical competence and cultural criticism and comedy are not separate disciplines. They are the same discipline, applied to the same problem, from different angles.</p>
+  </div>
+
+  <!-- ── 08 TIMELINE ── -->
+  <div class="doc-section" id="timeline">
+    <div class="section-num">08</div>
+    <h2 class="section-title">THE TIMELINE</h2>
+
+    <p>The following is a record of significant milestones in the Fluid Fortune project. It will be updated as the project develops.</p>
+
+    <div class="timeline-entry">
+      <div class="timeline-date">APR 11 2026</div>
+      <div class="timeline-content"><strong>First blog post published.</strong> "The Nuclear Reactor and the Bagel" — an examination of AI's infrastructure cost problem. The Field Notes blog goes live at blog.fluidfortune.com, powered by Punky.</div>
+    </div>
+    <div class="timeline-entry">
+      <div class="timeline-date">APR 12 2026</div>
+      <div class="timeline-content"><strong>Second blog post published.</strong> "The Source Code of Everything: The Beatles, the Forge, and the Technology That Changed the World." The blog's editorial voice crystallizes.</div>
+    </div>
+    <div class="timeline-entry">
+      <div class="timeline-date">APR 13 2026</div>
+      <div class="timeline-content"><strong>Third blog post published.</strong> "The New Peace Treaty: Vibe Coders, Legacy Coders, and the AI That Needs Both." The Court Jester identity formally established.</div>
+    </div>
+    <div class="timeline-entry">
+      <div class="timeline-date">APR 15 2026</div>
+      <div class="timeline-content"><strong>Full infrastructure build-out completed in a single session.</strong> fluidfortune.com redesigned with terminal aesthetic. Punky built and deployed. Static built and deployed. Podcast infrastructure live. Blog RSS feed bootstrapped. This document written.</div>
+    </div>
+  </div>
+
+  <!-- ── 09 WHAT'S NEXT ── -->
+  <div class="doc-section" id="whats-next">
+    <div class="section-num">09</div>
+    <h2 class="section-title">WHAT'S NEXT</h2>
+
+    <p>The Fluid Fortune project is active and accelerating. The following areas are in active development or planning as of the date of this document:</p>
+
+    <p><strong>Trojan Horse.</strong> The universal deployment wrapper is the keystone of the stack. When it ships, every Fluid Fortune tool becomes a native application. The blog editor that runs in Chrome becomes a desktop app. The local AI assistant that requires a browser becomes an integrated system utility. The work is in progress.</p>
+
+    <p><strong>The Phantom — continued development.</strong> The alpha is functional. The path to beta involves improved model management, a more sophisticated customization interface, and deeper integration with the Trojan Horse wrapper for native filesystem access.</p>
+
+    <p><strong>Pisces Moon.</strong> A broader intelligence suite of which Spadra Smelter is one component. Hot Donna — ESP32-S3 wardriving firmware designed to feed data directly into Smelter — is in development. The suite represents Fluid Fortune's most technically ambitious work to date.</p>
+
+    <p><strong>The interview podcast.</strong> The third show in the Fluid Fortune audio network. Human conversations with people who have interesting things to say about technology, culture, and the intersection of the two. No timeline committed. It will be ready when the right conversations are ready to be had.</p>
+
+    <p><strong>Roast My Tech Product.</strong> The open call for developers to submit their products for satirical treatment on Tech, Lies &amp; Videotape. The Weird Al model: if we come for your product, that is not an insult. That is a signal.</p>
+
+    <p><strong>This document.</strong> This document is a living record. It will be updated as projects ship, as the philosophy develops, and as the project finds its full shape. The update log below reflects changes made since first publication.</p>
+  </div>
+
+  <!-- ── 10 UPDATE LOG ── -->
+  <div class="doc-section" id="log">
+    <div class="section-num">10</div>
+    <h2 class="section-title">UPDATE LOG</h2>
+
+    <p>This section records additions and revisions to this document over time. The document itself does not change retroactively — new understanding is added, not substituted for old.</p>
+
+    <div class="update-log">
+      <div class="update-log-label">REVISION HISTORY</div>
+      <div class="update-entry">
+        <span class="date">APR 15 2026</span>
+        <span class="note"><em>v1.0</em> — Initial publication. Full project documentation through April 2026 build-out.</span>
+      </div>
+      <!-- Future updates appended below this line -->
+    </div>
+  </div>
+
+</div><!-- /doc-body -->
+
+<footer>
+  <p>
+    <a href="https://fluidfortune.com">FLUID FORTUNE</a>
+    &nbsp;|&nbsp;
+    <a href="https://blog.fluidfortune.com">FIELD NOTES</a>
+    &nbsp;|&nbsp;
+    <a href="https://podcast.fluidfortune.com">PODCASTS</a>
+    &nbsp;|&nbsp;
+    <a href="https://github.com/FluidFortune">GITHUB</a>
+  </p>
+  <p style="margin-top:.75rem">This is a living document. It will be wrong about some things it has not yet encountered, and right about more than it knows.</p>
+</footer>
+
+</body>
+</html>
