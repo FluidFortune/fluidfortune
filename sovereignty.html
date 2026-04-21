@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pisces Moon OS — Sovereignty White Paper | Fluid Fortune</title>
-  <meta name="description" content="Marching Forward by Going Backward: A Platform for Computing Sovereignty at Minimum Hardware Cost. The first general-purpose OS for the ESP32-S3 hardware class.">
+  <meta name="description" content="Marching Forward by Going Backward: A Platform for Computing Sovereignty at Minimum Hardware Cost. The first known documented implementation of persistent dual-core background tasking for field intelligence collection on the ESP32-S3 hardware class.">
   <link rel="canonical" href="https://fluidfortune.com/sovereignty.html">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://fluidfortune.com/sovereignty.html">
@@ -151,7 +151,7 @@
 
 <div class="abstract">
   <div class="abstract-label">ABSTRACT</div>
-  <p>This paper presents Pisces Moon OS — the first general-purpose operating system for the ESP32-S3 hardware class — as a coherent answer to three simultaneous crises in modern computing: rising hardware costs driven by semiconductor tariffs and supply chain disruption; the architectural obsolescence of cloud-dependent software stacks that require continuously upgraded hardware; and the developer gatekeeping that prevents domain experts from shipping capable software without engineering intermediaries. The paper documents six novel engineering problems encountered and solved during development, none of which had prior documented solutions for this hardware platform. It presents the platform's three-tier architecture — embedded OS, Linux distribution, and cross-platform application runtime — as a unified economic and technical argument that sovereign, capable, locally-executed computing is achievable today on hardware that costs $50 to $350. The platform obliterates five assumptions the current industry depends on. This document explains what those assumptions are, why they are wrong, and what the replacement looks like.</p>
+  <p>This paper presents Pisces Moon OS — the first known documented implementation of persistent dual-core background tasking for field intelligence collection on the ESP32-S3 hardware class — as a coherent answer to three simultaneous crises in modern computing: rising hardware costs driven by semiconductor tariffs and supply chain disruption; the architectural obsolescence of cloud-dependent software stacks that require continuously upgraded hardware; and the developer gatekeeping that prevents domain experts from shipping capable software without engineering intermediaries. The paper documents six novel engineering problems encountered and solved during development, none of which had prior documented solutions for this hardware platform, and one novel architectural implementation — Core 0 running continuous passive intelligence collection while Core 1 serves the operator, always, unconditionally — that to our knowledge has not been previously documented for field use on this hardware class. It presents the platform's three-tier architecture — embedded OS, Linux distribution, and cross-platform application runtime — as a unified economic and technical argument that sovereign, capable, locally-executed computing is achievable today on hardware that costs $50 to $350. The platform obliterates five assumptions the current industry depends on. This document explains what those assumptions are, why they are wrong, and what the replacement looks like.</p>
 </div>
 
 <div class="doc-body">
@@ -229,7 +229,7 @@
 
     <div class="callout">
       <div class="callout-label">TIER 1 — THE EMBEDDED DEVICE ($50–$350)</div>
-      <p>The LilyGO T-Deck Plus — ESP32-S3 at 240MHz, 8MB PSRAM, QWERTY keyboard, LoRa radio, GPS, WiFi, Bluetooth LE, I2S audio, MicroSD storage. Retail price: $50. Pisces Moon OS is the first general-purpose OS for this hardware class: launcher, dual-core architecture, 47 built-in applications, ELF module runtime, Ghost Partition security system, passive wardriving running continuously in the background.</p>
+      <p>The LilyGO T-Deck Plus — ESP32-S3 at 240MHz, 8MB PSRAM, QWERTY keyboard, LoRa radio, GPS, WiFi, Bluetooth LE, I2S audio, MicroSD storage. Retail price: $50. Pisces Moon OS implements the first known documented dual-core persistent background tasking architecture for field intelligence collection on this hardware class: Core 0 runs the Ghost Engine continuously — wardriving, BLE scanning, GPS logging — while Core 1 serves the operator. The device is always collecting. The operator is never interrupted. 47 built-in applications, ELF module runtime, Ghost Partition security system.</p>
     </div>
 
     <div class="table-wrap">
