@@ -3,526 +3,327 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fluid Fortune | Local Intelligence</title>
-  <meta name="description" content="A RESOURCE. NOT A DEPENDENCY. Independent forge building tools for the era of private intelligence.">
-
-  <!-- Open Graph -->
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://fluidfortune.com">
-  <meta property="og:title" content="Fluid Fortune | Local Intelligence">
-  <meta property="og:description" content="A RESOURCE. NOT A DEPENDENCY. Independent forge building tools for the era of private intelligence.">
-  <meta property="og:image" content="https://fluidfortune.com/courtjester.jpg">
-  <meta property="og:image:width" content="820">
-  <meta property="og:image:height" content="1024">
-  <meta property="og:image:alt" content="FluidFortune — The Court Jester of Vibe Coding">
-  <meta property="og:site_name" content="Fluid Fortune">
-
-  <!-- Twitter/X Card -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Fluid Fortune | Local Intelligence">
-  <meta name="twitter:description" content="A RESOURCE. NOT A DEPENDENCY. Independent forge building tools for the era of private intelligence.">
-  <meta name="twitter:image" content="https://fluidfortune.com/courtjester.jpg">
-  <meta name="twitter:image:alt" content="FluidFortune — The Court Jester of Vibe Coding">
+  <title>Eric Becker — Portfolio | Fluid Fortune</title>
+  <meta name="description" content="Professional portfolio of Eric Becker — independent developer, systems architect, and founder of Fluid Fortune.">
+  <link rel="canonical" href="https://portfolio.fluidfortune.com">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=VT323&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=DM+Mono:wght@300;400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=DM+Mono:wght@300;400;500&display=swap"></noscript>
+  <style>
+    :root{--paper:#faf8f4;--paper-dark:#f0ede6;--ink:#1a1614;--ink-mid:#4a4340;--ink-light:#8a7f78;--ink-faint:#c5bdb5;--accent:#c17f3a;--accent-dim:#9a6128;--accent-pale:#f5ead8;--rule:#ddd8d0;--green:#2d5a3d;--green-pale:#e8f0eb;--font-disp:'Playfair Display',Georgia,serif;--font-body:'Source Serif 4',Georgia,serif;--font-mono:'DM Mono',monospace;--page-w:1100px;--content-w:660px;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{font-size:16px;scroll-behavior:smooth}
+    body{background:var(--paper);color:var(--ink);font-family:var(--font-body);line-height:1.75;-webkit-font-smoothing:antialiased}
+    .page{max-width:var(--page-w);margin:0 auto;padding:0 2.5rem}
+    /* MASTHEAD */
+    .masthead{padding:3rem 0 2rem;border-bottom:2px solid var(--ink);display:flex;justify-content:space-between;align-items:flex-end;gap:2rem;flex-wrap:wrap}
+    .masthead-eyebrow{font-family:var(--font-mono);font-size:.62rem;letter-spacing:.2em;color:var(--ink-light);margin-bottom:.4rem}
+    .masthead-name{font-family:var(--font-disp);font-size:clamp(2.2rem,5vw,3.5rem);font-weight:900;letter-spacing:-.02em;line-height:1;color:var(--ink)}
+    .masthead-role{font-family:var(--font-body);font-size:.95rem;color:var(--ink-mid);font-style:italic;font-weight:300;margin-top:.4rem}
+    .masthead-right{text-align:right}
+    .masthead-right a{display:block;font-family:var(--font-mono);font-size:.63rem;color:var(--ink-mid);text-decoration:none;letter-spacing:.05em;line-height:2.2;transition:color .15s}
+    .masthead-right a:hover{color:var(--accent)}
+    .masthead-right a.hl{color:var(--accent-dim);font-weight:500}
+    /* NAV */
+    .site-nav{border-bottom:1px solid var(--rule);position:sticky;top:0;background:var(--paper);z-index:100}
+    .site-nav-inner{max-width:var(--page-w);margin:0 auto;padding:0 2.5rem;display:flex;gap:2rem}
+    .site-nav a{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.12em;color:var(--ink-light);text-decoration:none;padding:.75rem 0;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;display:inline-block}
+    .site-nav a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+    .site-nav .nav-right{margin-left:auto}
+    /* COLUMNS */
+    .columns{display:flex;gap:3.5rem;align-items:flex-start;padding-bottom:6rem}
+    .content{flex:1;min-width:0}
+    /* SIDEBAR */
+    .sidebar{width:255px;flex-shrink:0;padding-top:3rem;position:sticky;top:44px}
+    .sidebar-block{border:1px solid var(--rule);background:var(--paper-dark);padding:1.25rem;margin-bottom:1.25rem}
+    .sidebar-label{font-family:var(--font-mono);font-size:.55rem;letter-spacing:.2em;color:var(--ink-light);text-transform:uppercase;padding-bottom:.5rem;margin-bottom:.75rem;border-bottom:1px solid var(--rule);display:block}
+    .sidebar-stat{display:flex;justify-content:space-between;align-items:baseline;padding:.3rem 0;border-bottom:1px solid var(--rule);gap:.5rem}
+    .sidebar-stat:last-child{border-bottom:none}
+    .sidebar-stat-label{font-size:.82rem;color:var(--ink-mid);font-weight:300}
+    .sidebar-stat-val{font-family:var(--font-mono);font-size:.68rem;color:var(--ink);white-space:nowrap}
+    .sidebar-block p{font-size:.85rem;color:var(--ink-mid);line-height:1.65;margin-bottom:.6rem}
+    .sidebar-block p:last-child{margin-bottom:0}
+    .sidebar-block strong{color:var(--ink);font-weight:600}
+    .sidebar-block a{display:block;font-family:var(--font-mono);font-size:.63rem;color:var(--accent-dim);text-decoration:none;line-height:2.2;letter-spacing:.04em;transition:color .15s}
+    .sidebar-block a:hover{color:var(--ink)}
+    /* STATEMENT */
+    .statement{padding:3rem 0 0}
+    .statement p{font-size:1rem;line-height:1.85;color:var(--ink-mid);margin-bottom:1rem;font-weight:300;max-width:var(--content-w)}
+    .statement strong{color:var(--ink);font-weight:600}
+    /* SECTION */
+    .section{padding-top:3.5rem}
+    .section-header{display:flex;align-items:center;gap:.75rem;padding-bottom:.75rem;border-bottom:1.5px solid var(--ink);margin-bottom:0}
+    .section-header::before{content:'';width:3px;height:.9rem;background:var(--accent);flex-shrink:0}
+    .section-label{font-family:var(--font-mono);font-size:.58rem;letter-spacing:.2em;color:var(--ink);text-transform:uppercase}
+    /* PROJECT ENTRY */
+    .project-entry{padding:2rem 0;border-bottom:1px solid var(--rule);max-width:var(--content-w)}
+    .project-entry:first-of-type{border-top:1px solid var(--rule);margin-top:1.25rem}
+    .project-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:.3rem}
+    .project-num{font-family:var(--font-mono);font-size:.56rem;color:var(--ink-faint);letter-spacing:.15em;margin-bottom:.2rem}
+    .project-name{font-family:var(--font-disp);font-size:1.25rem;font-weight:600;color:var(--ink);letter-spacing:-.01em;line-height:1.15}
+    .project-badge{font-family:var(--font-mono);font-size:.54rem;letter-spacing:.1em;padding:.18rem .55rem;border:1px solid;white-space:nowrap;flex-shrink:0;margin-top:.15rem}
+    .badge-live{color:var(--green);border-color:var(--green)}
+    .badge-alpha{color:var(--accent-dim);border-color:var(--accent-dim)}
+    .badge-dev{color:var(--ink-light);border-color:var(--rule)}
+    .project-tagline{font-family:var(--font-body);font-size:.88rem;color:var(--accent-dim);font-style:italic;font-weight:300;margin-bottom:.8rem}
+    .project-desc{font-size:.9rem;color:var(--ink-mid);line-height:1.75;margin-bottom:.9rem}
+    .project-tags{display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:.9rem}
+    .tag{font-family:var(--font-mono);font-size:.54rem;letter-spacing:.08em;color:var(--ink-light);border:1px solid var(--rule);padding:.1rem .4rem;background:var(--paper-dark)}
+    .tag-sec{color:var(--green);border-color:#b8d4bf;background:var(--green-pale)}
+    .tag-feat{color:var(--accent-dim);border-color:#e8c99a;background:var(--accent-pale)}
+    .project-links{display:flex;gap:.5rem;flex-wrap:wrap}
+    .project-links a{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.1em;text-decoration:none;padding:.32rem .8rem;border:1px solid;transition:.15s;display:inline-block}
+    .btn-p{color:var(--paper);background:var(--ink);border-color:var(--ink)}
+    .btn-p:hover{background:var(--accent);border-color:var(--accent)}
+    .btn-s{color:var(--ink-mid);border-color:var(--rule);background:transparent}
+    .btn-s:hover{border-color:var(--ink-mid);color:var(--ink)}
+    /* FOOTER */
+    .site-footer{border-top:2px solid var(--ink);padding:1.75rem 0;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+    .site-footer p{font-family:var(--font-mono);font-size:.6rem;color:var(--ink-light);letter-spacing:.05em}
+    .site-footer a{color:var(--ink-mid);text-decoration:none}
+    .site-footer a:hover{color:var(--accent)}
+    /* RESPONSIVE */
+    @media(max-width:900px){.columns{flex-direction:column;gap:0}.sidebar{width:100%;position:static;padding-top:2rem}.masthead{flex-direction:column;align-items:flex-start}.masthead-right{text-align:left}}
+    @media(max-width:600px){.page{padding:0 1.25rem}.site-nav-inner{padding:0 1.25rem;gap:1rem}.project-top{flex-direction:column;gap:.2rem}}
+  </style>
 </head>
 <body>
 
-  <!-- Scanline overlay -->
-  <div class="scanlines" aria-hidden="true"></div>
-  <!-- CRT vignette -->
-  <div class="vignette" aria-hidden="true"></div>
-
-  <!-- ═══════════════════════════════════════ NAV -->
-  <nav class="nav" id="nav">
-    <div class="nav-inner">
-      <div class="nav-logo">
-        <span class="nav-logo-text">FLUID FORTUNE</span>
-        <span class="nav-version">SYS.v.1.2</span>
-      </div>
-      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">[ MENU ]</button>
-      <ul class="nav-links" id="navLinks">
-        <li><a href="#about">&gt; ABOUT</a></li>
-        <li><a href="#projects">&gt; PROJECTS</a></li>
-        <li><a href="#media">&gt; MEDIA</a></li>
-        <li><a href="#roast">&gt; ROAST</a></li>
-        <li><a href="#comms">&gt; COMMS</a></li>
-        <li><a href="https://blog.fluidfortune.com" target="_blank">&gt; BLOG</a></li>
-        <li><a href="https://podcast.fluidfortune.com" target="_blank">&gt; PODCAST</a></li>
-        <li><a href="project.html">&gt; THE PROJECT</a></li>
-        <li><a href="sovereignty.html">&gt; WHITE PAPER</a></li>
-      </ul>
+<div class="page">
+  <header class="masthead">
+    <div>
+      <div class="masthead-eyebrow">Professional Portfolio — April 2026</div>
+      <div class="masthead-name">Eric Becker</div>
+      <div class="masthead-role">Independent Developer &amp; Systems Architect — Fluid Fortune</div>
     </div>
-  </nav>
-
-  <!-- ═══════════════════════════════════════ HERO -->
-  <header class="hero" id="top">
-    <div class="hero-inner">
-      <div class="hero-ascii" aria-label="Fluid Fortune">
-        <pre class="ascii-art" id="asciiArt">
-  ___ _    _   _ ___ ___   ___ ___  ___ _____ _   _ _  _ ___ 
- | __| |  | | | |_ _|   \ | __/ _ \| _ \_   _| | | | \| | __|
- | _|| |__| |_| || || |) || _| (_) |   / | | | |_| | .` | _| 
- |_| |____|\___/|___|___/ |_| \___/|_|_\ |_|  \___/|_|\_|___|</pre>
-        <div class="ascii-mobile" aria-hidden="true">FLUID<br>FORTUNE</div>
-      </div>
-      <div class="hero-tagline">
-        <h1 class="tagline-main">A RESOURCE.<span class="tagline-break"> NOT A DEPENDENCY.</span></h1>
-        <p class="tagline-sub">We use the network to gather the data.<br>But the intelligence runs on your metal.</p>
-      </div>
-      <div class="hero-status">
-        <span class="status-dot"></span>
-        <span class="status-text">LOCAL. ONLY.</span>
-      </div>
+    <div class="masthead-right">
+      <a href="mailto:forge@fluidfortune.com">forge@fluidfortune.com</a>
+      <a href="https://fluidfortune.com" target="_blank">fluidfortune.com</a>
+      <a href="https://github.com/FluidFortune" target="_blank">github.com/FluidFortune</a>
+      <a href="https://fluidfortune.com/sovereignty.html" class="hl" target="_blank">Sovereignty White Paper →</a>
     </div>
-    <div class="hero-scroll-hint" aria-hidden="true">▼ ▼ ▼</div>
   </header>
+</div>
 
-  <main>
+<nav class="site-nav">
+  <div class="site-nav-inner">
+    <a href="#statement">Statement</a>
+    <a href="#embedded">Embedded &amp; OS</a>
+    <a href="#ai">Local AI</a>
+    <a href="#security">Security</a>
+    <a href="#publishing">Publishing</a>
+    <a href="https://fluidfortune.com" target="_blank" class="nav-right">Main Site →</a>
+  </div>
+</nav>
 
-    <!-- ═══════════════════════════════════════ ABOUT -->
-    <section class="section" id="about">
-      <div class="section-inner">
-        <h2 class="section-title">[ ABOUT FLUID FORTUNE ]</h2>
-        <div class="about-layout">
-          <div class="about-text">
-            <div class="section-body">
-              <p>Fluid Fortune is an independent forge dedicated to building mindful, useful tech. We understand the importance of large systems while also seeing their inner ironies. We operate under a core philosophy: the internet should be a resource, not a dependency, and one should never take it too seriously.</p>
-              <p>We build tools for the era of private intelligence. You connect to the network to download the payload, but if you choose, the compute itself can stay entirely on your machine. Living by the subscription model should be a choice, not a requirement.</p>
-            </div>
-            <div class="jester-identity">
-              <div class="jester-tag">BEHIND THE FORGE</div>
-              <h3 class="jester-title">The Court Jester<br>of Vibe Coding</h3>
-              <p class="jester-desc">The jester was the only person in the room allowed to tell the king he was wrong. We build the tools. We write the dispatches. We deliver the roast. The bells on the hat are load-bearing.</p>
-            </div>
-            <div class="manifesto-rail">
-              <div class="rail-item">LOCAL COMPUTE</div>
-              <div class="rail-divider">//</div>
-              <div class="rail-item">OPEN SOURCE</div>
-              <div class="rail-divider">//</div>
-              <div class="rail-item">NO SUBSCRIPTIONS</div>
-              <div class="rail-divider">//</div>
-              <div class="rail-item">YOUR METAL</div>
-            </div>
+<div class="page">
+  <div class="columns">
+    <main class="content">
+
+      <div class="statement" id="statement">
+        <p>I build tools for the era of private intelligence. Every project in this portfolio starts from the same premise: <strong>the person using the compute should be the person in control of the compute.</strong> Not the platform. Not the subscription service. Not the company whose terms of service changed last Tuesday.</p>
+        <p>The work documented here was built in approximately one month in early 2026. It produced two primary inventions that did not exist before this project. <strong>The Ghost Engine</strong> — a persistent Core 0 intelligence collection process that wardrives, scans BLE, and logs GPS continuously, always, regardless of what the operator is doing, on a $50 device. And <strong>the SPI Bus Treaty</strong> — the first named architectural standard for shared-bus arbitration on the ESP32-S3, now part of the public technical literature, which is the reason the Ghost Engine never stops. The Ghost Engine is the operational paradigm. The Treaty is the engineering standard that makes it possible. Five additional engineering solutions with no prior documented existence for this platform accompany them, along with a distributed local AI agent framework, two security analysis tools, two open-source publishing tools, and a STRIDE-based threat modeling tool — all deployed, all verifiable against public codebases, all built under the <strong>Clark Beddows Protocol</strong>: local first, no gatekeepers, you own everything.</p>
+        <p>The receipt for the embedded OS work is $144. The enterprise equivalent is measurably higher. That gap is the argument.</p>
+      </div>
+
+      <!-- EMBEDDED -->
+      <div class="section" id="embedded">
+        <div class="section-header"><span class="section-label">Embedded Systems &amp; Operating Systems</span></div>
+
+        <div class="project-entry">
+          <div class="project-top">
+            <div><div class="project-num">01</div><div class="project-name">Pisces Moon OS</div></div>
+            <span class="project-badge badge-live">● LIVE</span>
           </div>
-          <div class="about-image-wrap">
-            <div class="jester-frame">
-              <div class="jester-frame-label">// FLUID FORTUNE</div>
-              <img src="courtjester.jpg" alt="FluidFortune — The Court Jester of Vibe Coding" class="jester-img">
-              <div class="jester-frame-footer">
-                <span class="jester-scan"></span>
-                COURT JESTER OF VIBE CODING
-              </div>
-            </div>
+          <div class="project-tagline">The Ghost Engine never stops. The SPI Bus Treaty is why.</div>
+          <p class="project-desc"><strong>The Ghost Engine</strong> is the operational paradigm: a persistent Core 0 process that wardrives, scans BLE beacons, and logs GPS coordinates continuously — always, regardless of what the operator is doing on Core 1. You can play a game. Use the AI terminal. Browse files. The Ghost Engine never stops. The operator never has to think about it. No previous ESP32-S3 project implemented this architecture. It did not exist before this project.</p>
+          <p class="project-desc"><strong>The SPI Bus Treaty</strong> is the engineering standard that makes the Ghost Engine possible. A formal behavioral protocol governing shared-bus arbitration on the ESP32-S3 — the first of its kind, now part of the public technical literature. Without it, the Ghost Engine and the LoRa radio destroy each other over the shared SPI bus. With it, Core 0 runs unconditionally and indefinitely under real-world field conditions.</p>
+          <p class="project-desc">Built on this foundation: 47 applications, hardware-secured Ghost Partition with sub-millisecond data destruction, local AI inference, LoRa mesh radio, and an ELF module runtime for SD card app deployment without reflashing — on a $50 device.</p>
+          <div class="project-tags"><span class="tag tag-feat">Ghost Engine</span><span class="tag tag-feat">SPI Bus Treaty</span><span class="tag tag-feat">Origin Project</span><span class="tag tag-sec">Security</span><span class="tag">ESP32-S3</span><span class="tag">C++</span><span class="tag">FreeRTOS</span><span class="tag">Dual-Core</span><span class="tag">RF Intelligence</span><span class="tag">AGPL-3.0</span></div>
+          <div class="project-links">
+            <a href="pisces-moon-os.html" class="btn-p">PROJECT DETAIL →</a>
+            <a href="https://github.com/FluidFortune/pisces-moon-os" class="btn-s" target="_blank" rel="noopener">GITHUB</a>
+            <a href="https://fluidfortune.com/sovereignty.html" class="btn-s" target="_blank" rel="noopener">WHITE PAPER</a>
+          </div>
+        </div>
+
+        <div class="project-entry">
+          <div class="project-top">
+            <div><div class="project-num">02</div><div class="project-name">Pisces Moon Linux</div></div>
+            <span class="project-badge badge-alpha">IN DEVELOPMENT</span>
+          </div>
+          <div class="project-tagline">Sovereign compute on hardware the industry declared obsolete</div>
+          <p class="project-desc">A custom Debian-based Linux distribution targeting x86 and ARM hardware from 2012–2016. The initial target is the Fujitsu Stylistic Q508 — a 10-inch tablet available for $50–100 on the secondary market — turned into a complete security analysis workstation with native integration of the Pisces Moon OS T-Deck Plus as a dedicated radio coprocessor.</p>
+          <div class="project-tags"><span class="tag tag-sec">Security</span><span class="tag">Linux</span><span class="tag">Debian</span><span class="tag">x86</span><span class="tag">ARM</span><span class="tag">AGPL-3.0</span></div>
+          <div class="project-links">
+            <a href="pisces-moon-linux.html" class="btn-p">PROJECT DETAIL →</a>
+            <a href="https://github.com/FluidFortune/pisces-moon-linux" class="btn-s" target="_blank" rel="noopener">GITHUB</a>
           </div>
         </div>
       </div>
-    </section>
 
-    <!-- ═══════════════════════════════════════ PROJECTS -->
-    <section class="section section--dark" id="projects">
-      <div class="section-inner">
-        <h2 class="section-title">[ CURRENT PROJECTS ]</h2>
+      <!-- AI -->
+      <div class="section" id="ai">
+        <div class="section-header"><span class="section-label">Local AI &amp; Intelligence</span></div>
 
-        <!-- PROJECT GRID — 2 col desktop, 1 col mobile, built for 4 -->
-        <div class="project-grid">
-
-          <!-- PISCES MOON OS — origin project, full width -->
-          <article class="project-card project-card--wide project-card--featured" style="grid-column: 1 / -1;">
-            <div class="project-header">
-              <h3 class="project-name">PISCES MOON OS</h3>
-              <span class="project-badge project-badge--alpha">v0.9.9 "ELF ON A SHELF"</span>
-              <span class="project-badge project-badge--live" style="margin-left:.25rem">● NOW PUBLIC</span>
-            </div>
-            <p class="project-desc">Two inventions that didn't exist before this project. <strong>The Ghost Engine</strong> — a persistent Core 0 process that wardrives, scans BLE, and logs GPS continuously, always, regardless of what the operator is doing. The device is always collecting. The operator never has to think about it. <strong>The SPI Bus Treaty</strong> — the first named architectural standard for shared-bus arbitration on the ESP32-S3, the reason the Ghost Engine never stops. Built on these: 47 applications, Ghost Partition security, local AI inference, LoRa mesh radio, GPS, and an ELF module runtime — on $50 hardware.</p>
-            <div class="project-links">
-              <a href="pisces-moon.html" class="btn btn--primary">LEARN MORE →</a>
-              <a href="https://github.com/FluidFortune/pisces-moon-os" class="btn" target="_blank" rel="noopener">VIEW ON GITHUB</a>
-              <a href="sovereignty.html" class="btn" target="_blank" rel="noopener">WHITE PAPER</a>
-            </div>
-          </article>
-
-          <!-- THE PHANTOM -->
-          <article class="project-card">
-            <div class="project-header">
-              <h3 class="project-name">THE PHANTOM</h3>
-              <span class="project-badge project-badge--alpha">v0.1.0-alpha</span>
-            </div>
-            <p class="project-desc">A local AI assistant that runs entirely on your own hardware. No API keys. No data leaving your machine. You talk to it through a web browser, but the intelligence lives in your RAM. Customizable to your needs and buildable to your preferred platform. It's a coder. It's a marketing materials maker. It's a mind mapping assistant. It just needs to be trained. Don't bend to the will of AI. Make AI bend to the will of you.</p>
-            <div class="project-links">
-              <a href="https://github.com/FluidFortune/The-Phantom" class="btn" target="_blank" rel="noopener">VIEW ON GITHUB</a>
-            </div>
-          </article>
-
-          <!-- SPADRA SMELTER -->
-          <article class="project-card">
-            <div class="project-header">
-              <h3 class="project-name">SPADRA SMELTER</h3>
-              <span class="project-badge project-badge--version">v1.0.0</span>
-            </div>
-            <p class="project-desc">RF intelligence analysis platform for wardriving datasets. Drop in a WiGLE-format CSV and get a full intelligence picture — interactive heatmap, anomaly detection, OUI vendor enrichment, persistent device tracking, and export-ready reports. No installation. No server. One HTML file.</p>
-            <div class="project-links">
-              <a href="https://github.com/FluidFortune/spadra_smelter" class="btn" target="_blank" rel="noopener">VIEW ON GITHUB</a>
-              <a href="https://spadra-smelter.fluidfortune.com" class="btn btn--primary" target="_blank" rel="noopener">LAUNCH TOOL</a>
-            </div>
-          </article>
-
-          <!-- WOZBOT — spans full width to accommodate the video -->
-          <article class="project-card project-card--featured project-card--wide" id="wozbot">
-            <div class="project-header">
-              <h3 class="project-name">WOZBOT</h3>
-              <span class="project-badge project-badge--live">● LIVE SYSTEM</span>
-            </div>
-            <p class="project-desc">A highly quantized, localized AI trained exclusively to deliver terrible 1970s hardware puns. This is a living proof-of-concept for the Fluid Fortune architecture. WozBot isn't hosted in a corporate data center; he is running on a bare-metal micro-node within our private perimeter, piped to the web via a secure tunnel. No cloud compute was harmed in the making of this joke.</p>
-            <div class="project-links">
-              <a href="https://github.com/fluidfortune/wozbot" class="btn" target="_blank" rel="noopener">VIEW ON GITHUB</a>
-              <a href="https://wozbot.fluidfortune.com" class="btn btn--primary" target="_blank" rel="noopener">INITIATE CHAT</a>
-            </div>
-            <div class="video-block">
-              <div class="video-block-label">
-                <span class="label-icon">▶</span>
-                BROADCAST SIGNAL — FRICTION ECONOMY SERIES
-              </div>
-              <div class="video-wrapper" id="videoWrapper">
-                <iframe
-                  src="https://www.youtube.com/embed/uBRtHnzRDLo"
-                  title="Friction Economy — WozBot | Tech, Lies &amp; Videotape"
-                  frameborder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowfullscreen>
-                </iframe>
-              </div>
-              <div class="video-block-footer">
-                From <a href="https://techliesandvideotape.com" target="_blank" rel="noopener">Tech, Lies &amp; Videotape</a> — our propaganda arm.
-              </div>
-            </div>
-          </article>
-
-          <!-- PUNKY -->
-          <article class="project-card">
-            <div class="project-header">
-              <h3 class="project-name">PUNKY</h3>
-              <span class="project-badge project-badge--alpha">v0.1.0-alpha</span>
-            </div>
-            <p class="project-desc">A lightweight, GitHub-native blog editor that runs as a single HTML file in your browser. Write posts in a clean word-processor-style interface, then publish directly to your GitHub Pages blog with one click. No server. No install. No subscription. No bloat.</p>
-            <div class="project-links">
-              <a href="https://github.com/FluidFortune/punky" class="btn" target="_blank" rel="noopener">VIEW ON GITHUB</a>
-              <a href="https://punky.fluidfortune.com" class="btn btn--primary" target="_blank" rel="noopener">OPEN EDITOR</a>
-            </div>
-          </article>
-
-          <!-- TROJAN HORSE -->
-          <article class="project-card">
-            <div class="project-header">
-              <h3 class="project-name">TROJAN HORSE</h3>
-              <span class="project-badge project-badge--dev">IN DEVELOPMENT</span>
-            </div>
-            <p class="project-desc">The universal deployment wrapper. A framework that turns local AI and web-based interfaces into native, installable applications across macOS, Windows, Linux, Android, and iOS.</p>
-            <p class="project-note"><em>Public GIT to follow. For examples of how Trojan Horse works in practice right now, check out the platform builds inside The Phantom repository.</em></p>
-          </article>
-
-          <!-- STATIC -->
-          <article class="project-card">
-            <div class="project-header">
-              <h3 class="project-name">STATIC</h3>
-              <span class="project-badge project-badge--alpha">v0.1.0-alpha</span>
-            </div>
-            <p class="project-desc">A lightweight, GitHub-native podcast publisher that runs as a single HTML file in your browser. Add episodes, generate show pages, and publish valid RSS feeds directly to your GitHub Pages podcast site with one click. No server. No install. No subscription.</p>
-            <div class="project-links">
-              <a href="https://github.com/FluidFortune/static" class="btn" target="_blank" rel="noopener">VIEW ON GITHUB</a>
-              <a href="https://static.fluidfortune.com" class="btn btn--primary" target="_blank" rel="noopener">OPEN PUBLISHER</a>
-            </div>
-          </article>
-
-          <!-- LITTLE SOUL -->
-          <article class="project-card">
-            <div class="project-header">
-              <h3 class="project-name">LITTLE SOUL</h3>
-              <span class="project-badge project-badge--alpha">v0.1.0-alpha</span>
-            </div>
-            <p class="project-desc">A GitHub-native website builder that runs as a single HTML file. Six themes. Six layouts. Eight section types. Multi-page with auto-generated navigation. Build complete websites and publish directly to GitHub Pages — no server, no database, no subscription, no bloat.</p>
-            <div class="project-links">
-              <a href="https://github.com/FluidFortune/little-soul" class="btn" target="_blank" rel="noopener">VIEW ON GITHUB</a>
-              <a href="https://little-soul.fluidfortune.com" class="btn btn--primary" target="_blank" rel="noopener">OPEN BUILDER</a>
-            </div>
-          </article>
-
-          <!-- THE PROJECT — living document, spans full width -->
-          <article class="project-card project-card--wide" style="grid-column: 1 / -1;">
-            <div class="project-header">
-              <h3 class="project-name">THE FLUID FORTUNE PROJECT</h3>
-              <span class="project-badge project-badge--live">● LIVING DOCUMENT</span>
-            </div>
-            <p class="project-desc">A philosophical and technical account of what Fluid Fortune is, why it exists, what has been built, and where it is going. Written for anyone curious enough to ask — from the non-technical reader to the hiring manager to the developer who wants to understand the architecture. Updated as the project develops.</p>
-            <div class="project-links">
-              <a href="project.html" class="btn btn--primary">READ THE DOCUMENT →</a>
-            </div>
-          </article>
-
-        </div><!-- /project-grid -->
-      </div>
-    </section>
-
-    <!-- ═══════════════════════════════════════ MEDIA -->
-    <section class="section" id="media">
-      <div class="section-inner">
-
-        <h2 class="section-title">[ MEDIA &amp; PROPAGANDA ARM ]</h2>
-        <div class="section-body">
-          <p>We don't just build tools. We have opinions about the world those tools exist in. Tech, AI, hardware, software, pop culture, politics, philosophy, music — and the wonderfully terrifying way it all blends together.</p>
+        <div class="project-entry">
+          <div class="project-top">
+            <div><div class="project-num">03</div><div class="project-name">The Phantom</div></div>
+            <span class="project-badge badge-alpha">v0.1.0-alpha</span>
+          </div>
+          <div class="project-tagline">A local AI agent framework — the body the frozen brain never had</div>
+          <p class="project-desc">A Python wrapper around Ollama that transforms a local language model into a capable intelligence agent. Before each prompt, The Phantom scrapes the web, bypasses paywalls, pulls live data from official APIs, retrieves semantic memories via ChromaDB, fetches YouTube transcripts, and reads RSS feeds — injecting everything as context before the model sees the query. The model reasons. The Phantom does everything else. No data leaves the machine.</p>
+          <div class="project-tags"><span class="tag tag-feat">Ecosystem Core — Tier 0</span><span class="tag">Python</span><span class="tag">Ollama</span><span class="tag">ChromaDB</span><span class="tag">FastAPI</span><span class="tag">AGPL-3.0</span></div>
+          <div class="project-links">
+            <a href="phantom.html" class="btn-p">PROJECT DETAIL →</a>
+            <a href="https://github.com/FluidFortune/The-Phantom" class="btn-s" target="_blank" rel="noopener">GITHUB</a>
+          </div>
         </div>
 
-        <!-- Side-by-side media cards -->
-        <div class="media-grid">
-
-          <!-- Tech, Lies & Videotape — full width row 1 -->
-          <div class="media-card media-card--wide">
-            <div class="media-card-header">
-              <div class="media-card-icon">▶</div>
-              <div>
-                <h3 class="media-card-title">TECH, LIES &amp; VIDEOTAPE</h3>
-                <p class="media-card-sub">VIDEO CHANNEL</p>
-              </div>
-            </div>
-            <p class="media-card-desc">A satirical teardown of Silicon Valley's broken promises, data harvesting, and cloud-based grifts. We point out the absurdities of the tech space; Fluid Fortune builds the cure.</p>
-            <div class="media-card-tags">
-              <span>SATIRE</span><span>TECH</span><span>AI</span><span>FRICTION ECONOMY</span>
-            </div>
-            <a href="https://techliesandvideotape.com" class="btn btn--primary" target="_blank" rel="noopener">BROADCAST SIGNAL →</a>
+        <div class="project-entry">
+          <div class="project-top">
+            <div><div class="project-num">04</div><div class="project-name">WozBot</div></div>
+            <span class="project-badge badge-live">● LIVE</span>
           </div>
-
-          <!-- The Blog — row 2 left -->
-          <div class="media-card">
-            <div class="media-card-header">
-              <div class="media-card-icon media-card-icon--blog">✦</div>
-              <div>
-                <h3 class="media-card-title">FIELD NOTES</h3>
-                <p class="media-card-sub">WRITTEN DISPATCH</p>
-              </div>
-            </div>
-            <p class="media-card-desc">Long-form writing on tech, AI, hardware, software development, pop culture, politics, philosophy, and music. Not separate subjects — one conversation about how everything is connected and why that should concern you.</p>
-            <div class="media-card-tags">
-              <span>TECH</span><span>AI</span><span>HARDWARE</span><span>CULTURE</span><span>POLITICS</span><span>PHILOSOPHY</span><span>MUSIC</span>
-            </div>
-            <a href="https://blog.fluidfortune.com" class="btn btn--primary" target="_blank" rel="noopener">READ DISPATCH →</a>
+          <div class="project-tagline">A live AI service on bare metal — no cloud, no AWS, no term sheet</div>
+          <p class="project-desc">A publicly accessible AI chatbot running on a MicroPC the size of a paperback book, tunneled to the public internet via Cloudflare. Demonstrates that a functional public AI service requires neither AWS infrastructure nor venture capital. Named after Steve Wozniak's 1970s Dial-A-Joke phone line.</p>
+          <div class="project-tags"><span class="tag tag-sec">Proof of Concept</span><span class="tag">llama.cpp</span><span class="tag">Nginx</span><span class="tag">Cloudflare Tunnel</span><span class="tag">Bare Metal</span><span class="tag">AGPL-3.0</span></div>
+          <div class="project-links">
+            <a href="wozbot.html" class="btn-p">PROJECT DETAIL →</a>
+            <a href="https://wozbot.fluidfortune.com" class="btn-s" target="_blank" rel="noopener">LIVE DEMO</a>
+            <a href="https://github.com/FluidFortune/wozbot" class="btn-s" target="_blank" rel="noopener">GITHUB</a>
           </div>
+        </div>
+      </div>
 
-          <!-- Podcasts — row 2 right -->
-          <div class="media-card media-card--amber">
-            <div class="media-card-header">
-              <div class="media-card-icon media-card-icon--podcast">♫</div>
-              <div>
-                <h3 class="media-card-title">AUDIO DISPATCHES</h3>
-                <p class="media-card-sub">PODCASTS</p>
-              </div>
-            </div>
-            <p class="media-card-desc">Two shows live now. Tech, Lies and Audiotape goes deeper on the YouTube topics. The Forge turns blog posts into audio. Subscribe via RSS or just hit play.</p>
-            <div class="media-card-tags">
-              <span>TECH, LIES AND AUDIOTAPE</span><span>THE FORGE</span>
-            </div>
-            <a href="https://podcast.fluidfortune.com" class="btn btn--primary btn--amber" target="_blank" rel="noopener">TUNE IN →</a>
+      <!-- SECURITY -->
+      <div class="section" id="security">
+        <div class="section-header"><span class="section-label">Security &amp; Intelligence Tools</span></div>
+
+        <div class="project-entry">
+          <div class="project-top">
+            <div><div class="project-num">05</div><div class="project-name">Spadra Smelter</div></div>
+            <span class="project-badge badge-live">● v1.0.0</span>
           </div>
-
-        </div><!-- /media-grid -->
-
-        <!-- ─── ROAST MY TECH PRODUCT ─── -->
-        <div class="roast-block" id="roast">
-          <div class="roast-header">
-            <div class="roast-flame" aria-hidden="true">🔥</div>
-            <div>
-              <h3 class="roast-title">ROAST MY TECH PRODUCT</h3>
-              <p class="roast-subtitle">COMEDY MARKETING FOR THE TERMINALLY ONLINE</p>
-            </div>
+          <div class="project-tagline">RF intelligence analysis — from raw wardrive data to actionable picture</div>
+          <p class="project-desc">A single-file RF intelligence analysis platform for WiGLE-format wardrive datasets. Drop a CSV, receive an interactive heatmap, anomaly detection for mobile hidden networks and evil twin candidates, OUI vendor enrichment, persistent device tracking across sessions, and export-ready reports. No server. No installation. No external API calls except map tiles.</p>
+          <div class="project-tags"><span class="tag tag-sec">Security</span><span class="tag tag-sec">RF Intelligence</span><span class="tag">Wardriving</span><span class="tag">BLE</span><span class="tag">Leaflet.js</span><span class="tag">AGPL-3.0</span></div>
+          <div class="project-links">
+            <a href="spadra-smelter.html" class="btn-p">PROJECT DETAIL →</a>
+            <a href="https://spadra-smelter.fluidfortune.com" class="btn-s" target="_blank" rel="noopener">LIVE TOOL</a>
+            <a href="https://github.com/FluidFortune/spadra_smelter" class="btn-s" target="_blank" rel="noopener">GITHUB</a>
           </div>
+        </div>
 
-          <div class="roast-body">
-            <p>Built something? Ship it to us. We'll tear it apart on camera — the business model, the name, the pitch deck font choices, all of it. Publicly. With witnesses.</p>
-            <p>Here's the thing though: Weird Al parodied "Smells Like Teen Spirit" and Nirvana loved it. Getting roasted means you're worth roasting. If we come for your product, that's not an insult — that's a signal.</p>
+        <div class="project-entry">
+          <div class="project-top">
+            <div><div class="project-num">06</div><div class="project-name">Threat Model Visualizer</div></div>
+            <span class="project-badge badge-live">● LIVE</span>
           </div>
-
-          <div class="roast-terms">
-            <div class="roast-term">
-              <span class="term-label">WHO IS THIS FOR</span>
-              <span class="term-value">Developers, founders, indie hackers with a product and a sense of humor</span>
-            </div>
-            <div class="roast-term">
-              <span class="term-label">WHAT WE NEED</span>
-              <span class="term-value">Product name, what it does, why you think it's brilliant, and a link</span>
-            </div>
-            <div class="roast-term">
-              <span class="term-label">WHAT YOU GET</span>
-              <span class="term-value">A featured segment on Tech, Lies &amp; Videotape. Free exposure. Eternal bragging rights.</span>
-            </div>
-            <div class="roast-term">
-              <span class="term-label">FINE PRINT</span>
-              <span class="term-value">Submission does not guarantee selection. We reserve the right to be merciless.</span>
-            </div>
+          <div class="project-tagline">STRIDE-based threat modeling powered by AI</div>
+          <p class="project-desc">Describe your application's architecture in plain language and receive a structured threat model built on the STRIDE framework — the same methodology used by security teams at Microsoft and Google. Covers all six threat categories with an overall risk assessment. User supplies their own Gemini API key, held in memory only — never stored, never transmitted except to the Gemini endpoint.</p>
+          <div class="project-tags"><span class="tag tag-sec">Security</span><span class="tag tag-sec">Threat Modeling</span><span class="tag">STRIDE</span><span class="tag">AI-Assisted</span><span class="tag">Gemini</span><span class="tag">AGPL-3.0</span></div>
+          <div class="project-links">
+            <a href="threat-model-visualizer.html" class="btn-p">PROJECT DETAIL →</a>
+            <a href="https://fluidfortune.com/threat-model-visualizer/" class="btn-s" target="_blank" rel="noopener">LIVE TOOL</a>
+            <a href="https://github.com/FluidFortune/threat-model-visualizer" class="btn-s" target="_blank" rel="noopener">GITHUB</a>
           </div>
+        </div>
+      </div>
 
-          <div class="roast-cta">
-            <a href="mailto:roast@fluidfortune.com?subject=Roast%20My%20Tech%20Product%20%E2%80%94%20%5BYour%20Product%20Name%5D&body=Product%20Name:%0AWhat%20it%20does:%0AWhy%20it%27s%20brilliant:%0ALink:" class="btn btn--roast">
-              SUBMIT FOR ROASTING →
-            </a>
-            <p class="roast-disclaimer">* By submitting, you confirm you can take a joke.</p>
+      <!-- PUBLISHING -->
+      <div class="section" id="publishing">
+        <div class="section-header"><span class="section-label">Publishing Infrastructure</span></div>
+
+        <div class="project-entry">
+          <div class="project-top">
+            <div><div class="project-num">07</div><div class="project-name">Punky</div></div>
+            <span class="project-badge badge-alpha">v0.1.0-alpha</span>
+          </div>
+          <div class="project-tagline">GitHub-native blog editor — no server, no database, no subscription</div>
+          <p class="project-desc">A single HTML file blog publishing environment. Write in a word-processor-style interface, publish via the GitHub API directly from the browser. On publish: generates a fully-styled HTML post with Open Graph and Schema.org metadata, updates the post manifest, regenerates the sitemap, and regenerates the RSS feed. Includes a bootstrap utility for migrating existing posts.</p>
+          <div class="project-tags"><span class="tag">Publishing</span><span class="tag">GitHub API</span><span class="tag">RSS</span><span class="tag">Static Site</span><span class="tag">Single File</span><span class="tag">MIT</span></div>
+          <div class="project-links">
+            <a href="punky.html" class="btn-p">PROJECT DETAIL →</a>
+            <a href="https://punky.fluidfortune.com" class="btn-s" target="_blank" rel="noopener">LIVE TOOL</a>
+            <a href="https://github.com/FluidFortune/punky" class="btn-s" target="_blank" rel="noopener">GITHUB</a>
+          </div>
+        </div>
+
+        <div class="project-entry">
+          <div class="project-top">
+            <div><div class="project-num">08</div><div class="project-name">Static</div></div>
+            <span class="project-badge badge-alpha">v0.1.0-alpha</span>
+          </div>
+          <div class="project-tagline">GitHub-native podcast publisher — audio on archive.org, pages on GitHub Pages</div>
+          <p class="project-desc">A single HTML file podcast publishing environment. Add an episode, enter the archive.org audio URL, publish. Generates the episode page, updates the show homepage with inline players, and regenerates a valid RSS feed compatible with Apple Podcasts and Spotify — all via the GitHub API from the browser. Audio hosted permanently on the Internet Archive. Cannot be deplatformed.</p>
+          <div class="project-tags"><span class="tag">Publishing</span><span class="tag">Podcasting</span><span class="tag">GitHub API</span><span class="tag">RSS</span><span class="tag">archive.org</span><span class="tag">Single File</span><span class="tag">MIT</span></div>
+          <div class="project-links">
+            <a href="static.html" class="btn-p">PROJECT DETAIL →</a>
+            <a href="https://static.fluidfortune.com" class="btn-s" target="_blank" rel="noopener">LIVE TOOL</a>
+            <a href="https://github.com/FluidFortune/static" class="btn-s" target="_blank" rel="noopener">GITHUB</a>
+          </div>
+        </div>
+
+        <div class="project-entry">
+          <div class="project-top">
+            <div><div class="project-num">09</div><div class="project-name">Little Soul</div></div>
+            <span class="project-badge badge-alpha">v0.1.0-alpha</span>
+          </div>
+          <div class="project-tagline">GitHub-native website builder — six themes, six layouts, multi-page, no server</div>
+          <p class="project-desc">A single HTML file website builder. Choose a theme, pick a layout, add sections, add pages, publish to GitHub Pages via the GitHub API from the browser. Six themes each with complete embedded CSS and matched typography. Eight section types including hero, two-column, cards, CTA, and custom HTML. Multi-page with auto-generated navigation. The third tool in the Fluid Fortune publishing stack.</p>
+          <div class="project-tags"><span class="tag">Publishing</span><span class="tag">Website Builder</span><span class="tag">GitHub API</span><span class="tag">Themes</span><span class="tag">Single File</span><span class="tag">MIT</span></div>
+          <div class="project-links">
+            <a href="little-soul.html" class="btn-p">PROJECT DETAIL →</a>
+            <a href="https://little-soul.fluidfortune.com" class="btn-s" target="_blank" rel="noopener">LIVE TOOL</a>
+            <a href="https://github.com/FluidFortune/little-soul" class="btn-s" target="_blank" rel="noopener">GITHUB</a>
           </div>
         </div>
 
       </div>
-    </section>
+    </main>
 
-    <!-- ═══════════════════════════════════════ COMMS -->
-    <section class="section section--dark" id="comms">
-      <div class="section-inner">
-        <h2 class="section-title">[ SECURE COMMS ]</h2>
-        <div class="section-body">
-          <p>While our releases include documentation, we are a small forge and cannot provide individual technical support for open-source software.</p>
-          <p>For enterprise licensing, architectural consulting, or partnership inquiries regarding Trojan Horse, The Phantom, or any of our other projects and ventures, initiate contact below.</p>
-        </div>
-        <a href="mailto:forge@fluidfortune.com" class="btn btn--primary">TRANSMIT MESSAGE</a>
+    <aside class="sidebar">
+      <div class="sidebar-block">
+        <span class="sidebar-label">By the Numbers</span>
+        <div class="sidebar-stat"><span class="sidebar-stat-label">Projects shipped</span><span class="sidebar-stat-val">8</span></div>
+        <div class="sidebar-stat"><span class="sidebar-stat-label">Time elapsed</span><span class="sidebar-stat-val">~1 month</span></div>
+        <div class="sidebar-stat"><span class="sidebar-stat-label">Hardware cost</span><span class="sidebar-stat-val">$144 total</span></div>
+        <div class="sidebar-stat"><span class="sidebar-stat-label">Novel problems solved</span><span class="sidebar-stat-val">6 documented</span></div>
+        <div class="sidebar-stat"><span class="sidebar-stat-label">Hosting cost</span><span class="sidebar-stat-val">$0 / month</span></div>
       </div>
-    </section>
-
-  </main>
-
-  <!-- ═══════════════════════════════════════ FOOTER -->
-  <footer class="footer">
-    <div class="footer-inner">
-
-      <!-- ☢ PAGE COUNTER — tacky by design, awesome by execution -->
-      <div class="counter-widget" aria-label="Paradigms aligned counter">
-
-        <div class="orb-counter">
-
-          <!-- The Orb -->
-          <div class="orb-wrap" aria-hidden="true">
-            <div class="orb-ring orb-ring--3"></div>
-            <div class="orb-ring orb-ring--2"></div>
-            <div class="orb-ring orb-ring--1"></div>
-            <div class="orb-core">
-              <div class="orb-inner-glow"></div>
-              <div class="orb-symbol">◈</div>
-            </div>
-            <div class="orb-lens"></div>
-          </div>
-
-          <!-- The tacky counter box -->
-          <div class="orb-panel">
-            <div class="orb-panel-top">
-              <span class="orb-blink" aria-hidden="true">✦</span>
-              <span class="orb-panel-title">PARADIGMS ALIGNED</span>
-              <span class="orb-blink" aria-hidden="true" style="animation-delay:.6s">✦</span>
-            </div>
-            <div class="orb-digits-wrap">
-              <div class="orb-digits" id="counterDigits">
-                <!-- injected by JS -->
-              </div>
-            </div>
-            <div class="orb-panel-bottom">
-              <span class="orb-dot"></span>
-              <span>SYNCING WITH THE NETWORK</span>
-              <span class="orb-dot" style="animation-delay:.5s"></span>
-            </div>
-          </div>
-
-        </div>
-
-        <p class="counter-fine-print">* your paradigm has been logged. resistance is a subscription tier.</p>
+      <div class="sidebar-block">
+        <span class="sidebar-label">Technical Profile</span>
+        <div class="sidebar-stat"><span class="sidebar-stat-label">Embedded</span><span class="sidebar-stat-val">C++, FreeRTOS</span></div>
+        <div class="sidebar-stat"><span class="sidebar-stat-label">Systems</span><span class="sidebar-stat-val">Linux, Debian</span></div>
+        <div class="sidebar-stat"><span class="sidebar-stat-label">AI / ML</span><span class="sidebar-stat-val">Python, Ollama</span></div>
+        <div class="sidebar-stat"><span class="sidebar-stat-label">Web</span><span class="sidebar-stat-val">HTML, CSS, JS</span></div>
+        <div class="sidebar-stat"><span class="sidebar-stat-label">Security</span><span class="sidebar-stat-val">RF, STRIDE</span></div>
+        <div class="sidebar-stat"><span class="sidebar-stat-label">Infrastructure</span><span class="sidebar-stat-val">GitHub, Cloudflare</span></div>
       </div>
+      <div class="sidebar-block">
+        <span class="sidebar-label">Philosophy</span>
+        <p>Every project is built under the <strong>Clark Beddows Protocol</strong>: local first, no gatekeepers, you own everything.</p>
+        <p>The compute belongs to the person running it. The software belongs to the person who wrote it. The data belongs to the person who generated it.</p>
+      </div>
+      <div class="sidebar-block">
+        <span class="sidebar-label">Links</span>
+        <a href="https://fluidfortune.com" target="_blank">fluidfortune.com</a>
+        <a href="https://fluidfortune.com/sovereignty.html" target="_blank">Sovereignty White Paper</a>
+        <a href="https://fluidfortune.com/project.html" target="_blank">Project Documentation</a>
+        <a href="https://github.com/FluidFortune" target="_blank">github.com/FluidFortune</a>
+        <a href="https://blog.fluidfortune.com" target="_blank">Field Notes</a>
+        <a href="mailto:forge@fluidfortune.com">forge@fluidfortune.com</a>
+      </div>
+    </aside>
 
-      <p class="footer-creed">Fluid Fortune's core belief is that the human spirit is limited only by the imagination.</p>
-      <p class="footer-copy">© <span id="year"></span> FLUID FORTUNE &nbsp;|&nbsp; LOCAL INTELLIGENCE</p>
-      <p class="footer-copy" style="margin-top:.5rem;font-size:.6rem;opacity:.6"><a href="https://portfolio.fluidfortune.com" style="color:inherit;text-decoration:none;letter-spacing:.1em">The bells come off here. →</a></p>
-    </div>
+  </div>
+
+  <footer class="site-footer">
+    <p>Eric Becker — Fluid Fortune — April 2026</p>
+    <p><a href="https://fluidfortune.com">Main Site</a> &nbsp;·&nbsp; <a href="https://github.com/FluidFortune">GitHub</a> &nbsp;·&nbsp; <a href="mailto:forge@fluidfortune.com">forge@fluidfortune.com</a></p>
   </footer>
 
-  <script>
-    // Year
-    document.getElementById('year').textContent = new Date().getFullYear();
-
-    // Mobile nav toggle — hardened
-    const toggle = document.getElementById('navToggle');
-    const links  = document.getElementById('navLinks');
-
-    toggle.addEventListener('click', function(e) {
-      e.stopPropagation();
-      const isOpen = links.classList.toggle('nav-links--open');
-      toggle.textContent = isOpen ? '[ CLOSE ]' : '[ MENU ]';
-    });
-
-    // Close on link click
-    links.querySelectorAll('a').forEach(a => {
-      a.addEventListener('click', () => {
-        links.classList.remove('nav-links--open');
-        toggle.textContent = '[ MENU ]';
-      });
-    });
-
-    // Close on outside tap (mobile)
-    document.addEventListener('click', function(e) {
-      if (!toggle.contains(e.target) && !links.contains(e.target)) {
-        links.classList.remove('nav-links--open');
-        toggle.textContent = '[ MENU ]';
-      }
-    });
-
-    // Sticky nav shadow on scroll
-    const nav = document.getElementById('nav');
-    window.addEventListener('scroll', () => {
-      nav.classList.toggle('nav--scrolled', window.scrollY > 40);
-    });
-
-    // Intersection observer — fade-in sections
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('visible');
-          observer.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('.section, .project-card').forEach(el => {
-      el.classList.add('fade-target');
-      observer.observe(el);
-    });
-
-    // ── PAGE COUNTER ──
-    (function() {
-      const KEY = 'ff_visit_count';
-      // Seed at a plausible "already had some visitors" number so it
-      // doesn't start at 0000001 on day one — adjust seed as you like
-      const SEED = 1138;
-      let count = parseInt(localStorage.getItem(KEY) || '0', 10);
-      if (count < SEED) count = SEED;
-      count++;
-      localStorage.setItem(KEY, count);
-
-      const digits = String(count).padStart(7, '0').split('');
-      const container = document.getElementById('counterDigits');
-      if (!container) return;
-
-      digits.forEach((d, i) => {
-        const cell = document.createElement('span');
-        cell.className = 'counter-digit';
-        cell.setAttribute('data-digit', d);
-        cell.textContent = d;
-        // stagger the flicker slightly per digit
-        cell.style.animationDelay = (i * 0.07) + 's';
-        container.appendChild(cell);
-      });
-    })();
-
-    const tagline = document.querySelector('.tagline-main');
-    if (tagline) {
-      const cursor = document.createElement('span');
-      cursor.className = 'cursor-blink';
-      cursor.textContent = '_';
-      tagline.appendChild(cursor);
-    }
-
-    // Typewriter effect on hero sub
-    const sub = document.querySelector('.tagline-sub');
-    if (sub) {
-      co
+</div>
+</body>
+</html>
