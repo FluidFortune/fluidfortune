@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Engineering Record | Fluid Fortune</title>
+  <meta name="description" content="Fluid Fortune Engineering Record — Problems Encountered. Solutions Discovered. Lessons Documented. The complete technical record of the Fluid Fortune project stack.">
+  <link rel="canonical" href="https://fluidfortune.com/engineering-record.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:       #0d1117;
+      --bg2:      #161b22;
+      --bg3:      #1e2530;
+      --fg:       #e6edf3;
+      --fg2:      #8b949e;
+      --fg3:      #484f58;
+      --green:    #00ff41;
+      --green2:   #00c032;
+      --green3:   #1a3a1a;
+      --amber:    #f59e0b;
+      --amber2:   #2e1f0a;
+      --red:      #ef4444;
+      --red2:     #2a0a0a;
+      --border:   #30363d;
+      --font-ui:  'Inter', sans-serif;
+      --font-mono:'Share Tech Mono', monospace;
+      --font-disp:'Orbitron', monospace;
+      --max-w:    860px;
+      --toc-w:    240px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--fg); font-family: var(--font-mono); line-height: 1.75; -webkit-font-smoothing: antialiased; }
+
+    /* ── NAV ── */
+    nav { background: var(--bg2); border-bottom: 1px solid var(--border); padding: .6rem 2rem; display: flex; align-items: center; gap: 1.5rem; position: sticky; top: 0; z-index: 200; }
+    nav a { font-size: .65rem; letter-spacing: .12em; color: var(--fg2); text-decoration: none; transition: color .15s; }
+    nav a:hover { color: var(--green); }
+    nav .brand { color: var(--green); font-family: var(--font-disp); font-size: .7rem; }
+    nav .spacer { flex: 1; }
+
+    /* ── LAYOUT ── */
+    .layout { display: flex; max-width: calc(var(--max-w) + var(--toc-w) + 4rem); margin: 0 auto; padding: 0 1.5rem; gap: 3rem; align-items: flex-start; }
+
+    /* ── TOC ── */
+    .toc { width: var(--toc-w); flex-shrink: 0; position: sticky; top: 52px; padding: 2rem 0; max-height: calc(100vh - 52px); overflow-y: auto; }
+    .toc-title { font-family: var(--font-disp); font-size: .6rem; letter-spacing: .2em; color: var(--green); margin-bottom: 1rem; padding-bottom: .5rem; border-bottom: 1px solid var(--border); }
+    .toc a { display: block; font-size: .62rem; color: var(--fg2); text-decoration: none; padding: .2rem 0; letter-spacing: .04em; transition: color .15s; border-left: 2px solid transparent; padding-left: .5rem; margin-bottom: .1rem; }
+    .toc a:hover { color: var(--green); border-left-color: var(--green); }
+    .toc a.sub { font-size: .58rem; color: var(--fg3); padding-left: 1rem; }
+    .toc a.sub:hover { color: var(--fg2); border-left-color: var(--fg3); }
+    ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: var(--bg); } ::-webkit-scrollbar-thumb { background: var(--border); }
+
+    /* ── CONTENT ── */
+    .content { flex: 1; min-width: 0; padding: 2.5rem 0 6rem; }
+
+    /* ── MASTHEAD ── */
+    .masthead { border-bottom: 2px solid var(--green); padding-bottom: 2rem; margin-bottom: 3rem; }
+    .masthead-eyebrow { font-size: .58rem; letter-spacing: .25em; color: var(--green); margin-bottom: .5rem; }
+    .masthead-title { font-family: var(--font-disp); font-size: clamp(1.4rem, 4vw, 2.2rem); color: var(--green); letter-spacing: .05em; line-height: 1.1; margin-bottom: .5rem; }
+    .masthead-sub { font-size: .82rem; color: var(--fg2); font-style: italic; margin-bottom: 1rem; }
+    .masthead-meta { font-size: .62rem; color: var(--fg3); letter-spacing: .08em; }
+    .masthead-meta a { color: var(--green); text-decoration: none; }
+    .callout-top { border: 1px solid var(--amber); background: var(--amber2); padding: .75rem 1rem; margin-top: 1.5rem; font-size: .75rem; color: var(--amber); letter-spacing: .05em; }
+    .callout-top strong { color: var(--amber); }
+
+    /* ── TYPOGRAPHY ── */
+    p { font-size: .9rem; color: var(--fg2); line-height: 1.85; margin-bottom: 1.1rem; }
+    strong { color: var(--fg); }
+    em { color: var(--fg2); font-style: italic; }
+    code { font-family: var(--font-mono); font-size: .82em; color: var(--green); background: var(--bg3); padding: .1em .3em; border: 1px solid var(--border); }
+    ul { margin: .75rem 0 1rem 1.5rem; }
+    li { font-size: .88rem; color: var(--fg2); line-height: 1.75; margin-bottom: .3rem; }
+    blockquote { border-left: 3px solid var(--green); padding: .75rem 1.25rem; margin: 1.5rem 0; background: var(--bg2); }
+    blockquote p { font-size: .85rem; color: var(--fg2); font-style: italic; margin: 0; }
+
+    /* ── SECTION HEADERS ── */
+    h2.section-major {
+      font-family: var(--font-disp);
+      font-size: 1.1rem;
+      color: var(--green);
+      letter-spacing: .08em;
+      padding: 1rem 1.25rem;
+      background: var(--green3);
+      border-left: 4px solid var(--green);
+      margin: 3rem 0 1.5rem;
+    }
+    h3.section-sub {
+      font-size: .9rem;
+      color: var(--fg);
+      letter-spacing: .06em;
+      margin: 2rem 0 .75rem;
+      padding-bottom: .4rem;
+      border-bottom: 1px solid var(--border);
+    }
+    h3.section-problem {
+      font-size: .88rem;
+      color: var(--amber);
+      letter-spacing: .06em;
+      margin: 2rem 0 .75rem;
+      padding: .5rem .75rem;
+      background: var(--amber2);
+      border-left: 3px solid var(--amber);
+    }
+
+    /* ── SIDEBAR (plain english) ── */
+    .sidebar {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-left: 3px solid #4fc3f7;
+      padding: 1rem 1.25rem;
+      margin: 1.25rem 0;
+    }
+    .sidebar-title {
+      font-size: .7rem;
+      color: #4fc3f7;
+      letter-spacing: .1em;
+      margin-bottom: .5rem;
+      font-weight: 500;
+    }
+    .sidebar p { font-size: .82rem; color: var(--fg2); margin-bottom: .5rem; }
+    .sidebar p:last-child { margin-bottom: 0; }
+
+    /* ── TABLES ── */
+    .er-table { width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem; font-size: .78rem; }
+    .er-table td { border: 1px solid var(--border); padding: .5rem .75rem; color: var(--fg2); vertical-align: top; }
+    .er-table tr:first-child td { background: var(--bg3); color: var(--fg); font-weight: 500; }
+    .er-table tr:nth-child(even) td { background: var(--bg2); }
+
+    /* ── FOOTER ── */
+    footer { border-top: 1px solid var(--border); padding: 2rem; text-align: center; }
+    footer p { font-size: .62rem; color: var(--fg3); letter-spacing: .08em; margin-bottom: .3rem; }
+    footer a { color: var(--green); text-decoration: none; }
+
+    @media(max-width: 900px) {
+      .layout { flex-direction: column; }
+      .toc { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="https://fluidfortune.com" class="brand">FLUID FORTUNE</a>
+  <a href="https://fluidfortune.com">← MAIN SITE</a>
+  <a href="https://fluidfortune.com/sovereignty.html">WHITE PAPER</a>
+  <a href="https://portfolio.fluidfortune.com">PORTFOLIO</a>
+  <div class="spacer"></div>
+  <a href="https://github.com/FluidFortune" target="_blank" rel="noopener">GITHUB</a>
+</nav>
+
+<div class="layout">
+
+  <!-- TABLE OF CONTENTS -->
+  <aside class="toc">
+    <div class="toc-title">// CONTENTS</div>
+    <a href="#intro">Introduction</a>
+    <a href="#section-1">1. Pisces Moon OS</a>
+    <a href="#section-1-3" class="sub">Boot Sequence</a>
+    <a href="#section-1-4" class="sub">SPI Bus Conflict</a>
+    <a href="#section-1-4" class="sub">Memory Exhaustion</a>
+    <a href="#section-1-5" class="sub">Dual-Core Sync</a>
+    <a href="#section-1-6" class="sub">Dense RF Instability</a>
+    <a href="#section-1-7" class="sub">GPS Variation</a>
+    <a href="#section-1-8" class="sub">I2S DMA Ceiling</a>
+    <a href="#section-1-9" class="sub">BSS Overflow</a>
+    <a href="#section-1-10" class="sub">NimBLE Singleton</a>
+    <a href="#section-1-11" class="sub">USB CDC vs HID</a>
+    <a href="#section-1-12" class="sub">Trackball Lockout</a>
+    <a href="#section-1-13" class="sub">Ghost Partition</a>
+    <a href="#section-2">2. Pisces Moon Linux</a>
+    <a href="#section-2-1" class="sub">Contaminated Hardware</a>
+    <a href="#section-2-2" class="sub">Q508 SSH Detection</a>
+    <a href="#section-2-3" class="sub">XFCE Menu</a>
+    <a href="#section-2-4" class="sub">Proto-Trojan Horse</a>
+    <a href="#section-3">3. The Phantom</a>
+    <a href="#section-3-1" class="sub">Memory Problem</a>
+    <a href="#section-3-2" class="sub">Frozen Brain</a>
+    <a href="#section-3-3" class="sub">Sports Data</a>
+    <a href="#section-3-4" class="sub">Tier Zero</a>
+    <a href="#section-4">4. Spadra TIS</a>
+    <a href="#section-5">5. WozBot</a>
+    <a href="#section-6">6. Publishing Stack</a>
+    <a href="#section-7">7. VaporwareOS</a>
+    <a href="#section-8">8. Economic Argument</a>
+    <a href="#section-9">9. What Remains</a>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="content">
+
+    <div class="masthead">
+      <div class="masthead-eyebrow">// FLUID FORTUNE — CONFIDENTIAL ENGINEERING REFERENCE</div>
+      <div class="masthead-title">ENGINEERING RECORD</div>
+      <div class="masthead-sub">Problems Encountered. Solutions Discovered. Lessons Documented.</div>
+      <div class="masthead-meta">Version 1.0 — April 2026 — Eric Becker // <a href="https://fluidfortune.com">FluidFortune.com</a></div>
+      <div class="callout-top">
+        <strong>AVAILABILITY:</strong> This document is available to the DEF CON 34 CFP Review Board (Submission ID: 1349) and enterprise licensing inquiries on request.
+        The six canonical engineering problems from Section 1 are also covered in the public
+        <a href="https://fluidfortune.com/sovereignty.html" style="color:var(--amber)">Sovereignty White Paper →</a>
+      </div>
+    </div>
+
+    <div id="intro">
+<p>Engineering Record</p>
+<p><em>Problems Encountered. Solutions Discovered. Lessons Documented.</em></p>
+<p>Version 1.0 — April 2026</p>
+<p>Eric Becker // FluidFortune.com</p>
+<p>This document is a record of problems encountered, diagnosed, and solved across the Fluid Fortune project stack. It is written for two audiences simultaneously: the technical reader who wants to understand the specific engineering decisions and why they were made, and the non-technical reader who wants to understand what was actually accomplished and why it is significant.</p>
+<p>Where a technical concept requires deep domain knowledge to understand, a plain English sidebar appears immediately following. These sidebars are not simplifications — they are translations. The technical explanation is accurate. The sidebar makes it accessible.</p>
+<p>The projects covered in this document, in the order they are addressed:</p>
+<ul>
+<li>Pisces Moon OS — custom general-purpose operating system for the</li>
+<li>LilyGO T-Deck Plus (ESP32-S3)</li>
+</ul>
+<ul>
+<li>Pisces Moon Linux — the companion tablet platform running Debian</li>
+<li>13 on a Fujitsu Q508</li>
+</ul>
+<ul>
+<li>The Phantom — local AI agent framework running on home hardware</li>
+</ul>
+<ul>
+<li>Spadra Threat Intelligence System — distributed network security</li>
+<li>monitoring</li>
+</ul>
+<ul>
+<li>WozBot — lightweight local AI proof of concept</li>
+</ul>
+<ul>
+<li>Fluid Fortune Publishing Infrastructure — Punky, Static, and the</li>
+<li>zero-server publishing stack</li>
+</ul>
+<ul>
+<li>VaporwareOS — embedded satirical platform and technical critique</li>
+</ul>
+<p>Each section follows the same structure: what the project is, what problems it encountered, what solutions were developed, and what those solutions proved about the technology and the philosophy behind it.</p>
+<blockquote>
+<p>*The problems are not incidental to the story. They are the story.</p>
+<p>Every solution documented here is a discovery — something that did</p>
+<p>not exist in public documentation before this project encountered the</p>
+<p>need and worked out the answer.*</p>
+</blockquote>
+<h2 id="section-1" class="section-major">1. Pisces Moon OS</h2>
+<h3 class="section-sub">The First Known Documented Dual-Core Persistent Background Tasking OS for Field Intelligence on the ESP32-S3</h3>
+<p>The LilyGO T-Deck Plus is a \$50 handheld device with a color screen, a physical QWERTY keyboard, a touchscreen, a trackball, and five wireless radios: WiFi, Bluetooth Low Energy, LoRa long-range radio, and GPS. It runs on the ESP32-S3 microcontroller at 240 megahertz across two processor cores simultaneously.</p>
+<p>Before Pisces Moon OS, every piece of software ever written for this hardware did one thing. A wardriving tool. A mesh radio platform. A game. When you turned on the device, it did its one function and nothing else.</p>
+<p>Pisces Moon OS is a true general-purpose operating system for this hardware — one where you launch different apps, switch between them, and the device's identity is not defined by what is currently running. As of v1.0.0, it ships 47 applications across 7 categories. It was the first known documented dual-core persistent background tasking OS for field intelligence on this hardware class.</p>
+<p>+———————————————————————--+</p>
+<div class="sidebar">
+<div class="sidebar-title">📘 Plain English: What makes this unusual</div>
+<p>Think of the difference between a microwave oven and a smartphone. A</p>
+<p>microwave has one job. A smartphone can run any app. Before Pisces</p>
+<p>Moon OS, every ESP32-S3 device was essentially a microwave. This</p>
+<p>project turned one into a smartphone — on \$50 of hardware, without</p>
+<p>any of the infrastructure that smartphones rely on. That had never</p>
+<p>been done on this class of chip before.</p>
+<p>+———————————————————————--+</p>
+<p>+———————————————————————--+</p>
+<div class="sidebar-title">📘 Plain English: Why the backlight waits</div>
+<p>If you turn the backlight on before the display's video memory is</p>
+<p>initialized, the screen shows white noise — a flash of garbage</p>
+<p>pixels — before the first real frame renders. Holding the backlight</p>
+<p>off means the first thing the user ever sees is the correct image. A</p>
+<p>small detail that separates "real device" from "prototype."</p>
+<p>+———————————————————————--+</p>
+<p>+———————————————————————--+</p>
+<div class="sidebar-title">📘 Plain English: The WiFi cursor bug</div>
+<p>The WiFi SDK internally uses the same SPI hardware as the display.</p>
+<p>When WiFi initializes, it changes SPI state, which corrupts where the</p>
+<p>display thinks it is currently drawing. If you start a line of text,</p>
+<p>call WiFi init, then finish the line, the text lands in the wrong</p>
+<p>place. Fix: always finish the complete display line first, then call</p>
+<p>WiFi. Simple once you know the cause. Invisible and maddening before</p>
+<p>you do.</p>
+<p>+———————————————————————--+</p>
+<p>+———————————————————————--+</p>
+<div class="sidebar-title">📘 Plain English: Why Core 0 waits 15 seconds</div>
+<p>Core 1 is still finishing boot when Core 0 starts. If Core 0</p>
+<p>immediately touches the SD card and WiFi radio, it collides with Core</p>
+<p>1's initialization before the Treaty system is fully in place. The</p>
+<p>15-second delay is a deliberate safety margin: by then, Core 1 has</p>
+<p>finished and the mutex is operational.</p>
+<p>+———————————————————————--+</p>
+<p>+———————————————————————--+</p>
+<div class="sidebar-title">📘 Plain English: What is actually happening while you use the</div>
+<p>device**</p>
+<p>The T-Deck has two independent processors running simultaneously. One</p>
+<p>runs whatever you are looking at on screen. The other one —</p>
+<p>invisibly, silently, always — is scanning for WiFi networks,</p>
+<p>logging Bluetooth devices, and recording GPS coordinates. Playing</p>
+<p>chess, reading a document, doing nothing. The Ghost Engine is always</p>
+<p>running. The device is always watching.</p>
+<p>+———————————————————————--+</p>
+<p>+———————————————————————--+</p>
+<div class="sidebar-title">📘 Plain English: The shared bus problem</div>
+<p>Imagine four people trying to use the same telephone line</p>
+<p>simultaneously. When only one person is on the call, everything</p>
+<p>works. When two people try to talk at once, both conversations are</p>
+<p>destroyed. The SPI bus is that telephone line. The SD card, LoRa</p>
+<p>radio, and display are the people. Without rules about who can talk</p>
+<p>and when, everything crashes. Pisces Moon OS needed to invent those</p>
+<p>rules — they did not exist for this hardware configuration anywhere</p>
+<p>in public documentation.</p>
+<p>+———————————————————————--+</p>
+<p><strong>⚠ THE PROBLEM: SPI Bus Contention</strong></p>
+<p>Multiple hardware components sharing one SPI bus. Any two components</p>
+<p>attempting simultaneous access corrupts both transactions and crashes</p>
+<p>the device. No documented solution existed for this specific hardware</p>
+<p>configuration running a general-purpose OS.</p>
+<p>+———————————————————————--+ +———————————————————————--+</p>
+<p><strong>✓ THE SOLUTION: The SPI Bus Treaty</strong></p>
+<p>A formal architectural agreement governing every component of the OS.</p>
+<p>Four rules: (1) Hit and run — open a file, write, close, release</p>
+<p>immediately. Never hold the bus. (2) No extended holds — no</p>
+<p>encryption during writes, no formatting during operation, nothing</p>
+<p>that monopolizes the bus. (3) Radio traffic management — a shared</p>
+<p>flag (wifi_in_use) tells the wardrive task when WiFi is in use for an</p>
+<p>API call, so it pauses its scan window. (4) Metadata-only destructive</p>
+<p>functions — the security Nuke sequence deletes index files</p>
+<p>(milliseconds) rather than formatting the card (seconds). A FreeRTOS</p>
+<p>mutex (spi_mutex) enforces the Treaty in code: every component</p>
+<p>touching shared hardware must acquire the mutex first and release it</p>
+<p>immediately after.</p>
+<p>+———————————————————————--+ +———————————————————————--+</p>
+<p>+———————————————————————--+</p>
+<div class="sidebar-title">📘 Plain English: The RAM problem</div>
+<p>Imagine you have a small desk (320KB SRAM) and a large filing cabinet</p>
+<p>in the corner (8MB PSRAM). Every time you need to work on something,</p>
+<p>your instinct is to put it on the desk — but the desk fills up fast</p>
+<p>when you're working on seven things at once. The filing cabinet is</p>
+<p>sitting there empty. The fix: tell the computer to automatically put</p>
+<p>large items in the filing cabinet instead of cramming them onto the</p>
+<p>desk.</p>
+<p>+———————————————————————--+</p>
+<p><strong>⚠ THE PROBLEM: SRAM Exhaustion</strong></p>
+<p>All heap allocations defaulted to 320KB internal SRAM. Running</p>
+<p>multiple simultaneous applications, radio stacks, and background</p>
+<p>tasks exhausted available SRAM, causing allocation failures and</p>
+<p>crashes. The 8MB PSRAM chip was present but unused.</p>
+<p>+———————————————————————--+ +———————————————————————--+</p>
+<p><strong>✓ THE SOLUTION: PSRAM Heap Redirect</strong></p>
+<p>A single build flag — CONFIG_SPIRAM_USE_MALLOC=1 — instructs the</p>
+<p>memory management system to automatically route heap allocations</p>
+<p>above a threshold to PSRAM. Applications and libraries require no</p>
+<p>changes. Internal SRAM is now reserved for small, fast, time-critical</p>
+<p>buffers. Everything else goes to PSRAM. This was not a documented</p>
+<p>solution for an ESP32-S3 OS context — no previous firmware was</p>
+<p>complex enough to require it.</p>
+<p>+———————————————————————--+ +———————————————————————--+</p>
+<p>+———————————————————————--+</p>
+<div class="sidebar-title">📘 Plain English: Two cores, one set of hardware</div>
+<p>Think of two workers sharing one set of tools. If both reach for the</p>
+<p>same tool at the same time, you get a conflict. The solution is a</p>
+<p>sign-out system: before using a shared tool, you check it out. When</p>
+<p>done, you check it back in. Anyone else who needs it waits. Pisces</p>
+<p>Moon OS implements this as a software "mutex" — a lock that</p>
+<p>ensures only one core touches shared hardware at a time.</p>
+<p>+———————————————————————--+</p>
+<p><strong>✓ THE SOLUTION: The Dual-Core Architecture with SPI Mutex</strong></p>
+<p>The wardrive task is pinned to Core 0 via xTaskCreatePinnedToCore()</p>
+<p>with a deliberate 15-second startup delay, allowing Core 1 to</p>
+<p>complete boot before Core 0 begins touching shared hardware. The SPI</p>
+<p>mutex (part of the Bus Treaty) coordinates SD card access between</p>
+<p>cores. A parallel wifi_in_use flag coordinates WiFi radio access.</p>
+<p>Neither core needs to know what the other is doing — coordination</p>
+<p>happens through shared state flags, not direct coupling.</p>
+<p>+———————————————————————--+ +———————————————————————--+</p>
+<p>+———————————————————————--+</p>
+<div class="sidebar-title">📘 Plain English: The dense city problem</div>
+<p>Imagine you're taking notes every time someone walks past you. In a</p>
+<p>quiet hallway, this is easy. In a crowded train station, people are</p>
+<p>passing faster than you can write. You run out of notepad space and</p>
+<p>drop everything. The solution: instead of writing everything down</p>
+<p>immediately, hand notes to a queue and process them at a manageable</p>
+<p>pace.</p>
+<p>+———————————————————————--+</p>
+<p><strong>✓ THE SOLUTION: ISR-Safe BLE Queue</strong></p>
+<p>BLE advertisement callbacks now do the minimum possible work: they</p>
+<p>push a small record into a lock-free circular queue and return</p>
+<p>immediately. A separate task on Core 0 drains the queue at a</p>
+<p>controlled pace. The ISR never overflows because it does almost</p>
+<p>nothing. The queue absorbs bursts. Validated in real-world testing:</p>
+<p>40+ WiFi access points and 100+ BLE devices, no crash.</p>
+<p>+———————————————————————--+ +———————————————————————--+</p>
+<p><strong>✓ THE SOLUTION: Auto-Baud GPS Detection</strong></p>
+<p>The GPS initialization routine tries 9600 baud first. If no valid</p>
+<p>NMEA sentences are received within a timeout, it switches to 38400.</p>
+<p>The RX buffer was also increased from the default 128 bytes to 512</p>
+<p>bytes — the default overflows during the 2-4 second WiFi scan</p>
+<p>windows that block the CPU, causing GPS fix acquisition to stall.</p>
+<p>+———————————————————————--+ +———————————————————————--+</p>
+<p>+———————————————————————--+</p>
+<div class="sidebar-title">📘 Plain English: The audio memory problem</div>
+<p>The PSRAM heap redirect from Problem 1.3 was a great solution — but</p>
+<p>it only works for some kinds of memory. The audio system uses a</p>
+<p>different kind of memory allocation that bypasses the redirect</p>
+<p>entirely and always takes from the small desk (SRAM). With the desk</p>
+<p>already crowded, there was no room for audio. The fix: make the audio</p>
+<p>system ask for less desk space.</p>
+<p>+———————————————————————--+</p>
+<p><strong>✓ THE SOLUTION: I2S DMA Budget Rule</strong></p>
+<p>DMA buffers capped at 4 buffers × 512 bytes = 4KB (down from 16KB).</p>
+<p>Read buffers moved to ps_malloc() — PSRAM-allocated on launch,</p>
+<p>freed on exit. Warmup buffers reduced from 8KB stack allocations to</p>
+<p>512-byte stack arrays. This constraint is now documented as a hard</p>
+<p>rule for all future I2S users in the OS.</p>
+<p>+———————————————————————--+ +———————————————————————--+</p>
+<p>+———————————————————————--+</p>
+<div class="sidebar-title">📘 Plain English: The static global problem</div>
+<p>Imagine every app leaving its furniture in the hallway even when the</p>
+<p>app is closed. The hallway fills up. The PSRAM redirect was supposed</p>
+<p>to send large items to the storage room — but it only works for</p>
+<p>items you specifically request storage for. If you declare something</p>
+<p>as always-available-in-the-hallway, it stays in the hallway. The fix:</p>
+<p>stop leaving furniture in the hallway. Bring it out when the app</p>
+<p>opens, put it away when it closes.</p>
+<p>+———————————————————————--+</p>
+<p><strong>⚠ THE PROBLEM: BSS Overflow — 70,120 Bytes</strong></p>
+<p>Static global arrays across 8 new apps loaded permanently into</p>
+<p>internal SRAM at boot: RF spectrum waterfall buffer (105KB), probe</p>
+<p>device arrays (27KB), packet analysis structures (9KB), and others.</p>
+<p>Total BSS pressure exceeded available SRAM by 70KB.</p>
+<p>+———————————————————————--+ +———————————————————————--+</p>
+<p><strong>✓ THE SOLUTION: PSRAM Dynamic Allocation Pattern</strong></p>
+<p>All large data structures converted from static globals to</p>
+<p>ps_malloc() allocated on app launch and freed on exit. The RF</p>
+<p>waterfall buffer (105KB) alone moved to PSRAM. Total moved from BSS</p>
+<p>to PSRAM: \~137KB, resolving the 70KB deficit with margin. This</p>
+<p>pattern is now documented as the required approach for any large</p>
+<p>buffer in the OS — no large arrays in global scope.</p>
+<p>+———————————————————————--+ +———————————————————————--+</p>
+<p><strong>✓ THE SOLUTION: NimBLE Ownership Protocol</strong></p>
+<p>wardrive.cpp owns NimBLE permanently for the lifetime of the session.</p>
+<p>Any app requiring BLE access calls wardrive_ble_stop() before using</p>
+<p>the scan object — which halts the active scan and clears callbacks</p>
+<p>cleanly — and wardrive_ble_resume() when finished. The app in the</p>
+<p>middle has exclusive, clean access. No app may call</p>
+<p>NimBLEDevice::init() or deinit() under any circumstances.</p>
+<p>+———————————————————————--+ +———————————————————————--+</p>
+<p>+———————————————————————--+</p>
+<div class="sidebar-title">📘 Plain English: The USB identity problem</div>
+<p>A USB device tells the computer what it is when it plugs in. It can</p>
+<p>say "I'm a serial port" or "I'm a keyboard" — but not both at</p>
+<p>once. The T-Deck needs to be a serial port for development work. For</p>
+<p>keyboard injection testing, it needs to be a keyboard. These are</p>
+<p>physically the same socket but logically incompatible identities.</p>
+<p>+———————————————————————--+</p>
+<p><strong>✓ THE SOLUTION: Dual Build System</strong></p>
+<p>Two separate build environments in platformio.ini. The standard build</p>
+<p>(esp32s3) uses CDC serial mode — full development capability,</p>
+<p>PlatformIO flashing, stable GPIO1. The HID build (esp32s3_hid) uses</p>
+<p>USB HID mode — keyboard injection, no serial console. The USB Ducky</p>
+<p>app detects which build is running and displays appropriate UI for</p>
+<p>each case. BLE Ducky provides keyboard injection in the standard</p>
+<p>build without any reflashing required.</p>
+<p>+———————————————————————--+ +———————————————————————--+</p>
+<p><strong>✓ THE SOLUTION: Split Trackball API</strong></p>
+<p>update_trackball() retains the 250ms lockout for all UI navigation</p>
+<p>— unchanged. A new update_trackball_game() provides an 80ms lockout</p>
+<p>for game loops. All existing UI code is unaffected. All game loops</p>
+<p>call the game variant. Future games must use update_trackball_game().</p>
+<p>+———————————————————————--+ +———————————————————————--+</p>
+<p>+———————————————————————--+</p>
+<div class="sidebar-title">📘 Plain English: What the Ghost Partition does</div>
+<p>Imagine a briefcase with a hidden compartment. The visible section</p>
+<p>has innocent contents — maps, a calculator, some notes. The hidden</p>
+<p>section requires two separate keys to open. If you enter the wrong</p>
+<p>combination, the briefcase shows you the innocent section anyway,</p>
+<p>with no indication that a hidden section exists. If you need to</p>
+<p>destroy the hidden contents quickly, one code wipes the filing system</p>
+<p>— leaving the data physically present but permanently unreachable</p>
+<p>through normal means. This is the Ghost Partition.</p>
+<p>+———————————————————————--+</p>
+<p><strong>✓ THE SOLUTION: Fresh Minimal Install Protocol</strong></p>
+<p>Decision: wipe and reinstall from scratch with Debian 13 minimal XFCE</p>
+<p>— only XFCE checked during installation, no LibreOffice, no extras,</p>
+<p>nothing. A minimal install has no mystery leftovers. If something</p>
+<p>breaks, it is attributable to the current install script, not to</p>
+<p>historical contamination. This is now the documented baseline for the</p>
+<p>Pisces Moon Linux install.</p>
+<p>+———————————————————————--+ +———————————————————————--+</p>
+<p><strong>✓ THE SOLUTION: Direct Question Over Silent Detection</strong></p>
+<p>When no \$DISPLAY is set, the installer asks directly: "Is this a</p>
+<p>Fujitsu Q508?" The user types yes or no. No clever detection</p>
+<p>required. Simple input beats clever inference when the clever</p>
+<p>inference fails on the most common use case.</p>
+<p>+———————————————————————--+ +———————————————————————--+</p>
+<p><strong>✓ THE SOLUTION: Correct Menu Registration Path</strong></p>
+<p>Menu file moved to</p>
+<p>/etc/xdg/menus/applications-merged/pisces-moon.menu.</p>
+<p>update-desktop-database run after installation. App launch method</p>
+<p>changed from xdg-open (which requires a browser to be configured) to</p>
+<p>chromium \--app= (which opens each HTML app as a standalone</p>
+<p>borderless window — a functional proto-Trojan Horse wrapper).</p>
+<p>+———————————————————————--+ +———————————————————————--+</p>
+<p>+———————————————————————--+</p>
+<div class="sidebar-title">📘 Plain English: What The Phantom does</div>
+<p>When you ask a local AI "what was the Dodgers score last night?",</p>
+<p>the model has no idea — it was trained months ago and cannot access</p>
+<p>the internet. The Phantom solves this by checking the score BEFORE</p>
+<p>asking the model. It finds the answer, writes it into the question,</p>
+<p>and hands the model a message that says "given that the Dodgers won</p>
+<p>4-2, tell me about the game." The model looks like it knows. The</p>
+<p>Phantom actually knew.</p>
+<p>+———————————————————————--+</p>
+<p><strong>⚠ THE PROBLEM: Local AI Has No Memory</strong></p>
+<p>Each conversation session starts completely fresh. Context</p>
+<p>established in previous sessions is lost. The model cannot recall</p>
+<p>corrections, preferences, or ongoing projects. This makes local AI</p>
+<p>feel significantly less capable than cloud alternatives, regardless</p>
+<p>of actual model quality.</p>
+<p>+———————————————————————--+ +———————————————————————--+</p>
+<p><strong>✓ THE SOLUTION: ChromaDB Vector Memory</strong></p>
+<p>ChromaDB runs entirely locally — no cloud, no API key. After every</p>
+<p>conversation turn, each message is converted to a mathematical vector</p>
+<p>representing its meaning and stored. Before every turn, the system</p>
+<p>retrieves the five most semantically similar past exchanges — not</p>
+<p>by keyword search but by meaning. "How has Miguel Rojas been</p>
+<p>performing?" retrieves conversations about Dodgers players even if</p>
+<p>they used different words. Combined with automatic conversation</p>
+<p>distillation (after 60 turns, older exchanges are summarized into a</p>
+<p>compact memory snapshot), The Phantom maintains genuine continuity</p>
+<p>across sessions.</p>
+<p>+———————————————————————--+ +———————————————————————--+</p>
+<p>+———————————————————————--+</p>
+<div class="sidebar-title">📘 Plain English: How vector memory works</div>
+<p>Keyword search asks "does this document contain the word</p>
+<p>'baseball'?" Vector search asks "is this document about the same</p>
+<p>subject as the question I'm asking?" It finds related content even</p>
+<p>when the words are completely different. This is how human memory</p>
+<p>actually works — you remember things by association, not by exact</p>
+<p>word match. ChromaDB gives a local AI something close to that.</p>
+<p>+———————————————————————--+</p>
+<p><strong>✓ THE SOLUTION: Two-Stage Web Intelligence</strong></p>
+<p>Before every conversation turn, two detection stages run. First: a</p>
+<p>keyword check for trigger phrases ("search", "score", "who is",</p>
+<p>"latest"). If keywords are present, web search runs. Second: if</p>
+<p>keywords miss, the model itself is asked in a single 5-token query</p>
+<p>whether it needs web access for this question. This catches queries</p>
+<p>that keyword matching would miss — "How has Miguel Rojas performed</p>
+<p>this season?" contains no trigger keyword but the model correctly</p>
+<p>identifies that it needs current data. Web results are scraped in</p>
+<p>full (not just snippet summaries), with a paywall bypass cascade</p>
+<p>using 12ft.io.</p>
+<p>+———————————————————————--+ +———————————————————————--+</p>
+<p><strong>✓ THE SOLUTION: MLB Stats API Integration</strong></p>
+<p>The Phantom integrates directly with the official MLB Stats API —</p>
+<p>free, no key required — for real-time scores, full season</p>
+<p>statistics, and player biographical data. Every player lookup</p>
+<p>auto-writes to phantom_databases/mlb_players.json in a format</p>
+<p>compatible with Pisces Moon apps on the tablet and T-Deck. The</p>
+<p>database export function minifies JSON for device transfer. The</p>
+<p>distinction between at-bats and plate appearances is correctly</p>
+<p>maintained.</p>
+<p>+———————————————————————--+ +———————————————————————--+</p>
+<p><strong>✓ THE SOLUTION: The Log Aggregator</strong></p>
+<p>A single aggregation service pulls from all nodes on a schedule,</p>
+<p>merges events into one chronological timeline, and runs correlation</p>
+<p>checks automatically. The question "did the IP that hit our cloud VM</p>
+<p>at 5:38 AM also appear in local network traffic?" was unanswerable</p>
+<p>before the Aggregator. Now it is answered automatically every 30</p>
+<p>minutes without human intervention.</p>
+<p>+———————————————————————--+ +———————————————————————--+</p>
+<p>+———————————————————————--+</p>
+<div class="sidebar-title">📘 Plain English: Why WozBot exists</div>
+<p>Nobody shares a productivity assistant with their friends. But a</p>
+<p>boisterous AI that tells terrible 1970s hardware puns and recounts</p>
+<p>Apple Computer history from the inside? That gets posted on Reddit.</p>
+<p>When someone finds the GitHub repo, they find Fluid Fortune, and they</p>
+<p>find The Phantom, and they think: hm. The joke bot is the Trojan</p>
+<p>Horse. The Phantom is what's inside.</p>
+<p>+———————————————————————--+</p>
+<p><strong>✓ THE SOLUTION: The Minimal Proof of Concept</strong></p>
+<p>WozBot demonstrates the core architecture — local model + system</p>
+<p>prompt + web interface + server — in a form anyone can experience</p>
+<p>without technical knowledge. It is live at wozbot.fluidfortune.com,</p>
+<p>running on bare metal in the Fluid Fortune private perimeter,</p>
+<p>tunneled to the public internet via Cloudflare. No cloud compute. No</p>
+<p>corporate data center. No ongoing cost beyond electricity. The joke</p>
+<p>is the point. The architecture behind the joke is also the point.</p>
+<p>+———————————————————————--+ +———————————————————————--+</p>
+<p>+———————————————————————--+</p>
+<div class="sidebar-title">📘 Plain English: The WordPress problem</div>
+<p>WordPress is bloat. Not a little bloat — architectural bloat. A</p>
+<p>blog post is a text file. WordPress requires a database server, a PHP</p>
+<p>runtime, a web server, a plugin ecosystem with its own security</p>
+<p>vulnerabilities, and a hosting provider. Punky replaces the entire</p>
+<p>stack with one HTML file and a GitHub account. The blog that results</p>
+<p>is faster, cheaper (free), more durable, and owned completely by the</p>
+<p>person who wrote the posts.</p>
+<p>+———————————————————————--+</p>
+<p><strong>✓ THE SOLUTION: Punky — GitHub as the Server</strong></p>
+<p>Punky is a single HTML file. Open it in Chrome. Write a post using a</p>
+<p>rich text editor. Click publish. Punky calls the GitHub API directly</p>
+<p>from your browser, creates the post file in your repository, updates</p>
+<p>the JSON manifest, regenerates the RSS feed and sitemap. Your GitHub</p>
+<p>token stays in your browser. Your posts go to your repository. The</p>
+<p>cost of running a blog on Punky: \$0/month.</p>
+<p>+———————————————————————--+ +———————————————————————--+</p>
+<p><strong>✓ THE SOLUTION: Static — Archive.org as the Host</strong></p>
+<p>Static is Punky's sibling, built for audio. Audio files go to</p>
+<p>archive.org — the Internet Archive, a non-profit digital library</p>
+<p>that has been preserving the web since 1996 and has no business model</p>
+<p>that requires monetizing your audience. Episode pages and RSS feeds</p>
+<p>are generated by Static and served by GitHub Pages. The shows cannot</p>
+<p>be deplatformed by a hosting company changing its terms. Total cost:</p>
+<p>\$0/month.</p>
+<p>+———————————————————————--+ +———————————————————————--+</p>
+<p>+———————————————————————--+</p>
+<div class="sidebar-title">📘 Plain English: Why build a satirical embedded OS</div>
+<p>The most credible criticism of the technology industry comes from</p>
+<p>inside it. A developer who has shipped production code earns the</p>
+<p>right to criticize production code. VaporwareOS is built with</p>
+<p>professional-grade embedded engineering — PSRAM framebuffers, BLE</p>
+<p>HID, passive RF monitoring — so the critique cannot be dismissed as</p>
+<p>the work of someone who does not understand the engineering. The joke</p>
+<p>is built from the same materials as the thing it is joking about.</p>
+<p>That is what makes it land.</p>
+<p>+———————————————————————--+</p>
+<p>+———————————————————————--+</p>
+<div class="sidebar-title">📘 Plain English: Why the irony is the point</div>
+<p>The firmware that mocks progress bars that lie has its own serial</p>
+<p>monitor reporting "init complete" while the display shows nothing.</p>
+<p>This is not a failure. It is the most honest thing VaporwareOS does.</p>
+<p>The court jester is lying on the floor of the throne room. The bit</p>
+<p>landed anyway. When the screen eventually works, the first image will</p>
+<p>be VAPOR OS, then EVERYTHING, then a subtitle: "Alpha Version:</p>
+<p>Whatever Your Mind Believes It To Be." This is the most honest thing</p>
+<p>the device will ever say.</p>
+<p>+———————————————————————--+</p>
+</div>
+    </div>
+
+  </main>
+</div>
+
+<footer>
+  <p>FLUID FORTUNE — LOCAL INTELLIGENCE — APRIL 2026</p>
+  <p><a href="https://fluidfortune.com">fluidfortune.com</a> // <a href="mailto:forge@fluidfortune.com">forge@fluidfortune.com</a> // <a href="https://github.com/FluidFortune">github.com/FluidFortune</a></p>
+  <p>The Ghost Engine never stops. The SPI Bus Treaty is why.</p>
+</footer>
+
+</body>
+</html>
