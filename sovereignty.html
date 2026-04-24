@@ -472,6 +472,57 @@
     <p style="font-family:var(--font-mono);font-size:.6rem;color:var(--text-muted);letter-spacing:.1em;">TECH, LIES AND VIDEOTAPE — FLUID FORTUNE MEDIA — <a href="https://www.youtube.com/@FluidFortune" style="color:var(--green-dim)">YOUTUBE CHANNEL →</a></p>
   </div>
 
+  <!-- EDGE DEVICE ARGUMENT -->
+  <div class="section">
+    <div class="section-num">VIII</div>
+    <h2 class="section-title">THE EDGE DEVICE ARGUMENT</h2>
+
+    <p>The field intelligence use case is the demonstration. The architectural contribution is the argument. They are not the same thing.</p>
+
+    <p>The embedded systems industry has operated under a consistent assumption for decades: as compute requirements grow, you upgrade the hardware. Faster processor. More RAM. More storage. Semiconductor tariffs, persistent supply chain disruption, and the rising cost of enterprise hardware refresh cycles are stress-testing that assumption in ways nobody anticipated. The question being asked in procurement offices and engineering teams across the defense, industrial, and enterprise sectors is increasingly: <em>what more can we extract from hardware we have already purchased?</em></p>
+
+    <p>Pisces Moon OS is one answer to that question. The SPI Bus Treaty and the Ghost Engine architecture demonstrate that the capability ceiling on ESP32-S3 class hardware was never a hardware constraint. It was a software paradigm. Single-function firmware was a cultural assumption. The hardware was always capable of significantly more.</p>
+
+    <div class="callout">
+      <div class="callout-label">THE COMPLETE STACK — HOW IT ALL WORKS TOGETHER</div>
+
+      <p><strong>Layer 1 — The ESP32-S3 as Radio Intelligence Node ($50)</strong><br>
+      The T-Deck Plus running Pisces Moon OS is not a field device. It is an edge compute node. WiFi in monitor mode, Bluetooth LE scanner, LoRa long-range mesh radio without cell infrastructure, GPS with satellite lock — all running simultaneously on Core 0 via the Ghost Engine while Core 1 serves the operator. Radio capabilities that dedicated enterprise edge hardware often lacks at any price point.</p>
+
+      <p><strong>Layer 2 — The Linux Distribution as Compute Layer (Existing Hardware)</strong><br>
+      Pisces Moon Linux on a $50-100 obsolete x86 or ARM tablet connects to the T-Deck Plus over USB. The tablet — hardware already purchased, already depreciated, already written off — gains all the radio capabilities it physically lacks: LoRa, GPS, passive WiFi scanning. The T-Deck becomes a dedicated radio coprocessor. The tablet becomes the compute and analysis layer. Together they constitute a complete edge intelligence platform at a total cost of $144-250.</p>
+
+      <p><strong>Layer 3 — Trojan Horse as the Portable Application Layer (Any OS)</strong><br>
+      The applications that run in Pisces Moon Linux run in any Trojan Horse installation on any operating system — macOS, Windows, standard Debian, Ubuntu, current or obsolete hardware. The serial bridge delivers radio data from the T-Deck Plus to any Trojan Horse application regardless of what OS it runs on. The portability is not theoretical. The same HTML/JS application runs natively on every platform through Trojan Horse's ~500-line native wrapper per platform. No Electron. No Node.js. No cloud dependency.</p>
+
+      <p><strong>Layer 4 — The Browser as the Universal Fallback (Zero Installation)</strong><br>
+      The web-based tools — Spadra Smelter, the Threat Model Visualizer, the wardrive analysis pipeline — run in any modern browser on any OS. No installation. No Trojan Horse required. The T-Deck Plus pushes data via USB serial and any application that can read a file can consume it. The stack degrades gracefully to zero installation requirement.</p>
+
+      <p><strong>Layer 5 — The Phantom as the Intelligence Layer (Local Network)</strong><br>
+      The Phantom's FastAPI endpoint is accessible to any device on the local network. Wardrive data from the Ghost Engine feeds directly into The Phantom's analysis pipeline. The local AI agent — running on a MicroPC the size of a paperback book, no cloud required — provides semantic analysis, pattern recognition, and structured intelligence output to any device that can make an HTTP request. The intelligence layer is as portable as the application layer.</p>
+    </div>
+
+    <h3 class="subsection-title">THE ECONOMIC ARGUMENT</h3>
+
+    <p>The comparable enterprise capability — a ruggedized edge device with integrated radio (WiFi, BLE, LoRa, GPS), a companion compute platform, native application deployment infrastructure, a local AI inference layer, and engineering time to solve the documented architectural problems from scratch — costs between $5,000 and $50,000 per deployment depending on tier, vendor, and support contract.</p>
+
+    <p>The Fluid Fortune stack costs $144-250 in hardware. The software is AGPL-3.0 with commercial licensing available. The engineering problems are solved and documented. The prior art is timestamped. The code is public.</p>
+
+    <p>That gap is not a cost argument. It is proof that the Friction Economy — the systematic inflation of complexity and cost around capabilities that do not require that complexity or cost — is optional. The stack works. The hardware is available. The software is free to use, modify, and deploy under the terms of the license.</p>
+
+    <h3 class="subsection-title">THE ARCHITECTURAL CONTRIBUTION</h3>
+
+    <p>The SPI Bus Treaty and Ghost Engine architecture are not ESP32-S3 specific in their implications. They define a pattern that applies to any microcontroller class with multiple cores and shared peripherals: persistent dual-core background tasking with formal shared-bus arbitration as a named behavioral standard.</p>
+
+    <p>As RAM and storage prices remain elevated and organizations look to extend the useful life of existing embedded hardware, this pattern becomes directly applicable to the question of how to extract more concurrent capability from hardware already in the field. The six engineering problems documented in this paper — and the solutions — are now reference material. Any developer encountering shared-bus conflict, PSRAM heap exhaustion, dual-core synchronization failure, dense RF environment instability, security architecture constraints under hardware timing limits, or undocumented hardware batch variation on this hardware class now has a documented starting point.</p>
+
+    <p>Pisces Moon OS proves the pattern works on $50 hardware. Trojan Horse makes the software layer portable to everything above it. The Phantom makes the intelligence layer portable to any device on the network. Pisces Moon Linux makes obsolete x86 and ARM hardware productive again. None of it requires new hardware. None of it requires a cloud account. None of it can be deplatformed, repriced, or disabled by a vendor changing their terms of service.</p>
+
+    <p>The hardware is already out there. The software is now documented. The architecture is proven. The question is whether the industry is willing to ask its existing hardware the right questions.</p>
+
+    <p>Pisces Moon OS asked. Core 0 answered.</p>
+  </div>
+
   <!-- CLOSING -->
   <div class="closing">
     <p><strong>PISCES MOON OS</strong> — v0.9.9 "ELF On A Shelf" — April 16, 2026</p>
