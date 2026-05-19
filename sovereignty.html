@@ -192,7 +192,80 @@
       .market-grid{grid-template-columns:1fr}
       .hero h1{font-size:1.4rem}
     }
-  </style>
+  
+    /* ── DOCUMENT TABLE OF CONTENTS ──────────────────────── */
+    .doc-toc{
+      max-width:var(--max-w);
+      margin:3rem auto;
+      padding:1.5rem 2rem;
+      background:rgba(0,0,0,.4);
+      border:1px solid var(--border);
+      border-left:3px solid var(--green);
+    }
+    .doc-toc-label{
+      font-family:var(--font-mono);
+      font-size:.62rem;
+      letter-spacing:.22em;
+      color:var(--text-muted);
+      text-transform:uppercase;
+      margin-bottom:1rem;
+    }
+    .doc-toc-list{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+      gap:.5rem 1.5rem;
+      list-style:none;
+      padding:0;
+      margin:0;
+    }
+    .doc-toc-list a{
+      font-family:var(--font-mono);
+      font-size:.72rem;
+      color:var(--green-dim);
+      text-decoration:none;
+      padding:.3rem 0;
+      display:block;
+      transition:.15s;
+    }
+    .doc-toc-list a:hover{
+      color:var(--green);
+      padding-left:.4rem;
+    }
+    .doc-toc-list .toc-num{
+      color:var(--text-muted);
+      margin-right:.6rem;
+      font-size:.65rem;
+    }
+    .doc-jump-link{
+      max-width:var(--max-w);
+      margin:2rem auto 3rem;
+      padding:1.25rem 1.5rem;
+      background:rgba(0,255,65,.04);
+      border:1px solid var(--green-mute);
+      border-left:3px solid var(--green);
+      text-align:center;
+    }
+    .doc-jump-link a{
+      font-family:var(--font-mono);
+      font-size:.7rem;
+      letter-spacing:.12em;
+      color:var(--green);
+      text-decoration:none;
+      padding:.5rem 1.2rem;
+      border:1px solid var(--green);
+      display:inline-block;
+    }
+    .doc-jump-link a:hover{background:var(--green);color:#000}
+    .doc-jump-link p{
+      font-family:var(--font-mono);
+      font-size:.62rem;
+      color:var(--text-dim);
+      margin-bottom:.85rem;
+      letter-spacing:.05em;
+    }
+    .section[id]{scroll-margin-top:2rem}
+
+</style>
 </head>
 <body>
 
@@ -317,20 +390,27 @@
     <p style="font-family:var(--font-mono);font-size:.7rem;color:#3a5a8a;letter-spacing:.05em;border-top:1px solid var(--border);padding-top:1rem;margin-top:1.5rem">The SPI Bus Treaty is the technical foundation that makes the standalone claim real. Architecture built on it does not crash under load. Sovereignty built on it does not fail in the field.</p>
   </div>
 
-<div class="app-panel" id="sovereignty-app">
-  <div class="app-panel-nav">
-    <button class="app-tab-btn" data-apptab="thesis">THE THESIS</button>
-    <button class="app-tab-btn" data-apptab="architecture">ARCHITECTURE</button>
-    <button class="app-tab-btn" data-apptab="engineering">ENGINEERING</button>
-    <button class="app-tab-btn" data-apptab="platform">PLATFORM</button>
-    <button class="app-tab-btn" data-apptab="device">DEVICE COMPARISON</button>
-    <button class="app-tab-btn" data-apptab="treaty">SPI BUS TREATY</button>
+  <div class="doc-toc">
+    <div class="doc-toc-label">▸ TABLE OF CONTENTS ◂</div>
+    <ul class="doc-toc-list">
+      <li><a href="#thesis"><span class="toc-num">I.</span>The Thesis</a></li>
+      <li><a href="#assumptions"><span class="toc-num">II.</span>Five Assumptions Disproved</a></li>
+      <li><a href="#architecture"><span class="toc-num">III.</span>The Platform Architecture</a></li>
+      <li><a href="#engineering"><span class="toc-num">IV.</span>Ten Engineering Problems</a></li>
+      <li><a href="#bridge"><span class="toc-num">IV.5</span>pm_bridge.py Daemon</a></li>
+      <li><a href="#markets"><span class="toc-num">V.</span>Two Markets, One Platform</a></li>
+      <li><a href="#philosophy"><span class="toc-num">VI.</span>The Philosophy: Sovereignty</a></li>
+      <li><a href="#lies"><span class="toc-num">VII.</span>Six Lies Your MCU Told You</a></li>
+      <li><a href="#edge"><span class="toc-num">VIII.</span>The Edge Device Argument</a></li>
+      <li><a href="#demo"><span class="toc-num">IX.</span>Live Demonstration Plan</a></li>
+      <li><a href="device-architecture.html"><span class="toc-num">↗</span>Device Architecture Reference</a></li>
+      <li><a href="spi-bus-treaty.html"><span class="toc-num">↗</span>SPI Bus Treaty Whitepaper</a></li>
+    </ul>
   </div>
-  <div class="app-panel-body">
 
-    <div id="apptab-thesis" class="app-tab-panel">
+
 <!-- I. THE THESIS -->
-  <div class="section">
+  <div class="section" id="thesis">
     <div class="section-num">I</div>
     <h2 class="section-title">THE THESIS: MARCHING FORWARD BY GOING BACKWARD</h2>
 
@@ -348,7 +428,7 @@
   </div>
 
   <!-- II. FIVE SYSTEMS -->
-  <div class="section">
+  <div class="section" id="assumptions">
     <div class="section-num">II</div>
     <h2 class="section-title">FIVE ASSUMPTIONS BEING DISPROVED</h2>
 
@@ -394,7 +474,7 @@
   </div>
 
   <!-- III. PLATFORM ARCHITECTURE -->
-  <div class="section">
+  <div class="section" id="architecture">
     <div class="section-num">III</div>
     <h2 class="section-title">THE PLATFORM ARCHITECTURE</h2>
 
@@ -406,7 +486,8 @@
       <div class="callout-label" style="background:#1f4788;color:#fff">
     </div>
 
-    <div id="apptab-architecture" class="app-tab-panel">
+    <div
+
 TIER 1 — NATIVE FIRMWARE (ESP32 FAMILY)</div>
       <p>C/C++, FreeRTOS, direct hardware access. Approximately 50 applications compiled into the firmware binary. The Ghost Engine, the SPI Bus Treaty, the Ghost Partition, the ELF module runtime, the UART peripheral map — all live at this tier. This is where the inventions are implemented. The application layer here is the operating system itself: tasks pinned to specific cores, mutexes governing shared hardware, real-time constraints enforced at the compiler level. Targets: T-Deck Plus (ESP32-S3), M5Stack Cardputer (ESP32-S3), ESP32-P4 (ELECROW CrowPanel 7").</p>
     </div>
@@ -424,7 +505,7 @@ TIER 1 — NATIVE FIRMWARE (ESP32 FAMILY)</div>
     <p>Unix said: everything is a file. Pisces Moon says: everything is a website — at the Tier 2 layer. The Tier 1 layer says something different: everything is a task, every task has a core, every core has a contract. Both are true. They serve different hardware and different purposes. pm_bridge.py is why they can work together.</p>
 
     <div class="callout">
-      <div class="callout-label">TARGET 1A — T-DECK PLUS ($50) — TIER 1 — FIELD INTELLIGENCE DEVICE</div>
+      <div class="callout-label">TARGET 1 — T-DECK PLUS ($50) — TIER 1 — FIELD INTELLIGENCE DEVICE</div>
       <p>The LilyGO T-Deck Plus — ESP32-S3 at 240MHz, 8MB PSRAM, QWERTY keyboard, LoRa radio, GPS, WiFi, Bluetooth LE, I2S audio, MicroSD storage. Retail price: $50. Running Pisces Moon OS v1.2.0 "Multi-Device." 49 native applications. <strong>The Ghost Engine</strong> runs on Core 0 continuously — wardriving, BLE scanning, GPS logging — always, regardless of what the operator is doing on Core 1. <strong>The SPI Bus Treaty</strong> is the architectural standard that makes the Ghost Engine possible: the first known documented formal behavioral protocol for shared-bus arbitration on the ESP32-S3. 52+ native C/C++ applications, ELF module runtime for SD card app deployment without reflashing, Ghost Partition security with sector-overwrite Nuke (defeats software recovery; chip-off NAND caveat documented). Connects to Tier 2 hosts via pm_bridge.py over USB Serial at 921600 baud.</p>
     </div>
 
@@ -447,7 +528,12 @@ TIER 1 — NATIVE FIRMWARE (ESP32 FAMILY)</div>
     </div>
 
     <div class="callout">
-      <div class="callout-label">TARGET 2 — LINUX ON OBSOLETE x86/ARM (FREE) — TIER 2 — ANALYSIS WORKSTATION</div>
+      <div class="callout-label">TARGET 2 — T-LORA PAGER ($45) — TIER 1 — FIELD INTELLIGENCE DEVICE (PORTED)</div>
+      <p>The LilyGO T-LoRa Pager — ESP32-S3 at 240MHz, 8MB PSRAM, QWERTY keyboard, LoRa radio, GPS, WiFi, Bluetooth LE, MicroSD storage. The second LilyGO device to run Pisces Moon OS. 52 native applications. The Ghost Engine and SPI Bus Treaty operate identically to the T-Deck Plus implementation. The port surfaced four engineering problems that did not exist on the T-Deck: GPIO 21 dual-function conflict (Problem 7), SPI bus state corruption requiring deferred SD mount (Problem 8), Ghost Engine silent failure under deferred mount conditions (Problem 9), and platform variant header path requirements. The successful port validates the platform thesis: the same OS, the same Treaty, the same Ghost Engine architecture, deployed across two physically different devices in the same product family. <strong>The treaty doesn't change. The hardware around the treaty does.</strong></p>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">TARGET 3 — LINUX ON OBSOLETE x86/ARM (FREE) — TIER 2 — ANALYSIS WORKSTATION</div>
       <p>Pisces Moon Linux targets x86 and ARM hardware the industry has declared obsolete: Intel Atom tablets, Core i5 laptops from 2012–2016, ARM single-board computers. Primary target: Fujitsu Stylistic Q508, available on the secondary market for $50–100. Delivers a complete security analysis workstation — 77 HTML applications across 11 categories — running in Chromium with no chrome, no installation beyond a browser, no build toolchain. pm_bridge.py runs as the host intelligence daemon, unifying T-Deck radio data with the host machine's own WiFi and BLE radios. WiGLE 1.4 compatible wardrive output. .pmsession portable field bundles.</p>
       <p>The enterprise pitch is exact: Pisces Moon Linux turns hardware you have already purchased, already depreciated, and already written off into a functional security analysis workstation. Your sunk cost is paid. The software is free. Your hardware refresh cycle just extended by five years.</p>
       <p>The dominant alternative for cross-platform desktop apps is Electron, which ships a full Chromium browser and Node.js runtime with every application:</p>
@@ -471,22 +557,22 @@ TIER 1 — NATIVE FIRMWARE (ESP32 FAMILY)</div>
     </div>
 
     <div class="callout">
-      <div class="callout-label">TARGET 3 — ANDROID APK — TIER 2 — MOBILE OPERATIONS LAYER</div>
+      <div class="callout-label">TARGET 4 — ANDROID APK — TIER 2 — MOBILE OPERATIONS LAYER</div>
       <p>The 77-application HTML suite wrapped as a native Android APK. Thin wrapper: Chromium rendering, local file access, no telemetry, no analytics, no cookies. All HTTPS endpoints explicitly declared in the network security config. The wardrive runs as a background service — Android handles concurrent processes natively without requiring a treaty. Swipe out of Pisces Moon; the phone looks like a phone. The operator brings the device they already carry. Pairs with a T-Deck or T-Beam via Web Bluetooth or USB-OTG for richer radio data.</p>
     </div>
 
     <div class="callout">
-      <div class="callout-label">TARGET 4 — LUCKFOX PICO 86 PANEL (RV1106 / BUILDROOT) — TIER 2 — EMBEDDED PANEL</div>
+      <div class="callout-label">TARGET 5 — LUCKFOX PICO 86 PANEL (RV1106 / BUILDROOT) — TIER 2 — EMBEDDED PANEL</div>
       <p>The Luckfox Pico 86 Panel is an RV1106-based embedded Linux device running a Buildroot environment with LVGL. Pisces Moon deploys to it via a dedicated serial daemon and LVGL application layer. A $30–50 embedded panel running the same sovereign stack as the $350 field device. The application layer adapts to the form factor. The sovereignty principle does not.</p>
     </div>
 
     <div class="callout">
-      <div class="callout-label">TARGET 5 — M5STACK CARDPUTER ADV (ESP32-S3, NO PSRAM) — TIER 1 — ALPHA</div>
+      <div class="callout-label">TARGET 6 — M5STACK CARDPUTER ADV (ESP32-S3, NO PSRAM) — TIER 1 — ALPHA</div>
       <p>The M5Stack Cardputer ADV is an ESP32-S3 device in a compact keyboard form factor. Same Xtensa LX7 CPU as the T-Deck Plus and T-LoRa Pager, but the ESP32-S3FN8 variant has <strong>no PSRAM</strong> — only 512 KB internal SRAM. Pisces Moon's entire memory architecture was designed around 8 MB PSRAM availability. The launcher renders and lightweight apps run. Apps requiring large buffer allocations (wardrive WiFi scan results, Gemini client transcript, SQLite page cache) are under active engineering to add reduced-allocation <code>#ifdef DEVICE_CARDPUTER_ADV</code> fallbacks. The Ghost Engine architecture, SPI Bus Treaty, and dual-core split carry over unchanged. The protocol is the same. The memory is not. 47 apps registered. Classification: alpha pending memory audit completion.</p>
     </div>
 
     <div class="callout">
-      <div class="callout-label">TARGET 6 — ESP32-P4 (ELECROW CROWPANEL 7") — TIER 1 — FIRST BOOT MAY 13, 2026</div>
+      <div class="callout-label">TARGET 7 — ESP32-P4 (ELECROW CROWPANEL 7") — TIER 1 — FIRST BOOT MAY 13, 2026</div>
       <p>The ESP32-P4 is a new silicon class: dual RISC-V HP cores at 360MHz, a low-power RISC-V Sentinel Core at 40MHz, 32MB HEX PSRAM at 200MHz, and MIPI-DSI output for a 1024×600 display. On this hardware, the Ghost Engine runs on a separate chip entirely — the ESP32-C6 connected via SDIO — with its own processor, its own radio stack, and its own clock domain. Four formal core roles: Ghost Engine (C6, dedicated radio brain via SDIO), OS Core (HP Core 0, app logic), UI Core (HP Core 1, LVGL render), Sentinel Core (LP Core, power watchdog — a Software PMU with no documented prior art). The UART peripheral map replaces the SPI Bus Treaty as the P4 shared-resource protocol. The methodology is identical. The hardware constraint is different. The Ghost Engine is no longer a software trick on shared silicon. It is dedicated hardware. Pisces Moon P4 v1.2.0-alpha. 57 apps registered. Launcher rendering. Touch navigation operational. First boot: May 13, 2026.</p>
     </div>
 
@@ -498,9 +584,16 @@ TIER 1 — NATIVE FIRMWARE (ESP32 FAMILY)</div>
   
     </div>
 
-    <div id="apptab-engineering" class="app-tab-panel">
+    <div
+
+  <div class="doc-jump-link">
+    <p>Device architecture comparison — full hardware reference for T-Deck Plus, T-LoRa Pager, and Cardputer ADV.</p>
+    <a href="device-architecture.html">OPEN DEVICE ARCHITECTURE REFERENCE →</a>
+  </div>
+
+
 <!-- IV. SIX NOVEL PROBLEMS -->
-  <div class="section">
+  <div class="section" id="engineering">
     <div class="section-num">IV</div>
     <h2 class="section-title">THE ENGINEERING: TEN NOVEL PROBLEMS SOLVED</h2>
 
@@ -668,7 +761,7 @@ TIER 1 — NATIVE FIRMWARE (ESP32 FAMILY)</div>
   <!-- IV.5 THE HOST BRIDGE -->
   <div class="section" style="background:#060a06;border:1px solid #1a2e1a;padding:2rem;margin-bottom:2rem;position:relative">
     <div style="position:absolute;top:-.6rem;left:1rem;background:#2d5a2d;color:#aee8ae;font-family:var(--font-mono);font-size:.55rem;letter-spacing:.2em;padding:.2rem .8rem;font-weight:700">HOST INTELLIGENCE LAYER</div>
-    <div class="section-num" style="color:#5a8a5a">IV.5</div>
+    <div class="section-num" style="color:#5a8a5a" id="bridge">IV.5</div>
     <h2 class="section-title" style="color:#7aba7a">PM_BRIDGE.PY — THE HOST INTELLIGENCE DAEMON</h2>
 
     <p>The T-Deck Plus is the field device. pm_bridge.py is what turns any laptop, tablet, or Android phone into the analysis workstation that receives it.</p>
@@ -716,9 +809,16 @@ TIER 1 — NATIVE FIRMWARE (ESP32 FAMILY)</div>
   
     </div>
 
-    <div id="apptab-platform" class="app-tab-panel">
+    <div
+
+  <div class="doc-jump-link" id="demo">
+    <p>The SPI Bus Treaty — full architectural whitepaper. Physics of the conflict, four field failures, design primitives.</p>
+    <a href="spi-bus-treaty.html">READ THE SPI BUS TREATY WHITEPAPER →</a>
+  </div>
+
+
 <!-- V. TWO MARKETS -->
-  <div class="section">
+  <div class="section" id="markets">
     <div class="section-num">V</div>
     <h2 class="section-title">TWO MARKETS, ONE PLATFORM</h2>
 
@@ -749,7 +849,7 @@ TIER 1 — NATIVE FIRMWARE (ESP32 FAMILY)</div>
   </div>
 
   <!-- VI. PHILOSOPHY -->
-  <div class="section">
+  <div class="section" id="philosophy">
     <div class="section-num">VI</div>
     <h2 class="section-title">THE PHILOSOPHY: SOVEREIGNTY</h2>
 
@@ -768,7 +868,7 @@ TIER 1 — NATIVE FIRMWARE (ESP32 FAMILY)</div>
 
 
   <!-- TECH LIES AND VIDEOTAPE — EXPLAINER -->
-  <div class="section">
+  <div class="section" id="lies">
     <div class="section-num">VII</div>
     <h2 class="section-title">PLAIN LANGUAGE: SIX LIES YOUR MICROCONTROLLER TOLD YOU</h2>
     <p>The ten engineering problems documented in this white paper — presented as the myths the embedded systems community believed about this hardware class, and how Pisces Moon OS broke all of them. From <em>Tech, Lies and Videotape</em> — the Fluid Fortune media channel.</p>
@@ -785,7 +885,7 @@ TIER 1 — NATIVE FIRMWARE (ESP32 FAMILY)</div>
   </div>
 
   <!-- EDGE DEVICE ARGUMENT -->
-  <div class="section">
+  <div class="section" id="edge">
     <div class="section-num">VIII</div>
     <h2 class="section-title">THE EDGE DEVICE ARGUMENT</h2>
 
@@ -882,35 +982,7 @@ TIER 1 — NATIVE FIRMWARE (ESP32 FAMILY)</div>
 
     </div>
 
-    <div id="apptab-device" class="app-tab-panel">
-      <div style="padding:2rem 0 1rem;text-align:center">
-        <div style="font-family:var(--font-mono);font-size:.55rem;letter-spacing:.2em;color:var(--text-muted);margin-bottom:1rem">TECHNICAL REFERENCE — T-DECK PLUS VS T-LORA PAGER</div>
-        <p style="color:var(--text-dim);font-size:.88rem;max-width:560px;margin:0 auto 1.5rem;line-height:1.75">Hardware comparison across all Tier 1 devices — display topology, input abstraction, power management, SPI Bus Treaty implementation differences, boot sequence, GPIO pin map, and ten common pitfalls for cross-device development.</p>
-        <a href="device-architecture.html" style="display:inline-block;font-family:var(--font-mono);font-size:.7rem;letter-spacing:.15em;color:#0a1410;background:var(--green);padding:.65rem 1.5rem;text-decoration:none;font-weight:700;border:1px solid var(--green);margin-bottom:.75rem">OPEN DEVICE ARCHITECTURE REFERENCE →</a>
-        <p style="font-family:var(--font-mono);font-size:.55rem;color:var(--text-muted);letter-spacing:.1em">8 TABS · URL-ADDRESSABLE · FULL PERIPHERAL MAPS · 10 COMMON PITFALLS</p>
-      </div>
-    </div>
-
-    <div id="apptab-treaty" class="app-tab-panel">
-      <div style="padding:2rem 0 1rem;text-align:center">
-        <div style="font-family:var(--font-mono);font-size:.55rem;letter-spacing:.2em;color:var(--text-muted);margin-bottom:1rem">ARCHITECTURAL WHITEPAPER — PUBLISHED MAY 2026</div>
-        <p style="color:var(--text-dim);font-size:.88rem;max-width:560px;margin:0 auto 1.5rem;line-height:1.75">The SPI Bus Treaty in full — the physics of the conflict, four named field failures with root cause analysis, the Treaty's design primitives (named ownership, ISR-safe variants, sentinel flags, per-device extensions), and why this pattern applies to every ESP32-S3 handheld that ships with both LoRa and microSD.</p>
-        <a href="spi-bus-treaty.html" style="display:inline-block;font-family:var(--font-mono);font-size:.7rem;letter-spacing:.15em;color:#0a1410;background:var(--green);padding:.65rem 1.5rem;text-decoration:none;font-weight:700;border:1px solid var(--green);margin-bottom:.75rem">READ THE SPI BUS TREATY →</a>
-        <p style="font-family:var(--font-mono);font-size:.55rem;color:var(--text-muted);letter-spacing:.1em;margin-bottom:2rem">THE GHOST ENGINE NEVER STOPS. THE SPI BUS TREATY IS WHY.</p>
-        <div style="font-family:var(--font-mono);font-size:.6rem;color:var(--text-muted);letter-spacing:.1em;border-top:1px solid var(--border);padding-top:1.5rem;text-align:left;max-width:480px;margin:0 auto">
-          <div style="margin-bottom:.5rem">54 take sites audited across 12 files</div>
-          <div style="margin-bottom:.5rem">56 give sites verified</div>
-          <div style="margin-bottom:.5rem">3 bugs found and fixed (v1.2.0)</div>
-          <div style="margin-bottom:.5rem">Recursive mutex conversion — nested deadlock eliminated</div>
-          <div>Companion audit: docs/SPI-TREATY-AUDIT.md in repository</div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-
+    <div
 <footer>
   <p>
     <a href="https://fluidfortune.com">FLUID FORTUNE</a>
@@ -927,29 +999,7 @@ TIER 1 — NATIVE FIRMWARE (ESP32 FAMILY)</div>
 
 
 
-<script>
-(function() {
-  function activateAppTab(id) {
-    document.querySelectorAll('.app-tab-btn').forEach(function(b) {
-      b.classList.toggle('active', b.dataset.apptab === id);
-    });
-    document.querySelectorAll('.app-tab-panel').forEach(function(p) {
-      p.classList.toggle('active', p.id === 'apptab-' + id);
-    });
-    var body = document.querySelector('.app-panel-body');
-    if (body) body.scrollTop = 0;
-    try { history.replaceState(null, '', '#' + id); } catch(e) {}
-  }
-  document.querySelectorAll('.app-tab-btn').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      activateAppTab(btn.dataset.apptab);
-    });
-  });
-  var hash = location.hash.replace('#','');
-  var valid = ['thesis','architecture','engineering','platform','device','treaty'];
-  activateAppTab(valid.includes(hash) ? hash : 'thesis');
-})();
-</script>
+
 
 </body>
 </html>
