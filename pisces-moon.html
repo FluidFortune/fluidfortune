@@ -236,15 +236,9 @@
     </div>
   </div>
 
+<!-- TARGETS -->
+<div class="main">
 
-<div class="tab-nav" id="pm-tabs">
-  <button class="tab-btn" data-tab="targets">TARGETS</button>
-  <button class="tab-btn" data-tab="engineering">ENGINEERING</button>
-  <button class="tab-btn" data-tab="source">SOURCE CODE</button>
-  <button class="tab-btn" data-tab="developer">DEVELOPER</button>
-</div>
-
-<div id="tab-targets" class="tab-panel">
   <div class="main">
   <!-- DEPLOYMENT TARGETS -->
   <div class="section">
@@ -305,7 +299,11 @@
   </div>
 </div>
 
-<div id="tab-engineering" class="tab-panel">
+<div
+</div>
+<!-- ENGINEERING -->
+<div class="main">
+
   <div class="main">
   <!-- SIX PROBLEMS -->
   <div class="section">
@@ -364,7 +362,11 @@
   </div>
 </div>
 
-<div id="tab-source" class="tab-panel">
+<div
+</div>
+<!-- SOURCE -->
+<div class="main">
+
   <div class="main">
   <!-- REPOSITORIES -->
   <div class="section">
@@ -418,7 +420,11 @@
   </div>
 </div>
 
-<div id="tab-developer" class="tab-panel">
+<div
+</div>
+<!-- DEVELOPER -->
+<div class="main">
+
   <div class="main">
     <div class="section">
       <div class="section-label">DEVELOPER ECOSYSTEM</div>
@@ -445,9 +451,7 @@
         <a href="device-architecture.html" class="btn btn-primary" style="background:var(--amber-dim);color:#0a0807">OPEN DEVICE ARCHITECTURE →</a>
       </div>
     </div>
-  </div>
 </div>
-
 
 <footer>
   <p>
@@ -462,29 +466,7 @@
 </footer>
 
 
-<script>
-(function() {
-  function activateTab(id) {
-    document.querySelectorAll('#pm-tabs .tab-btn').forEach(function(b) {
-      b.classList.toggle('active', b.dataset.tab === id);
-    });
-    document.querySelectorAll('#pm-tabs ~ .tab-panel').forEach(function(p) {
-      p.classList.toggle('active', p.id === 'tab-' + id);
-    });
-  }
-  var tabs = document.querySelectorAll('#pm-tabs .tab-btn');
-  tabs.forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      var id = btn.dataset.tab;
-      try { history.replaceState(null, '', '#' + id); } catch(e) {}
-      activateTab(id);
-    });
-  });
-  var hash = location.hash.replace('#','');
-  var valid = Array.from(tabs).map(function(b){return b.dataset.tab;});
-  activateTab(valid.includes(hash) ? hash : valid[0]);
-})();
-</script>
+
 
 </body>
 </html>
