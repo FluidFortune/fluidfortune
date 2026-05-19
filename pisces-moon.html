@@ -476,7 +476,7 @@
   tabs.forEach(function(btn) {
     btn.addEventListener('click', function() {
       var id = btn.dataset.tab;
-      history.replaceState(null, '', '#' + id);
+      try { history.replaceState(null, '', '#' + id); } catch(e) {}
       activateTab(id);
     });
   });
