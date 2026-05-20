@@ -6,7 +6,7 @@
     <loc>https://fluidfortune.com/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
-    <lastmod>2026-05-09</lastmod>
+    <lastmod>2026-05-19</lastmod>
   </url>
   <url>
     <loc>https://fluidfortune.com/spi-bus-treaty.html</loc>
@@ -24,19 +24,19 @@
     <loc>https://fluidfortune.com/pisces-moon.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
-    <lastmod>2026-05-09</lastmod>
+    <lastmod>2026-05-19</lastmod>
   </url>
   <url>
     <loc>https://fluidfortune.com/sovereignty.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
-    <lastmod>2026-05-09</lastmod>
+    <lastmod>2026-05-19</lastmod>
   </url>
   <url>
     <loc>https://fluidfortune.com/engineering-record.html</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <lastmod>2026-05-09</lastmod>
+    <priority>0.9</priority>
+    <lastmod>2026-05-19</lastmod>
   </url>
 
   <!-- Projects -->
