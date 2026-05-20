@@ -377,7 +377,7 @@
         </div>
         <div class="pb-solution">
           <div class="pb-label">Solution — with honest limitations</div>
-          <div class="pb-text">Sector-level zero-overwrite of Ghost Partition data files before FAT unlinking, executed under <code>spi_mutex</code> at boot before Ghost Engine spawn. ~1 MB/sec sustained write; a typical session wipes in under 200ms; heavy sessions (2 MB+) take 2–3 seconds. The wipe defeats PhotoRec, Recuva, and TestDisk — no sector structure remains to reconstruct. <strong>It does not defeat chip-off NAND forensics</strong> due to SD controller wear-leveling: when a logical sector is overwritten, the controller may write to a different physical NAND block, leaving the old block intact but unmapped. A forensic lab can desolder the NAND IC and read physical blocks directly. The limitation is documented in the threat model. The v1.3 roadmap addresses it via an encrypted partition with key destruction — destroying the key makes the data irrecoverable regardless of what wear-leveling retained.</div>
+          <div class="pb-text">Sector-level zero-overwrite of Ghost Partition index files before FAT unlinking, executed under <code>spi_mutex</code> at boot before Ghost Engine spawn. ~1 MB/sec sustained write; a typical session wipes in under 200ms; heavy sessions (2 MB+) take 2–3 seconds. The wipe defeats PhotoRec, Recuva, and TestDisk against the targeted files — no sector structure remains to reconstruct. <strong>Honest v1.2.0 limitation:</strong> the nuke target list in <code>security_config.h</code> hardcodes specific paths and filenames. A v1.2.0 audit identified that the wardrive CSV target paths in the list (<code>/wardrive/wardrive_NN.csv</code>) do not match the wardrive's actual output (<code>/wardrive_NNNN.csv</code> at SD root). v1.2.0 nuke therefore covers the Ghost Partition's index files but leaves wardrive session CSVs on the card. The right shape for the fix — dynamic discovery of sensitive files rather than a hardcoded target list — is identified; research on the cleanest implementation is ongoing. <strong>It does not defeat chip-off NAND forensics</strong> even within targeted files, due to SD controller wear-leveling: when a logical sector is overwritten, the controller may write to a different physical NAND block, leaving the old block intact but unmapped. A forensic lab can desolder the NAND IC and read physical blocks directly. The limitation is documented in the threat model. The architectural answer to both gaps — dynamic target discovery and physical-layer recovery — points toward an encrypted partition with key destruction, where destroying the key makes the data irrecoverable regardless of what wear-leveling retained. Research on this approach is ongoing and will land in a future release when the design is verified end-to-end.</div>
         </div>
       </div>
 
@@ -582,7 +582,7 @@
             <tr><td>Passive wardriving</td><td>Continuous, Core 0, background</td><td>Separate device + manual operation</td></tr>
             <tr><td>GPS + RF correlation</td><td>Continuous, automatic</td><td>Separate device or application</td></tr>
             <tr><td>AI integration</td><td>Direct Gemini API, operator-provided key, no intermediary</td><td>Cloud-dependent, vendor-controlled</td></tr>
-            <tr><td>Security partitioning</td><td>PIN-gated Ghost Partition, sector-overwrite Nuke</td><td>Software-level at best</td></tr>
+            <tr><td>Security partitioning</td><td>PIN-gated Ghost Partition with filesystem-level separation; logical-wipe Nuke (v1.2.0 targets index files; broader coverage and physical-layer hardening are research-ongoing)</td><td>Software-level at best</td></tr>
             <tr><td>App deployment</td><td>ELF modules via SD card, no reflash</td><td>Full firmware reflash required</td></tr>
           </tbody>
         </table>
@@ -642,7 +642,7 @@
         <div class="demo-step">
           <div class="ds-num">Step 5 · 3 min</div>
           <div class="ds-title">Nuke under Treaty discipline</div>
-          <div class="ds-body">Ghost Partition wipe on synthetic demo data. Display shows bytes wiped and elapsed time. PhotoRec attempted post-wipe — recovers nothing. Chip-off NAND limitation acknowledged honestly.</div>
+          <div class="ds-body">Ghost Partition index wipe on synthetic demo data. Display shows bytes wiped and elapsed time. PhotoRec attempted post-wipe against the targeted index files — recovers nothing from those files. The v1.2.0 target-list gap (wardrive CSVs not covered by the current hardcoded list) is acknowledged on stage; research on the dynamic-discovery fix is ongoing. Chip-off NAND limitation also acknowledged honestly.</div>
         </div>
         <div class="demo-step">
           <div class="ds-num">Step 6 · 2 min</div>
@@ -721,7 +721,8 @@
       <ol>
         <li>That mutexes are new — they are not.</li>
         <li>That the ELF sandbox is adversarial-proof — it is not; limitations are documented.</li>
-        <li>That the Nuke defeats nation-state forensics — it does not; chip-off NAND remains a real attack vector and the v1.3 roadmap addresses it.</li>
+        <li>That the Nuke defeats nation-state forensics — it does not. v1.2.0 covers Ghost Partition index files; the wardrive CSV target-list gap is acknowledged and research on a dynamic-discovery fix is ongoing. Chip-off NAND recovery remains a real attack vector against wear-leveled flash regardless of target list. The architectural answer points toward an encrypted partition with key destruction; that approach is research-ongoing and will land when the design is verified end-to-end, not on a fixed release timeline.</li>
+        <li>That the PIN is unrecoverable. It is not. The PIN is compiled into firmware.bin as a plaintext literal — protected against users with only on-device access, but extractable via <code>esptool.py read_flash</code> by anyone with USB access on devices without Secure Boot v2 + Flash Encryption. Production deployments require Secure Boot v2; enabling it is a one-way eFuse operation and is research-ongoing for production builds.</li>
         <li>That the methodology is unique. It is borrowed — from Unix file locking, the Apollo Guidance Computer priority scheduler, Nintendo's N64 RSP time budget. The contribution is applying that pattern to a hardware class where no published prior expression existed.</li>
       </ol>
 
