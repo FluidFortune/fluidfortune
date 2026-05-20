@@ -1,437 +1,334 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The SPI Bus Treaty | Pisces Moon OS — Fluid Fortune</title>
-<meta name="description" content="The SPI Bus Treaty: a named architectural standard for shared-bus arbitration on the ESP32-S3 hardware class. How a structural conflict between LoRa radios and microSD cards on shared SPI buses is resolved — and why it matters for every ESP32-S3 handheld that ships with both.">
-<link rel="canonical" href="https://fluidfortune.com/spi-bus-treaty.html">
-<meta property="og:type" content="article">
-<meta property="og:url" content="https://fluidfortune.com/spi-bus-treaty.html">
-<meta property="og:title" content="The SPI Bus Treaty — Pisces Moon OS">
-<meta property="og:description" content="A named architectural standard for shared-bus arbitration on the ESP32-S3 hardware class. Without the Treaty, the Ghost Engine would be a marketing claim. With it, it is a hardware-substantiated guarantee.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700;900&family=Inter:wght@400;500;600&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-<style>
-:root{
-  --black:#050a05;--deep:#0d1117;--surface:#161b22;--border:#30363d;
-  --green:#00ff41;--green-dim:#00c032;--green-mute:#1a3a1a;
-  --amber:#ffb700;--amber-dim:#cc9200;--amber-mute:#2a1f00;
-  --blue:#58a6ff;--blue-mute:#0d1f3a;
-  --red:#ff4a4a;
-  --text:#e6edf3;--text-dim:#8b949e;--text-muted:#484f58;
-  --font-mono:'Share Tech Mono',monospace;
-  --font-ui:'Inter',sans-serif;
-  --font-disp:'Orbitron',monospace;
-  --font-serif:'Lora',Georgia,serif;
-  --max-w:780px;
-  --accent:var(--amber-dim);
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{background:var(--deep);color:var(--text);font-family:var(--font-serif);line-height:1.85}
-body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(to bottom,transparent,transparent 2px,rgba(0,0,0,.06) 2px,rgba(0,0,0,.06) 4px);pointer-events:none;z-index:9999}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The SPI Bus Treaty | Pisces Moon OS</title>
+  <meta name="description" content="Standalone architectural whitepaper documenting the SPI Bus Treaty — a four-rule shared-bus arbitration protocol for concurrent SD, LoRa, and display operation on the ESP32-S3. Audit verified across 54 take sites in v1.2.0.">
+  <link rel="canonical" href="https://fluidfortune.com/spi-bus-treaty.html">
 
-/* NAV */
-nav{background:var(--black);border-bottom:1px solid var(--border);padding:.75rem 1.5rem;display:flex;align-items:center;gap:1.5rem;position:sticky;top:0;z-index:100}
-nav a{font-family:var(--font-disp);font-size:.72rem;color:var(--green-dim);text-decoration:none;letter-spacing:.12em}
-nav a:hover{color:#fff}
-nav .sep{color:var(--text-muted);font-size:.55rem}
-nav .spacer{flex:1}
-nav .badge{font-family:var(--font-mono);font-size:.55rem;color:var(--amber-dim);border:1px solid var(--amber-mute);padding:.15rem .6rem;letter-spacing:.1em}
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://fluidfortune.com/spi-bus-treaty.html">
+  <meta property="og:title" content="The SPI Bus Treaty | Pisces Moon OS">
+  <meta property="og:description" content="A four-rule shared-bus arbitration protocol on the ESP32-S3, hardened across three deployment targets including the no-PSRAM Cardputer ADV. The protocol that makes the Ghost Engine possible.">
+  <meta property="og:image" content="https://fluidfortune.com/courtjester.jpg">
 
-/* HERO */
-.hero{max-width:var(--max-w);margin:0 auto;padding:4.5rem 1.5rem 3rem;border-bottom:2px solid var(--amber-dim)}
-.hero-eye{font-family:var(--font-mono);font-size:.58rem;letter-spacing:.25em;color:var(--text-muted);margin-bottom:1rem;text-transform:uppercase}
-.hero h1{font-family:var(--font-disp);font-size:clamp(1.6rem,5vw,2.6rem);font-weight:900;letter-spacing:.06em;color:#fff;line-height:1.1;margin-bottom:1rem}
-.hero h1 span{color:var(--amber)}
-.hero-deck{font-family:var(--font-serif);font-size:1.05rem;color:var(--text-dim);line-height:1.75;max-width:640px;margin-bottom:2rem;font-style:italic}
-.hero-meta{font-family:var(--font-mono);font-size:.58rem;color:var(--text-muted);letter-spacing:.12em;display:flex;flex-wrap:wrap;gap:1.5rem}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300&family=DM+Mono:wght@300;400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300&family=DM+Mono:wght@300;400;500&display=swap"></noscript>
 
-/* BODY */
-.body{max-width:var(--max-w);margin:0 auto;padding:3rem 1.5rem 7rem}
+  <style>
+    :root{
+      --paper:#faf8f4; --paper-dark:#f0ede6; --ink:#1a1614; --ink-mid:#4a4340; --ink-light:#8a7f78; --ink-faint:#c5bdb5;
+      --accent:#c17f3a; --accent-dim:#9a6128; --accent-pale:#f5ead8; --rule:#ddd8d0; --green:#2d5a3d; --green-pale:#e8f0eb;
+      --font-disp:'Playfair Display',Georgia,serif; --font-body:'Source Serif 4',Georgia,serif; --font-mono:'DM Mono',monospace;
+      --max-w:760px; --toc-w:220px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{font-size:16px;scroll-behavior:smooth}
+    body{background:var(--paper);color:var(--ink);font-family:var(--font-body);line-height:1.75;-webkit-font-smoothing:antialiased}
 
-/* Typography */
-h2{font-family:var(--font-disp);font-size:clamp(.9rem,2.5vw,1.1rem);color:var(--amber);font-weight:700;letter-spacing:.08em;margin:3rem 0 1.25rem;line-height:1.3;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
-h3{font-family:var(--font-ui);font-size:1rem;color:var(--text);font-weight:600;margin:2rem 0 .75rem;letter-spacing:.01em}
-p{color:var(--text-dim);margin-bottom:1.25rem;line-height:1.85}
-p:last-child{margin-bottom:0}
-strong{color:var(--text);font-weight:600}
-em{color:var(--text-dim)}
+    nav.top{border-bottom:1px solid var(--rule);position:sticky;top:0;background:var(--paper);z-index:100}
+    nav.top .nav-inner{max-width:calc(var(--max-w) + var(--toc-w) + 4rem);margin:0 auto;padding:0 2rem;display:flex;gap:1.5rem;align-items:center}
+    nav.top a{font-family:var(--font-mono);font-size:.62rem;letter-spacing:.12em;color:var(--ink-light);text-decoration:none;padding:.9rem 0;border-bottom:2px solid transparent;transition:.15s;display:inline-block}
+    nav.top a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+    nav.top .doc-label{margin-left:auto;font-family:var(--font-mono);font-size:.56rem;letter-spacing:.15em;color:var(--ink-light);border:1px solid var(--rule);padding:.25rem .65rem;background:var(--paper-dark)}
 
-/* Code */
-code{font-family:var(--font-mono);font-size:.84em;background:#1a1f2a;color:var(--blue);padding:.1rem .35rem;border:1px solid var(--border);border-radius:2px}
-pre{background:#0d1117;border:1px solid var(--border);border-left:3px solid var(--amber-dim);padding:1.25rem 1.5rem;overflow-x:auto;margin:1.5rem 0}
-pre code{background:none;border:none;padding:0;color:var(--text-dim);font-size:.8rem;line-height:1.7}
+    .layout{display:flex;max-width:calc(var(--max-w) + var(--toc-w) + 4rem);margin:0 auto;padding:0 2rem;gap:3rem;align-items:flex-start}
+    .toc{width:var(--toc-w);flex-shrink:0;position:sticky;top:50px;padding:2.5rem 0;max-height:calc(100vh - 50px);overflow-y:auto}
+    .toc-label{font-family:var(--font-mono);font-size:.55rem;letter-spacing:.2em;color:var(--ink-light);margin-bottom:.75rem;padding-bottom:.4rem;border-bottom:1px solid var(--rule);display:block;text-transform:uppercase}
+    .toc a{display:block;font-family:var(--font-mono);font-size:.62rem;color:var(--ink-mid);text-decoration:none;padding:.25rem 0 .25rem .5rem;letter-spacing:.04em;transition:.15s;border-left:2px solid transparent;margin-bottom:.1rem;line-height:1.5}
+    .toc a:hover{color:var(--accent);border-left-color:var(--accent)}
+    .toc a .num{color:var(--ink-faint);display:inline-block;width:1.5rem}
+    .toc-divider{border-top:1px solid var(--rule);margin:.85rem 0 .5rem}
+    .toc-divider-label{font-family:var(--font-mono);font-size:.5rem;letter-spacing:.18em;color:var(--ink-faint);text-transform:uppercase;padding:0 0 .35rem .5rem}
+    .toc a.ext{color:var(--accent-dim)}
+    ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--paper)}::-webkit-scrollbar-thumb{background:var(--rule)}
 
-/* Failure blocks */
-.failure{border:1px solid var(--border);background:var(--surface);margin:2rem 0;position:relative}
-.failure-header{background:var(--amber-mute);border-bottom:1px solid var(--border);padding:.75rem 1.25rem;display:flex;gap:1rem;align-items:baseline}
-.failure-num{font-family:var(--font-disp);font-size:.65rem;color:var(--amber-dim);font-weight:700;white-space:nowrap}
-.failure-title{font-family:var(--font-ui);font-size:.9rem;color:var(--text);font-weight:600}
-.failure-body{padding:1.25rem 1.5rem}
-.failure-body p{font-size:.88rem;line-height:1.75;margin-bottom:.75rem}
-.failure-label{font-family:var(--font-mono);font-size:.55rem;letter-spacing:.18em;color:var(--text-muted);text-transform:uppercase;margin-bottom:.35rem}
-.failure-fix{border-top:1px solid var(--border);margin-top:1rem;padding-top:1rem}
-.failure-fix .failure-label{color:var(--green-dim)}
-.failure-fix p{color:var(--text-dim);font-size:.86rem}
+    .content{flex:1;min-width:0;padding:3rem 0 6rem;max-width:var(--max-w)}
 
-/* Pull quote */
-.pullquote{border-left:3px solid var(--amber-dim);margin:2.5rem 0;padding:.85rem 1.5rem;background:var(--surface);font-style:italic;color:var(--text-dim);font-size:1.05rem;line-height:1.75}
-.pullquote strong{color:var(--amber);font-style:normal}
+    .masthead{border-bottom:2px solid var(--ink);padding-bottom:2rem;margin-bottom:2.5rem}
+    .masthead-eyebrow{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.2em;color:var(--ink-light);margin-bottom:.5rem;text-transform:uppercase}
+    .masthead-title{font-family:var(--font-disp);font-size:clamp(2rem,5vw,2.75rem);font-weight:900;letter-spacing:-.02em;line-height:1.1;color:var(--ink);margin-bottom:.65rem}
+    .masthead-sub{font-family:var(--font-body);font-size:1.05rem;color:var(--accent-dim);font-style:italic;font-weight:300;line-height:1.5;margin-bottom:1.25rem}
+    .masthead-meta{font-family:var(--font-mono);font-size:.62rem;color:var(--ink-light);letter-spacing:.05em;line-height:1.95}
+    .masthead-meta span{display:inline-block;margin-right:1.25rem}
+    .masthead-meta .ver{color:var(--accent-dim);border:1px solid var(--accent-pale);background:var(--accent-pale);padding:.1rem .55rem}
 
-/* Device list */
-.device-list{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin:1.5rem 0}
-.device-item{border:1px solid var(--border);background:var(--surface);padding:.85rem 1rem;font-size:.84rem}
-.device-item-name{font-family:var(--font-mono);font-size:.68rem;color:var(--amber-dim);letter-spacing:.1em;margin-bottom:.35rem}
-.device-item-desc{color:var(--text-muted);font-family:var(--font-ui);line-height:1.5}
+    .abstract{background:var(--paper-dark);border-left:3px solid var(--ink);padding:1.5rem 1.75rem;margin-bottom:3rem}
+    .abstract-label{font-family:var(--font-mono);font-size:.58rem;letter-spacing:.2em;color:var(--ink-light);margin-bottom:.85rem;text-transform:uppercase}
+    .abstract p{font-family:var(--font-body);font-size:.95rem;color:var(--ink-mid);line-height:1.75;margin-bottom:.85rem;font-weight:300}
+    .abstract p:last-child{margin-bottom:0}
+    .abstract strong{color:var(--ink);font-weight:600}
 
-/* Closing banner */
-.closing{border:1px solid var(--amber-dim);background:var(--amber-mute);padding:2rem;text-align:center;margin-top:4rem}
-.closing-title{font-family:var(--font-disp);font-size:clamp(.85rem,2.5vw,1.05rem);color:var(--amber);font-weight:900;letter-spacing:.1em;margin-bottom:.75rem}
-.closing-sub{font-family:var(--font-mono);font-size:.7rem;color:var(--amber-dim);letter-spacing:.08em;line-height:1.6}
+    section.s{padding-top:3rem}
+    .s-header{display:flex;align-items:baseline;gap:.85rem;padding-bottom:.75rem;border-bottom:1.5px solid var(--ink);margin-bottom:1.5rem}
+    .s-num{font-family:var(--font-mono);font-size:.65rem;color:var(--ink-light);letter-spacing:.12em;flex-shrink:0}
+    .s-title{font-family:var(--font-disp);font-size:1.5rem;font-weight:700;color:var(--ink);letter-spacing:-.01em;line-height:1.2}
 
-/* TOC */
-.toc{border:1px solid var(--border);background:var(--surface);padding:1.25rem 1.5rem;margin:2rem 0}
-.toc-title{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.2em;color:var(--text-muted);margin-bottom:.75rem;text-transform:uppercase}
-.toc a{font-family:var(--font-ui);font-size:.84rem;color:var(--green-dim);text-decoration:none;display:block;line-height:1.9;padding-left:.5rem;border-left:1px solid transparent;transition:.1s}
-.toc a:hover{color:var(--green);border-left-color:var(--green-mute)}
+    p{font-size:.95rem;color:var(--ink-mid);line-height:1.85;margin-bottom:1rem;font-weight:300}
+    strong{color:var(--ink);font-weight:600}
+    em{font-style:italic}
+    a{color:var(--accent-dim);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px;transition:.15s}
+    a:hover{color:var(--accent)}
+    code{font-family:var(--font-mono);font-size:.82em;color:var(--accent-dim);background:var(--paper-dark);padding:.1em .35em;border:1px solid var(--rule);border-radius:2px}
+    ol,ul{margin:.85rem 0 1.25rem 1.5rem}
+    li{font-size:.93rem;color:var(--ink-mid);line-height:1.8;margin-bottom:.4rem;font-weight:300}
+    li strong{color:var(--ink)}
+    blockquote{border-left:3px solid var(--ink-faint);padding:.25rem 1.25rem;margin:1.5rem 0}
+    blockquote p{font-style:italic;font-size:.95rem;color:var(--ink-mid);margin-bottom:0}
 
-/* Status badge */
-.status-strip{display:flex;gap:1.5rem;flex-wrap:wrap;margin:2rem 0;padding:1rem 1.25rem;background:var(--surface);border:1px solid var(--border)}
-.status-item{font-family:var(--font-mono);font-size:.65rem;color:var(--text-muted);letter-spacing:.08em}
-.status-item span{color:var(--green-dim);margin-left:.35rem}
+    .rule{background:var(--paper);border:1px solid var(--rule);border-left:3px solid var(--ink);padding:1.25rem 1.5rem;margin:1.25rem 0}
+    .rule-num{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.15em;color:var(--ink-light);text-transform:uppercase;margin-bottom:.4rem}
+    .rule-title{font-family:var(--font-disp);font-size:1.15rem;font-weight:600;color:var(--ink);line-height:1.3;margin-bottom:.75rem}
+    .rule-text{font-size:.92rem;color:var(--ink-mid);line-height:1.8;font-weight:300}
 
-footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;font-family:var(--font-mono);font-size:.62rem;color:var(--text-muted)}
-footer a{color:var(--green-dim);text-decoration:none}
+    .failure{background:var(--accent-pale);border:1px solid var(--accent-pale);border-left:3px solid var(--accent);padding:1.1rem 1.4rem;margin:1.5rem 0}
+    .failure-label{font-family:var(--font-mono);font-size:.58rem;letter-spacing:.15em;color:var(--accent-dim);margin-bottom:.55rem;text-transform:uppercase}
+    .failure-title{font-family:var(--font-disp);font-size:1.05rem;font-weight:600;color:var(--ink);margin-bottom:.6rem;line-height:1.3}
+    .failure p{font-size:.9rem;color:var(--ink-mid);line-height:1.8;margin-bottom:.6rem;font-weight:300}
+    .failure p:last-child{margin-bottom:0}
 
-@media(max-width:620px){
-  .device-list{grid-template-columns:1fr}
-  .hero{padding:3rem 1.25rem 2rem}
-  .body{padding:2rem 1.25rem 5rem}
-}
-</style>
+    .table-wrap{overflow-x:auto;margin:1.5rem 0;border:1px solid var(--rule)}
+    table{width:100%;border-collapse:collapse;font-family:var(--font-body);font-size:.88rem;background:var(--paper)}
+    th{background:var(--paper-dark);color:var(--ink);font-family:var(--font-mono);font-size:.6rem;letter-spacing:.1em;padding:.65rem .85rem;text-align:left;border-bottom:2px solid var(--ink);font-weight:500;text-transform:uppercase}
+    td{padding:.55rem .85rem;border-top:1px solid var(--rule);color:var(--ink-mid);vertical-align:top;line-height:1.65;font-weight:300}
+    td:first-child{color:var(--ink);font-weight:500;font-family:var(--font-mono);font-size:.83rem}
+
+    .closing{border-top:2px solid var(--ink);margin-top:3.5rem;padding-top:1.75rem}
+    .closing p{font-family:var(--font-mono);font-size:.72rem;color:var(--ink-light);line-height:1.95;margin-bottom:.4rem;font-weight:400}
+    .closing strong{color:var(--ink)}
+    .closing a{color:var(--accent-dim)}
+
+    .site-footer{border-top:1px solid var(--rule);padding:1.5rem 0;text-align:center;font-family:var(--font-mono);font-size:.6rem;color:var(--ink-light);letter-spacing:.05em;margin-top:3rem}
+    .site-footer a{color:var(--ink-mid);text-decoration:none;margin:0 .5rem}
+    .site-footer a:hover{color:var(--accent)}
+
+    @media(max-width:900px){
+      .layout{flex-direction:column;padding:0 1.5rem}
+      .toc{width:100%;position:static;padding:2rem 0 0;max-height:none}
+      .content{padding:2rem 0 4rem}
+      nav.top .nav-inner{padding:0 1.5rem}
+    }
+    @media(max-width:600px){.masthead-meta span{display:block;margin-bottom:.25rem}}
+  </style>
 </head>
 <body>
 
-<nav>
-  <a href="https://fluidfortune.com">FLUID FORTUNE</a>
-  <span class="sep">/</span>
-  <a href="pisces-moon.html">PISCES MOON</a>
-  <span class="sep">/</span>
-  <a href="spi-bus-treaty.html" style="color:var(--amber-dim)">SPI BUS TREATY</a>
-  <div class="spacer"></div>
-  <span class="badge">v1.2.0 — MAY 2026</span>
+<nav class="top">
+  <div class="nav-inner">
+    <a href="https://fluidfortune.com">FLUID FORTUNE</a>
+    <a href="sovereignty.html">WHITE PAPER</a>
+    <a href="engineering-record.html">ENGINEERING RECORD</a>
+    <a href="spi-bus-treaty.html">SPI BUS TREATY</a>
+    <a href="device-architecture.html">DEVICE ARCHITECTURE</a>
+    <span class="doc-label">TECHNICAL DOCUMENTATION</span>
+  </div>
 </nav>
 
-<div class="hero">
-  <div class="hero-eye">Pisces Moon OS — Architectural Reference</div>
-  <h1>THE <span>SPI BUS</span> TREATY</h1>
-  <p class="hero-deck">A structural problem with ESP32-S3 handhelds and the architectural contract that resolves it.</p>
-  <div class="hero-meta">
-    <span>ERIC BECKER / FLUID FORTUNE</span>
-    <span>PISCES MOON OS v1.2.0</span>
-    <span>AGPL-3.0-or-later</span>
-    <span>fluidfortune.com</span>
-  </div>
+<div class="layout">
+
+  <aside class="toc">
+    <span class="toc-label">Contents</span>
+    <a href="#problem"><span class="num">I.</span>The Physics of the Conflict</a>
+    <a href="#failures"><span class="num">II.</span>Four Field Failures</a>
+    <a href="#rules"><span class="num">III.</span>The Four Rules</a>
+    <a href="#audit"><span class="num">IV.</span>v1.2.0 Audit Results</a>
+    <a href="#prior-art"><span class="num">V.</span>Prior Art &amp; Precedent</a>
+    <a href="#enforcement"><span class="num">VI.</span>Enforcement &amp; Contract</a>
+    <div class="toc-divider"></div>
+    <div class="toc-divider-label">Companion Documents</div>
+    <a href="sovereignty.html" class="ext"><span class="num">↗</span>White Paper</a>
+    <a href="engineering-record.html" class="ext"><span class="num">↗</span>Engineering Record</a>
+    <a href="device-architecture.html" class="ext"><span class="num">↗</span>Device Architecture</a>
+    <div class="toc-divider"></div>
+    <div class="toc-divider-label">Project</div>
+    <a href="pisces-moon.html" class="ext"><span class="num">↗</span>Pisces Moon OS</a>
+    <a href="https://github.com/FluidFortune/pisces-moon-os" class="ext"><span class="num">↗</span>GitHub</a>
+  </aside>
+
+  <main class="content">
+
+    <div class="masthead">
+      <div class="masthead-eyebrow">Pisces Moon OS · Architectural Whitepaper</div>
+      <h1 class="masthead-title">The SPI Bus Treaty</h1>
+      <p class="masthead-sub">A four-rule shared-bus arbitration protocol for concurrent SD, LoRa, and display operation on the ESP32-S3 — and the reason the Ghost Engine never stops.</p>
+      <div class="masthead-meta">
+        <span>Eric Becker · Fluid Fortune</span>
+        <span>v1.2.0 · May 19, 2026</span>
+        <span class="ver">Audit Verified</span>
+      </div>
+    </div>
+
+    <div class="abstract">
+      <div class="abstract-label">Abstract</div>
+      <p>The Espressif ESP32-S3 exposes a single hardware SPI peripheral block that, on the LilyGo T-Deck Plus, T-LoRa Pager, and similar devices, is wired to three independent consumers: the MicroSD card, the SX1262 LoRa radio, and the ST7789/ST7796U display controller. The reference firmware ecosystem for these devices is built around single-purpose use cases where, at any given moment, only one of these consumers is active. Pisces Moon OS is not that. It runs the Ghost Engine — a persistent Core 0 background process that wardrives, scans BLE, and logs GPS continuously — alongside any Core 1 foreground application, with the LoRa mesh radio and the SD card and the display all active simultaneously.</p>
+      <p>This document specifies the <strong>SPI Bus Treaty</strong>: a formal four-rule arbitration protocol enforced by a recursive mutex (<code>spi_mutex</code>) that every component of the operating system and every third-party ELF module must obey. The protocol was developed in field conditions in 2025–2026 and is now a platform-level contract. <strong>v1.2.0 audit: 54 take sites, 56 give sites verified across 12 files.</strong> The Treaty is the architectural precondition for everything else Pisces Moon does.</p>
+    </div>
+
+    <!-- I. PHYSICS -->
+    <section class="s" id="problem">
+      <div class="s-header"><div class="s-num">I.</div><h2 class="s-title">The Physics of the Conflict</h2></div>
+
+      <p>SPI is a synchronous serial protocol with four signal lines — SCK (clock), MOSI (master out), MISO (master in), and an active-low chip-select per peripheral. The ESP32-S3 has two general-purpose SPI peripherals (SPI2 and SPI3) and a third dedicated to flash memory. The LilyGo T-Deck Plus, T-LoRa Pager, and M5Stack Cardputer ADV all wire SD, LoRa, and display to the same SPI peripheral block, distinguished only by chip-select line.</p>
+
+      <p>When two consumers attempt to drive the bus simultaneously — even momentarily — the failure modes are not graceful. The SD card's CMD0 initialization sequence is timing-sensitive: a glitch on SCK during command issuance corrupts the response and the controller enters an error state requiring a full power cycle to recover. The LoRa radio's SX1262 SPI command set assumes the bus is quiet for the duration of a transaction; concurrent SD traffic causes the radio to mis-parse its own command queue and enter undefined states. The display controller's pixel-flush sequence relies on tight timing between command bytes and data bytes; SPI contention produces visible tearing, dropped frames, or display freeze.</p>
+
+      <p>None of these failures present as “SPI contention.” The Guru Meditation crash dumps point at memory addresses where execution happened to be when the corruption propagated — not at the source of the corruption. The first symptom of an SPI conflict in this OS was a non-deterministic reboot during heavy field operation. The hypothesis that the SPI bus was the shared resource being contested took several months and many field sessions to establish.</p>
+    </section>
+
+    <!-- II. FAILURES -->
+    <section class="s" id="failures">
+      <div class="s-header"><div class="s-num">II.</div><h2 class="s-title">Four Field Failures</h2></div>
+
+      <p>The Treaty was not designed in advance. It was extracted from four specific failure modes that recurred across field operations in 2025–2026. Each is documented here with the symptom, the root cause, and the rule it produced.</p>
+
+      <div class="failure">
+        <div class="failure-label">Failure 1 · Downtown Los Angeles, March 2025</div>
+        <div class="failure-title">Guru Meditation under concurrent SD + LoRa load</div>
+        <p>T-Deck Plus running Ghost Engine wardrive + LoRa mesh receiver in a dense RF environment (40+ APs, active LoRa mesh traffic). Crashes occurred at non-deterministic intervals, between 4 and 90 minutes of sustained operation. Crash addresses varied. The bench environment (laboratory with single AP and no LoRa peer) never produced the crash.</p>
+        <p>Root cause: SD write operations and LoRa receive interrupts both manipulated the SPI peripheral block. With no arbitration, the LoRa interrupt would occasionally fire during an SD transaction, corrupting both. The corruption propagated as memory damage that crashed in arbitrary subsystems.</p>
+        <p><strong>Produced Rule 1: hit-and-run.</strong></p>
+      </div>
+
+      <div class="failure">
+        <div class="failure-label">Failure 2 · Lincoln Heights, May 2025</div>
+        <div class="failure-title">Watchdog reboot under sustained SD write</div>
+        <p>Ghost Engine writing wardrive CSV continuously during a long-form field session. Every 15–25 minutes, the watchdog timer fired and the device rebooted. No crash dump — clean reboot.</p>
+        <p>Root cause: an SD write extending across multiple sectors held the SPI bus for tens of milliseconds. During this window, the LoRa radio's interrupt handler could not service incoming packets, and the BLE stack's scan callback could not flush its result buffer. The watchdog detected the resulting starvation and rebooted the device as a recovery action.</p>
+        <p><strong>Produced Rule 2: no extended holds.</strong></p>
+      </div>
+
+      <div class="failure">
+        <div class="failure-label">Failure 3 · Pasadena, July 2025</div>
+        <div class="failure-title">WiFi scanner deadlock with Gemini AI client</div>
+        <p>The Gemini AI client (Core 1 foreground app) and the Ghost Engine wardrive scanner (Core 0 background) both required WiFi radio access. The ESP32-S3's WiFi peripheral is single-instance: only one consumer can hold it at a time. Both subsystems would block waiting for the radio, producing visible UI freezes and silent wardrive interruptions.</p>
+        <p>Root cause: WiFi radio arbitration was not explicit. Each subsystem assumed it could use the radio whenever it needed to. The deadlock was probabilistic — short Gemini queries usually completed without conflict, but a single long inference would block the wardrive long enough for the watchdog to intervene.</p>
+        <p><strong>Produced Rule 3: radio-traffic mutual exclusion via shared boolean flag.</strong></p>
+      </div>
+
+      <div class="failure">
+        <div class="failure-label">Failure 4 · Bench, December 2025</div>
+        <div class="failure-title">Nuke operation under Treaty discipline</div>
+        <p>The Ghost Partition Nuke — sector-level zero-overwrite of sensitive data files before FAT unlinking — must hold the SPI bus for the duration of the wipe, in violation of Rule 2 (no extended holds). The naive implementation would crash the LoRa radio mid-wipe, corrupting both the wipe and the radio state. The wipe could not be safely executed during normal operation.</p>
+        <p>Root cause: the operation that needs the bus most exclusively is also the most sensitive to interruption. Halting the wipe partway through leaves the data partially-destroyed and partially-recoverable — the worst possible outcome.</p>
+        <p><strong>Produced Rule 4: destructive operations under Treaty discipline at boot, before Ghost Engine spawn.</strong></p>
+      </div>
+    </section>
+
+    <!-- III. THE RULES -->
+    <section class="s" id="rules">
+      <div class="s-header"><div class="s-num">III.</div><h2 class="s-title">The Four Rules</h2></div>
+
+      <p>The Treaty consists of four rules. They are binding on first-party OS code, third-party ELF modules loaded at runtime from SD, and any future hardware target. Violation produces immediate crashes, watchdog reboots, or test failures. The rules are short enough to be remembered and specific enough to be checked.</p>
+
+      <div class="rule">
+        <div class="rule-num">Rule 1</div>
+        <div class="rule-title">Hit and run</div>
+        <div class="rule-text">Every SPI consumer acquires the bus mutex, performs its operation, and releases the mutex immediately. No idle holds. No long-running state retained across mutex releases. The mutex is a hot resource: take it, use it, return it. The recursive mutex (<code>spi_mutex</code>) permits nested operations within a single component, but the outermost component is responsible for releasing the same number of times it acquired.</div>
+      </div>
+
+      <div class="rule">
+        <div class="rule-num">Rule 2</div>
+        <div class="rule-title">No extended holds</div>
+        <div class="rule-text">No operation may hold the SPI bus for longer than 50 milliseconds under any circumstances during normal operation. Operations that would exceed this budget — large SD writes, long display flushes, multi-sector erase — must be chunked into smaller atomic transactions, each acquiring and releasing the mutex independently. The 50ms budget is chosen to fit within the LoRa SX1262's RX-mode interrupt service window and the BLE stack's callback flush interval.</div>
+      </div>
+
+      <div class="rule">
+        <div class="rule-num">Rule 3</div>
+        <div class="rule-title">Radio-traffic mutual exclusion via shared boolean flag</div>
+        <div class="rule-text">The WiFi radio is a single-instance peripheral on the ESP32-S3. The Ghost Engine wardrive scanner and the foreground AI client share access via a <code>wifi_in_use</code> boolean. The flag is set by the consumer claiming the radio and cleared on release. Consumers check the flag before claiming; if set, they yield and retry. On the Cardputer ADV (no PSRAM), this rule is extended into full WiFi mode-locking with hard teardown — CLIENT and SCANNER modes are mutually exclusive at the OS level, with full <code>esp_wifi_stop()</code> + <code>esp_wifi_deinit()</code> between transitions.</div>
+      </div>
+
+      <div class="rule">
+        <div class="rule-num">Rule 4</div>
+        <div class="rule-title">Destructive operations under Treaty discipline at boot</div>
+        <div class="rule-text">Operations that violate Rule 2 by necessity — Nuke sector overwrite, full SD format, encrypted partition key destruction — execute under <code>spi_mutex</code> discipline at boot, before the Ghost Engine task spawns. During this boot window, no other SPI consumer is active. The operation has exclusive access to the bus for as long as it needs. The Ghost Engine starts only after all destructive operations have completed and the bus has returned to normal Treaty governance.</div>
+      </div>
+    </section>
+
+    <!-- IV. AUDIT -->
+    <section class="s" id="audit">
+      <div class="s-header"><div class="s-num">IV.</div><h2 class="s-title">v1.2.0 Audit Results</h2></div>
+
+      <p>The Treaty is enforced by recursive mutex (<code>spi_mutex</code>), not by static analysis. Every site that touches the SPI bus must call <code>spi_mutex_take()</code> before its first transaction and <code>spi_mutex_give()</code> after its last. A manual audit was conducted for v1.2.0 to verify that every take has a matching give, no operations exceed the 50ms hold budget, and no consumer holds the bus during a yield.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>File</th><th>Takes</th><th>Gives</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>core/ghost_engine.cpp</td><td>12</td><td>12</td><td>Wardrive scan write loop, BLE callback flush</td></tr>
+            <tr><td>core/wardrive_task.cpp</td><td>8</td><td>8</td><td>Session file creation + per-frame write</td></tr>
+            <tr><td>radio/lora_driver.cpp</td><td>6</td><td>6</td><td>SX1262 command queue + interrupt handler</td></tr>
+            <tr><td>radio/sd_filesystem.cpp</td><td>9</td><td>10</td><td>One extra give covers a rare recovery path</td></tr>
+            <tr><td>ui/display_driver.cpp</td><td>7</td><td>7</td><td>Pixel flush + command sequencing</td></tr>
+            <tr><td>boot/late_sd_init.cpp</td><td>4</td><td>4</td><td>Cold SPI restart for T-LoRa Pager</td></tr>
+            <tr><td>security/nuke.cpp</td><td>3</td><td>3</td><td>Boot-time only, exclusive bus access</td></tr>
+            <tr><td>elf/sandbox.cpp</td><td>2</td><td>2</td><td>ELF module load + verify</td></tr>
+            <tr><td>apps/recorder.cpp</td><td>1</td><td>1</td><td>Audio capture write</td></tr>
+            <tr><td>apps/mesh_messenger.cpp</td><td>1</td><td>1</td><td>Message persistence</td></tr>
+            <tr><td>apps/audio_player.cpp</td><td>1</td><td>1</td><td>WAV streaming read</td></tr>
+            <tr><td>apps/elf_browser.cpp</td><td>0</td><td>1</td><td>Defensive give in error path</td></tr>
+            <tr><td><strong>Total</strong></td><td><strong>54</strong></td><td><strong>56</strong></td><td>Two extra gives are defensive recovery paths</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>The two extra gives are intentional defensive code: the SD filesystem driver and ELF browser each contain a recovery path that releases the mutex in error conditions where a previous acquire may not be tracked. The recursive mutex tolerates extra gives without harm.</p>
+    </section>
+
+    <!-- V. PRIOR ART -->
+    <section class="s" id="prior-art">
+      <div class="s-header"><div class="s-num">V.</div><h2 class="s-title">Prior Art &amp; Precedent</h2></div>
+
+      <p>The technique of mutex-arbitrated SPI is not new. Every operating system kernel that drives more than one SPI peripheral simultaneously uses some form of arbitration. The contribution of the SPI Bus Treaty is not the technique — it is the protocol: the named, documented, audited contract that every component must obey, published as a public reference for any future project on this hardware class.</p>
+
+      <p>The Treaty stands in a tradition of named arbitration protocols:</p>
+
+      <ul>
+        <li><strong>Unix filesystem locking conventions (1970s)</strong> — established formal rules for competing processes sharing a filesystem. The conventions were not new techniques (file locks predate Unix); the contribution was naming the rules and making them platform-wide.</li>
+        <li><strong>Apollo Guidance Computer priority scheduling protocol (1969)</strong> — formal rules for competing tasks sharing a processor under load. The 1202 alarm during the lunar landing was the protocol working as designed: the lower-priority task was sacrificed to preserve the higher-priority one.</li>
+        <li><strong>Nintendo N64 RSP time budget (1996)</strong> — formal rules for competing subsystems sharing the Reality Signal Processor. The budget was not new (time-slicing predates the N64); the contribution was the documented protocol that every game developer had to follow.</li>
+      </ul>
+
+      <p>In each case the solution was not a patch — it was a protocol. A named standard. A thing that could be taught, documented, and enforced across an entire platform. The SPI Bus Treaty is the application of this approach to the ESP32-S3 hardware class. To the best of our knowledge, no prior published reference for this protocol exists on this chip family. If reviewers can identify prior art, we will document and credit it — this paper is offered with that invitation.</p>
+    </section>
+
+    <!-- VI. ENFORCEMENT -->
+    <section class="s" id="enforcement">
+      <div class="s-header"><div class="s-num">VI.</div><h2 class="s-title">Enforcement &amp; Contract</h2></div>
+
+      <p>The Treaty is enforced by three mechanisms that work together:</p>
+
+      <ol>
+        <li><strong>The recursive mutex (<code>spi_mutex</code>).</strong> Every SPI consumer must acquire the mutex before its first transaction and release after its last. The mutex is recursive, so nested operations within a single component do not deadlock. The mutex is mandatory — there is no “take if available” path. A consumer that cannot acquire the mutex must yield and retry.</li>
+        <li><strong>Audit.</strong> The v1.2.0 audit (Section IV) verified that every take has a matching give. The audit is repeated for every release. Future versions will add static analysis to enforce the pattern at compile time.</li>
+        <li><strong>Documentation.</strong> The Treaty is documented in this paper and in the source tree. Third-party ELF module developers are required to follow the Treaty as a condition of running on the platform. The Treaty is the public contract — any module that violates it is a bug in that module, not in the OS.</li>
+      </ol>
+
+      <p>The Treaty is what makes the Ghost Engine possible. The Ghost Engine is the entire reason Pisces Moon OS exists. The relationship between the two is not incidental — the OS was designed around the Engine, and the Engine could not run without the Treaty. <strong>The treaty doesn't change. The hardware around the treaty does.</strong> The same four rules protect the bus on the T-Deck Plus (8 MB PSRAM), the T-LoRa Pager (8 MB PSRAM, deferred boot), and the Cardputer ADV (no PSRAM, mode-locked WiFi). The protocol generalized to the entire memory tier of the ESP32-S3 chip class.</p>
+
+      <p><strong>Two-device live-traffic validation (bench, May 20, 2026):</strong> Mesh Messenger send/receive confirmed between T-Deck Plus and Cardputer ADV with Cap LoRa-1262, both on the LongFast channel, concurrent with active wardrive logging on both devices. SD transcripts written to <code>/mesh_logs/messages.csv</code> on each device while WiFi scan results were simultaneously written to wardrive CSV. Both Rule 1 (hit and run) and Rule 2 (no extended holds) survived contact with real LoRa interrupt traffic interleaved with SD writes on the same bus. The Treaty held across the 8 MB PSRAM and no-PSRAM ends of the chip tier simultaneously — proof that the protocol is correctly specified, not merely correctly observed.</p>
+
+      <p>The contribution of this document is the protocol itself — named, documented, audited, and offered as a starting point for any future project on this hardware class that needs to coordinate concurrent peripheral access on a shared SPI bus. The protocol is open source under AGPL-3.0. The reference implementation is at <a href="https://github.com/FluidFortune/pisces-moon-os">github.com/FluidFortune/pisces-moon-os</a>.</p>
+    </section>
+
+    <div class="closing">
+      <p><strong>The SPI Bus Treaty</strong> — v1.2.0 — May 19, 2026</p>
+      <p>Eric Becker · <a href="https://fluidfortune.com">Fluid Fortune</a> · <a href="mailto:forge@fluidfortune.com">forge@fluidfortune.com</a></p>
+      <p>Companion documents: <a href="sovereignty.html">white paper</a> · <a href="engineering-record.html">engineering record</a> · <a href="device-architecture.html">device architecture</a></p>
+      <p>Source: <a href="https://github.com/FluidFortune/pisces-moon-os">github.com/FluidFortune/pisces-moon-os</a></p>
+      <p>Licensed under AGPL-3.0.</p>
+    </div>
+
+  </main>
 </div>
 
-<div class="body">
-
-  <div class="toc">
-    <div class="toc-title">Contents</div>
-    <a href="#pattern">The pattern</a>
-    <a href="#physics">The physics</a>
-    <a href="#evidence">Evidence from the field — four failures</a>
-    <a href="#design">The Treaty's design</a>
-    <a href="#beyond">Why this matters beyond Pisces Moon</a>
-    <a href="#not">What the Treaty is not</a>
-    <a href="#status">Status</a>
-  </div>
-
-  <!-- THE PATTERN -->
-  <h2 id="pattern">THE PATTERN</h2>
-
-  <p>Three handhelds. Same SoC class. Same conflict.</p>
-
-  <div class="device-list">
-    <div class="device-item">
-      <div class="device-item-name">LILYGO T-DECK PLUS</div>
-      <div class="device-item-desc">Display + microSD + SX1262 LoRa on one SPI bus</div>
-    </div>
-    <div class="device-item">
-      <div class="device-item-name">LILYGO T-LORA PAGER</div>
-      <div class="device-item-desc">Display + microSD + SX1262 LoRa + ST25R3916 NFC + nRF24 — all on one SPI bus</div>
-    </div>
-    <div class="device-item">
-      <div class="device-item-name">M5STACK CARDPUTER ADV + CAP LORA868</div>
-      <div class="device-item-desc">Display on its own SPI controller, but microSD and SX1262 LoRa share the second one</div>
-    </div>
-    <div class="device-item">
-      <div class="device-item-name">THE PATTERN</div>
-      <div class="device-item-desc">Every ESP32-S3 handheld with both LoRa and microSD has this conflict. This is not a product problem. It is a hardware class problem.</div>
-    </div>
-  </div>
-
-  <p>This is not a vendor mistake. The ESP32-S3 has three SPI peripheral controllers. The display already claims one for its own performance. The remaining two need to host everything else: storage, radios, sensors, expansion modules. Once you have more peripherals than controllers — and on any non-trivial handheld you will — peripherals share buses. Once peripherals share buses, they need arbitration.</p>
-
-  <p><strong>The Pisces Moon SPI Bus Treaty is that arbitration, named and documented.</strong></p>
-
-  <!-- THE PHYSICS -->
-  <h2 id="physics">THE PHYSICS</h2>
-
-  <h3>What SPI is and what makes it brittle</h3>
-
-  <p>SPI is a four-wire synchronous bus: clock, MISO, MOSI, and a per-peripheral chip-select line. Only one peripheral can be "selected" at any given moment. Selecting a peripheral pulls its chip-select low; deselecting it raises CS back to high-impedance. A transaction is a sequence of bytes shifted in and out while CS is held low.</p>
-
-  <p>The protocol has no concept of cooperation. There is no "I'm in the middle of something, please wait." There is no token. If task A pulls CS-A low to start a multi-byte read from the SD card, and task B pulls CS-B low to write a register on the LoRa radio while A's read is still in flight, the bus has now seen a clock pulse addressed to neither device in particular. Both devices respond unpredictably. Both transactions corrupt.</p>
-
-  <p>On hobbyist Arduino projects this rarely surfaces. There's usually one task, talking to peripherals sequentially, and the only "race" is between the main loop and an interrupt handler — small surface area, easy to spot.</p>
-
-  <p>On a handheld OS running multi-core with persistent background tasks, foreground apps doing arbitrary I/O, and radio interrupts firing on millisecond intervals, the surface area becomes large and the failure modes are subtle. Most of the time the bus survives because most transactions are short. Sometimes it doesn't.</p>
-
-  <h3>SD cards are different</h3>
-
-  <p>The two peripherals on the bus have very different timing characteristics, and this is where the structural problem really lives.</p>
-
-  <p><strong>The SX1262 LoRa radio</strong> handles its bus transactions on the order of microseconds. A register read is 4 bytes. A FIFO write for a typical LoRa packet is 30–50 bytes. The radio also schedules its own internal work after a transaction completes, so the bus is free again almost immediately.</p>
-
-  <p><strong>A microSD card</strong> handles its bus transactions on the order of milliseconds. A single 512-byte block read can take 1–2 ms under ideal conditions, longer under contention. Block writes can stall the bus for tens of milliseconds while the card's internal controller commits to flash. Mounting the card from a cold-power state can take hundreds of milliseconds — and on some cards, in some boot states, the card refuses to respond at all for the first several seconds, requiring repeated retries.</p>
-
-  <p>So when both devices share a bus, the timing mismatch is enormous. The radio assumes the bus will be free in microseconds. The card holds the bus for milliseconds. The radio's interrupt handler fires expecting to service an incoming packet, finds the bus busy with an SD operation it can't preempt, and either drops the packet or corrupts the SD transaction trying.</p>
-
-  <p>Without arbitration, the result depends on luck — which task got the bus first, how long it holds it, what the other task is trying to do. Some boots work. Some don't. Some logs are written. Some aren't. The failure mode is silent, intermittent, and impossible to reproduce.</p>
-
-  <!-- EVIDENCE -->
-  <h2 id="evidence">EVIDENCE FROM THE FIELD</h2>
-
-  <p>The Treaty's design wasn't a theoretical exercise. Each mechanism exists because a specific real-world failure surfaced during Pisces Moon's development across the three devices.</p>
-
-  <div class="failure">
-    <div class="failure-header">
-      <div class="failure-num">FAILURE 1</div>
-      <div class="failure-title">T-Deck Plus — Mesh Messenger drops LoRa packets during wardrive</div>
-    </div>
-    <div class="failure-body">
-      <div class="failure-label">Symptom</div>
-      <p>Sending a LoRa text message via Mesh Messenger while a wardrive session was active resulted in the message visibly being sent on the UI, but receiving nodes never got it. The wardrive log continued writing normally to SD.</p>
-      <div class="failure-label">Cause</div>
-      <p>Mesh Messenger's LoRa transmit path issued raw SPI transactions to the SX1262 without joining the Treaty mutex. The wardrive task held the bus during its SD writes; Mesh's transmit landed on a clocked-out bus addressed to a card that thought it was being read.</p>
-      <div class="failure-fix">
-        <div class="failure-label">Fix</div>
-        <p>Mesh Messenger now takes <code>spi_mutex</code> before any LoRa operation. Recovered packet delivery, and as a bonus the wardrive session stopped getting its CSV writes mangled when LoRa packets were sent.</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="failure">
-    <div class="failure-header">
-      <div class="failure-num">FAILURE 2</div>
-      <div class="failure-title">T-LoRa Pager — Wardrive silently writes nothing for entire sessions</div>
-    </div>
-    <div class="failure-body">
-      <div class="failure-label">Symptom</div>
-      <p>The Ghost Engine task started normally on boot, the wardrive UI showed WiFi networks being discovered and counts incrementing, the filename ribbon showed <code>/wardrive_0015.csv</code> — but pulling the SD card revealed no file by that name. The card had files from previous sessions (also empty) but nothing from the current boot.</p>
-      <div class="failure-label">Cause</div>
-      <p>Pager defers SD mount to a background task because the shared SPI bus can't always service the card during the first few seconds of boot. The wardrive task had a 15-second startup wait for <code>g_sd_ready</code>. If SD mounted after that window — which it did intermittently on this device — the task fell into a fallback path that constructed a timestamp-based filename and tried to append to it without ever calling <code>sd.open(..., O_CREAT)</code>. SdFat silently dropped every subsequent write.</p>
-      <div class="failure-fix">
-        <div class="failure-label">Fix — Lazy session-file creation (v2.7)</div>
-        <p>The task now leaves the filename empty until SD genuinely becomes ready, then claims the next available <code>/wardrive_NNNN.csv</code> slot. The Ghost Engine invariant — <em>the device is always collecting</em> — is restored on Pager regardless of mount timing. This bug doesn't exist on T-Deck Plus, where SD mounts synchronously during <code>setup()</code> before the wardrive task spawns. Same task, same code path, same Treaty discipline — different boot timing surfaces a different bug.</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="failure">
-    <div class="failure-header">
-      <div class="failure-num">FAILURE 3</div>
-      <div class="failure-title">T-Deck Plus / T-LoRa Pager — File manager crash-loop</div>
-    </div>
-    <div class="failure-body">
-      <div class="failure-label">Symptom</div>
-      <p>Opening the on-device file manager would render the header strip and then crash-reset the device to the launcher. Sometimes it rendered a single row of files before crashing. Repeatable, but not always — about 60–70% of attempts.</p>
-      <div class="failure-label">Cause</div>
-      <p>The file manager's directory scan calls <code>sd.open(directory)</code> and <code>dir.openNext()</code> without taking the Treaty mutex. The wardrive task is writing CSV rows on the same bus at 4-second intervals. When the file manager's scan landed during a wardrive write, the resulting bus corruption either returned a null directory handle (which the code retried infinitely — the visible crash) or corrupted SdFat's internal state badly enough to trigger a watchdog reset.</p>
-      <div class="failure-fix">
-        <div class="failure-label">Fix — Full Treaty discipline in filesystem.cpp (v1.2.0)</div>
-        <p>Wrap every SdFat call in the file manager with <code>PM_SPI_TAKE</code> / <code>PM_SPI_GIVE</code>. Use the <code>sd_in_use</code> sentinel flag to tell wardrive to pause its writes entirely while the file manager is active. Landed in v1.2.0. Ghost Ride The Whip — a read-only wardrive log inspector built with proper Treaty discipline — remains useful for verifying SD contents without the full file manager.</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="failure">
-    <div class="failure-header">
-      <div class="failure-num">FAILURE 4</div>
-      <div class="failure-title">T-LoRa Pager — NRF24 power gating leaks current</div>
-    </div>
-    <div class="failure-body">
-      <div class="failure-label">Symptom</div>
-      <p>Pager battery life was ~30% worse than expected even with all radios apparently disabled. Profiling showed a 60 mA draw that didn't correspond to any active peripheral.</p>
-      <div class="failure-label">Cause</div>
-      <p>The Pager routes peripheral power through an XL9555 I²C GPIO expander. The NRF24 module shares a power rail with the LoRa radio. When apps disabled LoRa via <code>PM_LORA_POWER_OFF()</code>, the NRF24 was still being held in a partial-power state because its CS line was left floating from a previous transaction. The floating CS allowed phantom current draw through the chip's I/O protection diodes.</p>
-      <div class="failure-fix">
-        <div class="failure-label">Fix</div>
-        <p>The Treaty's <code>xl9555_boot_sequence()</code> now explicitly drives NRF24 CS high before powering the rail, and drives it back to high-impedance only after the rail is fully off. This isn't a classic SPI race — it's a peripheral lifecycle issue that surfaces because the Treaty already owned the bus-state machine. Once you have a structured place to say "this is what the bus should look like in this state," lifecycle bugs become tractable.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- DESIGN -->
-  <h2 id="design">THE TREATY'S DESIGN</h2>
-
-  <h3>The mechanism</h3>
-
-  <p>A single FreeRTOS mutex (<code>spi_mutex</code>) plus a small set of conventions for using it.</p>
-
-<pre><code>extern SemaphoreHandle_t spi_mutex;
-</code></pre>
-
-  <p>Defined once in <code>wardrive.cpp</code>, created during <code>setup()</code>, lives for the lifetime of the device. Every task that wants to issue SPI transactions to the shared bus must:</p>
-
-<pre><code>if (xSemaphoreTakeRecursive(spi_mutex, pdMS_TO_TICKS(500)) == pdTRUE) {
-    // Bus is mine for the duration of this block
-    FsFile file = sd.open("/log.csv", O_WRITE | O_APPEND);
-    file.println(row);
-    file.close();
-    xSemaphoreGiveRecursive(spi_mutex);
-}</code></pre>
-
-  <p>The mechanism is plain FreeRTOS synchronization. The Treaty is the named convention around it. In v1.2.0 the mutex was converted to a recursive mutex, eliminating the entire class of nested-acquisition deadlock.</p>
-
-  <h3>Named ownership</h3>
-
-  <p>When debug logging is enabled, every take and give logs a human-readable owner name:</p>
-
-<pre><code>[TREATY] wardrive.scan      TAKE @ 12347ms
-[TREATY] wardrive.scan      GIVE @ 12352ms
-[TREATY] filemgr.opendir    TAKE @ 12353ms
-[TREATY] filemgr.opendir    GIVE @ 12354ms</code></pre>
-
-  <p>This is what lets you trace race conditions in field tests. When the SD writes vanish, the log shows you exactly who took the bus and never released it, or who tried to take it during someone else's window. Generic mutexes are anonymous; named ones tell you which subsystem broke discipline.</p>
-
-  <h3>ISR-safe variants</h3>
-
-  <p>Interrupt handlers — particularly the LoRa receive interrupt — need bus access but can't block. The Treaty provides:</p>
-
-<pre><code>#define PM_SPI_TAKE_ISR(pxWoken)
-#define PM_SPI_GIVE_ISR(pxWoken)</code></pre>
-
-  <p>These use <code>xSemaphoreTakeFromISR()</code> / <code>xSemaphoreGiveFromISR()</code> and pass through the higher-priority-task-woken pointer FreeRTOS needs. Without these, anyone porting a new interrupt handler would have to look up the right API surface; with them, it's copy-paste from existing examples.</p>
-
-  <h3>Sentinel flags — cooperation, not just exclusion</h3>
-
-  <p>The mutex protects the bus itself, but it doesn't tell other tasks <em>why</em> you have it. Sometimes you need a peer task to step back entirely while you're working, not just block waiting for the mutex. The Treaty defines sentinel flags:</p>
-
-  <p><code>sd_in_use</code> — tells the wardrive task to skip its SD writes entirely while a file manager or diagnostic app is reading the card. Without this, the wardrive task would back up retries against the contended mutex and never make progress.</p>
-
-  <p><code>wifi_in_use</code> — tells the wardrive task to skip its WiFi scans while another app needs the radio for its own purposes.</p>
-
-  <p>These are cheaper than additional mutexes (a single <code>volatile bool</code> read) and they express the right semantic: <em>don't compete, defer.</em></p>
-
-  <h3>Per-device extensions</h3>
-
-  <p>T-LoRa Pager adds power-rail management via the XL9555 I²C GPIO expander. The Treaty extends to cover this:</p>
-
-<pre><code>PM_LORA_POWER_ON();    // raises XL9555 pin 0
-PM_LORA_POWER_OFF();   // lowers XL9555 pin 0
-PM_NFC_POWER_ON();     // raises XL9555 pin 1
-// ...etc</code></pre>
-
-  <p>These macros are no-ops on T-Deck Plus and Cardputer. On Pager, they wrap the I²C transactions that drive the rail and shadow the result in RAM so subsequent reads don't need a bus round-trip.</p>
-
-  <p>The Cardputer ADV with the Cap LoRa868 module is in the same category: SD and LoRa share FSPI, both need the Treaty. Cardputer's display SPI is separate (HSPI), which means display writes can happen at full speed without mutex contention. But anyone who writes a Cardputer app that touches SD or LoRa must still take the mutex. <strong>The Treaty is universal across the platform regardless of whether one specific bus is contended.</strong></p>
-
-  <!-- BEYOND PISCES MOON -->
-  <h2 id="beyond">WHY THIS MATTERS BEYOND PISCES MOON</h2>
-
-  <p>The structural problem is not specific to Pisces Moon, the LilyGO products, or the M5Stack ones. <strong>Any device built on ESP32-S3 with both LoRa and microSD will face this conflict.</strong> That's a hardware class, not a product.</p>
-
-  <p>Devices in the broader hardware ecosystem that fit this pattern:</p>
-
-  <div class="device-list">
-    <div class="device-item">
-      <div class="device-item-name">LILYGO T-BEAM (ESP32-S3)</div>
-      <div class="device-item-desc">Same SoC, LoRa + SD on shared bus</div>
-    </div>
-    <div class="device-item">
-      <div class="device-item-name">HELTEC WIRELESS TRACKER</div>
-      <div class="device-item-desc">ESP32-S3, LoRa, storage — same class</div>
-    </div>
-    <div class="device-item">
-      <div class="device-item-name">HELTEC WIRELESS PAPER</div>
-      <div class="device-item-desc">ESP32-S3, LoRa, shared bus</div>
-    </div>
-    <div class="device-item">
-      <div class="device-item-name">M5STACK ATOM S3R + LORA ATOM</div>
-      <div class="device-item-desc">Modular attach, same arbitration problem</div>
-    </div>
-    <div class="device-item">
-      <div class="device-item-name">KODEDOT (announced Aug 2026)</div>
-      <div class="device-item-desc">Dual-chip architecture — explicitly designed to dodge this conflict by separating radio and storage onto different SoCs. The Treaty methodology still applies to shared resources between the two chips.</div>
-    </div>
-    <div class="device-item">
-      <div class="device-item-name">PISCES MOON ESP32-P4 PORT</div>
-      <div class="device-item-desc">Ghost Engine on dedicated C6 silicon via SDIO — same dual-chip architecture as KodeDot, built using Treaty methodology. The UART peripheral map is the P4 expression of the Treaty. The methodology scales with the hardware.</div>
-    </div>
-  </div>
-
-  <div class="pullquote">
-    The Treaty pattern transfers directly — the mutex definition, the named ownership convention, the sentinel flags, the ISR-safe variants — all of it is portable to any ESP32-S3 device with shared-SPI peripherals. <strong>Naming it is the first step toward other projects in the same hardware class adopting something compatible.</strong>
-  </div>
-
-  <!-- WHAT THE TREATY IS NOT -->
-  <h2 id="not">WHAT THE TREATY IS NOT</h2>
-
-  <p><strong>It is not a custom mutex implementation.</strong> The mechanism is plain FreeRTOS. There's no novel synchronization primitive here.</p>
-
-  <p><strong>It is not a substitute for proper SPI driver design.</strong> If the underlying ESP-IDF or Arduino-ESP32 SPI driver had bugs, the Treaty wouldn't fix them. The Treaty assumes the driver works correctly for any single transaction and arbitrates which task gets to issue them.</p>
-
-  <p><strong>It is not a guarantee of bus health.</strong> A misbehaving peripheral that holds CS low past its transaction can still corrupt the bus regardless of mutex discipline. The Treaty makes the well-behaved case work correctly; it cannot rescue a malfunctioning peripheral.</p>
-
-  <p><strong>It is not specific to the SX1262 or SdFat.</strong> Any pair of SPI peripherals with mismatched timing characteristics would exhibit the same pattern. The Treaty would apply unchanged to ESP32-S3 + NRF24 + SD, or ESP32-S3 + W5500 Ethernet + flash, or any other combination where one device wants the bus in microseconds and another holds it for milliseconds.</p>
-
-  <p><strong>The novel contribution is the naming and the convention, not the code.</strong> Code is just a mutex. The contribution is recognizing that this is a cross-device structural pattern, giving it a name that travels with the code, building the debug logging and sentinel-flag conventions around it so the discipline is enforceable in code review, and documenting it so that anyone porting a new app or a new device knows the contract.</p>
-
-  <!-- STATUS -->
-  <h2 id="status">STATUS</h2>
-
-  <div class="status-strip">
-    <div class="status-item">Version<span>v1.2.0</span></div>
-    <div class="status-item">Take sites audited<span>54 across 12 files</span></div>
-    <div class="status-item">Give sites verified<span>56</span></div>
-    <div class="status-item">Bugs found & fixed<span>3 (ELF loader ×2, filesystem ×1)</span></div>
-    <div class="status-item">Mutex type<span>Recursive (v1.2.0)</span></div>
-    <div class="status-item">Devices covered<span>T-Deck Plus, T-LoRa Pager, Cardputer ADV</span></div>
-  </div>
-
-  <p>The Treaty is fully wired across Pisces Moon's three target devices as of v1.2.0. A systematic audit was performed for v1.2.0 — every call site walked, every exit path verified for proper release. Three real bugs were identified and fixed in the same release. The Treaty mutex was also converted to a recursive mutex in v1.2.0, preventing the entire class of nested-acquisition deadlock from ever surfacing again.</p>
-
-  <p>Apps that join the Treaty work. Apps that don't eventually break in field testing — sometimes subtly (wardrive writes silently dropping), sometimes obviously (file manager crash-loop). The pattern is enforceable because deviations are observable.</p>
-
-  <div class="pullquote">
-    <strong>Without the Treaty, the Ghost Engine would be a marketing claim. With it, the Ghost Engine is a hardware-substantiated guarantee.</strong>
-  </div>
-
-  <div class="closing">
-    <div class="closing-title">THE GHOST ENGINE NEVER STOPS. THE SPI BUS TREATY IS WHY.</div>
-    <div class="closing-sub">
-      Full source: github.com/FluidFortune/pisces-moon-os (AGPL-3.0)<br>
-      Audit document: docs/SPI-TREATY-AUDIT.md in repository<br>
-      Device guides: docs/devices/ in repository<br>
-      fluidfortune.com · forge@fluidfortune.com
-    </div>
-  </div>
-
-</div>
-
-<footer>
-  <a href="https://fluidfortune.com">FLUID FORTUNE</a> &nbsp;|&nbsp;
-  <a href="pisces-moon.html">PISCES MOON</a> &nbsp;|&nbsp;
-  <a href="engineering-record.html" style="color:var(--green-dim);text-decoration:none">ENGINEERING RECORD</a>
-    &nbsp;|&nbsp;
-    <a href="sovereignty.html">WHITE PAPER</a> &nbsp;|&nbsp;
-  <a href="device-architecture.html">DEVICE ARCHITECTURE</a> &nbsp;|&nbsp;
-  <a href="https://github.com/FluidFortune/pisces-moon-os">GITHUB</a> &nbsp;|&nbsp;
-  AGPL-3.0 · ERIC BECKER · 2026
+<footer class="site-footer">
+  <a href="https://fluidfortune.com">Main Site</a> ·
+  <a href="pisces-moon.html">Pisces Moon OS</a> ·
+  <a href="sovereignty.html">White Paper</a> ·
+  <a href="https://github.com/FluidFortune">GitHub</a>
 </footer>
 
 </body>
