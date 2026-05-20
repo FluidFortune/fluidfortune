@@ -199,6 +199,7 @@
       <a href="https://github.com/FluidFortune/pisces-bridge" class="btn btn-sec" target="_blank" rel="noopener">BRIDGE REPO</a>
       <a href="sovereignty.html" class="btn btn-sec">WHITE PAPER</a>
       <a href="engineering-record.html" class="btn btn-sec">ENGINEERING RECORD</a>
+      <a href="mesh-state.html" class="btn btn-sec">MESH STATE</a>
       <a href="#architecture" class="btn btn-ghost">LEARN MORE ↓</a>
     </div>
   </div>
@@ -283,7 +284,7 @@
         <div class="tier-num">TARGET 6</div>
         <div class="tier-title">CARDPUTER ADV</div>
         <div class="tier-price">ESP32-S3 (NO PSRAM) — CAP LORA868 PENDING</div>
-        <div class="tier-desc">Compact ESP32-S3 with built-in keyboard — but <strong>no PSRAM</strong> (ESP32-S3FN8: 512 KB internal SRAM only). 47 apps registered in the launcher. Memory architecture constraint under active engineering: Pisces Moon was designed around 8 MB PSRAM availability. Apps relying on large PSRAM buffers (wardrive WiFi scans, Gemini client, SQLite) require audit and reduced-allocation fallbacks before they can be considered validated on this target. Lightweight apps confirmed working. LoRa/GPS Cap module in transit — full radio validation late May or early June 2026.</div>
+        <div class="tier-desc">Compact ESP32-S3 with built-in keyboard — and <strong>no PSRAM</strong> (ESP32-S3FN8: 320 KB internal SRAM total). 47 apps registered. v1.2.0 architectural changes — lazy app-state allocation, WiFi mode-locking with hard teardown, PlatformIO PSRAM flag isolation — reclaimed 81 KB of static memory. Result: 125 KB free heap during active wardrive with 24 BLE + 14 WiFi + GPS lock at 27 satellites. <strong>Four concurrent radios on 320 KB total SRAM.</strong> Cap LoRa-1262 module validated May 20, 2026 — two-device mesh send/receive between T-Deck Plus and Cardputer ADV confirmed at the bench, concurrent with active wardrive on both. See the <a href="mesh-state.html" style="color:var(--amber-dim);font-family:var(--font-mono);font-size:.85em">mesh state document</a> for current Mesh Messenger capabilities.</div>
       </div>
       <div class="tier-card">
         <div class="tier-num">TARGET 7</div>
@@ -438,6 +439,7 @@
     <div class="cta-links">
       <a href="sovereignty.html" class="btn btn-primary">READ THE WHITE PAPER →</a>
       <a href="engineering-record.html" class="btn btn-sec">ENGINEERING RECORD →</a>
+      <a href="mesh-state.html" class="btn btn-sec">MESH STATE →</a>
       <a href="https://github.com/FluidFortune/pisces-moon-os" class="btn btn-sec" target="_blank" rel="noopener">VIEW SOURCE CODE</a>
       <a href="project.html" class="btn btn-ghost">THE FULL PROJECT</a>
     </div>
@@ -462,6 +464,8 @@
     <a href="sovereignty.html">WHITE PAPER</a>
     &nbsp;|&nbsp;
     <a href="engineering-record.html">ENGINEERING RECORD</a>
+    &nbsp;|&nbsp;
+    <a href="mesh-state.html">MESH STATE</a>
     &nbsp;|&nbsp;
     <a href="https://github.com/FluidFortune">GITHUB</a>
     &nbsp;|&nbsp;
