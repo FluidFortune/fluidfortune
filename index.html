@@ -10,7 +10,7 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://fluidfortune.com">
   <meta property="og:title" content="Fluid Fortune | Pisces Moon OS — Sovereign Computing on $50 Hardware">
-  <meta property="og:description" content="Sovereign computing tools for the era of private intelligence. Pisces Moon OS: Ghost Engine + SPI Bus Treaty. Five deployment targets. 52+ firmware apps. 77 HTML apps. Lety IDE. $144 in hardware. First known documented persistent dual-core background tasking for field intelligence on ESP32-S3.">
+  <meta property="og:description" content="Sovereign computing tools for the era of private intelligence. Pisces Moon OS: Ghost Engine + SPI Bus Treaty. Eleven engineering problems documented. Three ESP32-S3 deployment targets spanning the entire memory tier.">
   <meta property="og:image" content="https://fluidfortune.com/courtjester.jpg">
   <meta property="og:image:width" content="820">
   <meta property="og:image:height" content="1024">
@@ -20,7 +20,7 @@
   <!-- Twitter/X Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Fluid Fortune | Pisces Moon OS — Sovereign Computing on $50 Hardware">
-  <meta name="twitter:description" content="Sovereign computing tools for the era of private intelligence. Pisces Moon OS: Ghost Engine + SPI Bus Treaty. Five deployment targets. 52+ firmware apps. 77 HTML apps. Lety IDE. $144 in hardware.">
+  <meta name="twitter:description" content="Sovereign computing tools for the era of private intelligence. Pisces Moon OS: Ghost Engine + SPI Bus Treaty. Eleven engineering problems documented across three ESP32-S3 deployment targets.">
   <meta name="twitter:image" content="https://fluidfortune.com/courtjester.jpg">
   <meta name="twitter:image:alt" content="FluidFortune — The Court Jester of Vibe Coding">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -63,10 +63,10 @@
     "name": "Pisces Moon OS",
     "applicationCategory": "OperatingSystem",
     "operatingSystem": "ESP32-S3, Linux, Android",
-    "description": "The first known documented implementation of persistent dual-core background tasking for field intelligence collection on the ESP32-S3 hardware class. Features the Ghost Engine (Core 0 continuous wardriving, BLE scanning, GPS logging) and the SPI Bus Treaty (first named architectural standard for shared-bus arbitration on ESP32-S3). 52+ firmware apps, 77 HTML apps, five deployment targets.",
+    "description": "The first known documented implementation of persistent dual-core background tasking for field intelligence collection on the ESP32-S3 hardware class. Features the Ghost Engine (Core 0 continuous wardriving, BLE scanning, GPS logging) and the SPI Bus Treaty (first named architectural standard for shared-bus arbitration on ESP32-S3). 49-52 firmware apps per device. Three Tier 1 deployment targets validated in v1.2.0.",
     "url": "https://fluidfortune.com/pisces-moon.html",
     "downloadUrl": "https://github.com/FluidFortune/pisces-moon-os/releases/tag/v1.2.0",
-    "version": "1.1.1",
+    "version": "1.2.0",
     "releaseNotes": "https://fluidfortune.com/sovereignty.html",
     "author": {
       "@type": "Person",
@@ -82,26 +82,55 @@
   </script>
 
   <style>
-    /* ── APP PANEL TAB SYSTEM ─────────────────────────────────── */
-    .app-panel{border:1px solid #30363d;background:#050a05;overflow:hidden;margin-top:1.5rem}
-    .app-panel-nav{display:flex;background:#040804;border-bottom:2px solid #30363d;border-top:1px solid #30363d;overflow-x:auto;scrollbar-width:none}
-    .app-panel-nav::-webkit-scrollbar{display:none}
-    .app-tab-btn{
-      font-family:'Share Tech Mono',monospace;font-size:.62rem;letter-spacing:.12em;
-      color:#4a6a4a;padding:.85rem 1.4rem;
-      background:none;border:none;
-      border-bottom:3px solid transparent;
-      border-right:1px solid #30363d;
-      cursor:pointer;white-space:nowrap;
-      transition:.2s;text-transform:uppercase;flex-shrink:0;
+    /* ── PROJECT TOC ──────────────────────────────────────────── */
+    .proj-toc{
+      margin:2rem 0 2.5rem;
+      padding:1.25rem 1.5rem;
+      background:rgba(0,0,0,.35);
+      border:1px solid #30363d;
+      border-left:3px solid #00ff41;
     }
-    .app-tab-btn:hover{color:#c8e87a;background:rgba(200,232,122,.06);border-bottom-color:rgba(200,232,122,.3)}
-    .app-tab-btn.active{color:#c8e87a;background:#040904;border-bottom:3px solid #c8e87a;font-weight:bold}
-    .app-panel-body{height:660px;overflow-y:auto;padding:1.5rem;scrollbar-width:thin;scrollbar-color:#30363d transparent}
-    .app-panel-body::-webkit-scrollbar{width:4px}
-    .app-panel-body::-webkit-scrollbar-thumb{background:#30363d}
-    .app-tab-panel{display:none !important}
-    .app-tab-panel.active{display:block !important}
+    .proj-toc-label{
+      font-family:'Share Tech Mono',monospace;
+      font-size:.6rem;
+      letter-spacing:.22em;
+      color:#8b949e;
+      margin-bottom:.85rem;
+      text-transform:uppercase;
+    }
+    .proj-toc-list{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:.4rem 1.5rem;
+      list-style:none;
+      padding:0;
+      margin:0;
+    }
+    .proj-toc-list a{
+      font-family:'Share Tech Mono',monospace;
+      font-size:.72rem;
+      color:#00c032;
+      text-decoration:none;
+      padding:.3rem 0;
+      display:block;
+      transition:.15s;
+    }
+    .proj-toc-list a:hover{color:#00ff41;padding-left:.4rem}
+
+    /* ── PROJECT CATEGORY DIVIDERS ────────────────────────────── */
+    .proj-category-label{
+      grid-column:1/-1;
+      margin:2rem 0 .25rem;
+      padding-bottom:.5rem;
+      border-bottom:1px solid #1a3a1a;
+      font-family:'Share Tech Mono',monospace;
+      font-size:.7rem;
+      letter-spacing:.22em;
+      color:#00c032;
+      text-transform:uppercase;
+      scroll-margin-top:5rem;
+    }
+    .proj-category-label:first-of-type{margin-top:0}
 
     /* ── SIDE PROJECTS ─────────────────────────────────────────── */
     .side-projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.75rem;margin-top:1.25rem}
@@ -141,6 +170,7 @@
         <li><a href="https://podcast.fluidfortune.com" target="_blank">&gt; PODCAST</a></li>
         <li><a href="project.html">&gt; THE PROJECT</a></li>
         <li><a href="sovereignty.html">&gt; WHITE PAPER</a></li>
+        <li><a href="engineering-record.html">&gt; ENG. RECORD</a></li>
       </ul>
     </div>
   </nav>
@@ -212,27 +242,32 @@
     <!-- ═══════════════════════════════════════ PROJECTS -->
     <section class="section section--dark" id="projects">
       <div class="section-inner">
-            <h2 class="section-title">[ CURRENT PROJECTS ]</h2>
+        <h2 class="section-title">[ CURRENT PROJECTS ]</h2>
 
-    <div class="app-panel" id="projects-panel">
-      <div class="app-panel-nav">
-        <button class="app-tab-btn" data-apptab="flagship">FLAGSHIP</button>
-        <button class="app-tab-btn" data-apptab="tools">TOOLS &amp; UTILITIES</button>
-        <button class="app-tab-btn" data-apptab="media-tools">MEDIA &amp; CONTENT</button>
-        <button class="app-tab-btn" data-apptab="the-project">THE PROJECT</button>
-      </div>
-      <div class="app-panel-body">
+        <!-- PROJECT TABLE OF CONTENTS -->
+        <div class="proj-toc">
+          <div class="proj-toc-label">▸ PROJECT INDEX ◂</div>
+          <ul class="proj-toc-list">
+            <li><a href="#flagship-cat">▶ FLAGSHIP — PISCES MOON OS</a></li>
+            <li><a href="#tools-cat">▶ TOOLS &amp; UTILITIES</a></li>
+            <li><a href="#media-cat">▶ MEDIA &amp; CONTENT</a></li>
+            <li><a href="#project-cat">▶ THE PROJECT</a></li>
+          </ul>
+        </div>
 
-        <div id="apptab-flagship" class="app-tab-panel">
-          <div class="project-grid">
-<!-- PISCES MOON — unified platform -->
+        <div class="project-grid">
+
+          <!-- ━━ FLAGSHIP ━━ -->
+          <div class="proj-category-label" id="flagship-cat">▌ FLAGSHIP</div>
+
+          <!-- PISCES MOON — unified platform -->
           <article class="project-card project-card--wide project-card--featured" style="grid-column: 1 / -1;">
             <div class="project-header">
               <h3 class="project-name">PISCES MOON</h3>
               <span class="project-badge project-badge--alpha">v1.2.0 "MULTI-DEVICE"</span>
               <span class="project-badge project-badge--live" style="margin-left:.25rem">● NOW PUBLIC</span>
             </div>
-            <p class="project-desc">Two inventions that didn't exist before this project. <strong>The Ghost Engine</strong> — a persistent Core 0 process that wardrives, scans BLE, and logs GPS continuously, always, regardless of what the operator is doing. The device is always collecting. The operator never has to think about it. <strong>The SPI Bus Treaty</strong> — the first named architectural standard for shared-bus arbitration on the ESP32-S3, the reason the Ghost Engine never stops. One platform. Five deployment targets: T-Deck Plus (49 apps), T-LoRa Pager (52 apps), Cardputer ADV (47 apps) — all ESP32-S3 firmware, Pisces Moon Linux on obsolete x86/ARM (77 apps, Debian 13), Android APK, Luckfox Pico 86 Panel, and M5Stack Cardputer. Plus a complete browser-based developer ecosystem: <strong>Lety</strong> — the in-browser IDE with live preview, cloud build, and Web Serial flash to your T-Deck. <strong>Pisces Bridge</strong> — firmware that turns any $10 ESP32 dev board into a sensor that streams WiFi, BLE, LoRa, and GPS detections to any host. Ghost Partition security, local AI inference, LoRa mesh radio, GPS, and ELF module runtime — on hardware costing $50 to $350. Sovereign by design: fully functional offline, optionally networked as an edge node. As of May 15, 2026 — two LilyGo devices running Pisces Moon OS simultaneously in the field, downtown Los Angeles, session 83. The operator chooses.</p>
+            <p class="project-desc">Two inventions that didn't exist before this project. <strong>The Ghost Engine</strong> — a persistent Core 0 process that wardrives, scans BLE, and logs GPS continuously, always, regardless of what the operator is doing. The device is always collecting. The operator never has to think about it. <strong>The SPI Bus Treaty</strong> — the first named architectural standard for shared-bus arbitration on the ESP32-S3, the reason the Ghost Engine never stops. One platform. Three Tier 1 devices validated in v1.2.0 — T-Deck Plus (49 apps), T-LoRa Pager (52 apps), and Cardputer ADV (47 apps) — spanning the entire memory tier of the ESP32-S3 chip class from 8 MB PSRAM down to <strong>320 KB internal SRAM with no PSRAM at all</strong>. Plus Tier 2 deployment to Pisces Moon Linux on obsolete x86/ARM (77 apps, Debian 13), Android APK, and the Luckfox Pico 86 Panel. Plus a complete browser-based developer ecosystem: <strong>Lety</strong> — the in-browser IDE with live preview, cloud build, and Web Serial flash to your T-Deck. <strong>Pisces Bridge</strong> — firmware that turns any $10 ESP32 dev board into a sensor that streams WiFi, BLE, LoRa, and GPS detections to any host. Ghost Partition security, local AI inference, LoRa mesh radio, GPS, and ELF module runtime — on hardware costing $45 to $350. Sovereign by design: fully functional offline, optionally networked as an edge node. <strong>Eleven engineering problems documented and solved</strong> — none of which had documented prior solutions on this hardware platform. As of May 2026, the operating system runs concurrent four-radio operation on hardware the industry treats as incapable of running an OS at all. The operator chooses.</p>
             <div class="project-links">
               <a href="pisces-moon.html" class="btn btn--primary">LEARN MORE →</a>
               <a href="https://piscesdemo.fluidfortune.com" class="btn" target="_blank" rel="noopener">▶ TRY LIVE DEMO</a>
@@ -240,14 +275,14 @@
               <a href="https://github.com/FluidFortune/pisces-moon-os" class="btn" target="_blank" rel="noopener">FIRMWARE REPO</a>
               <a href="https://github.com/FluidFortune/pisces-moon-linux" class="btn" target="_blank" rel="noopener">LINUX/ANDROID REPO</a>
               <a href="sovereignty.html" class="btn" target="_blank" rel="noopener">WHITE PAPER</a>
+              <a href="engineering-record.html" class="btn" target="_blank" rel="noopener">ENG. RECORD</a>
             </div>
           </article>
-          </div>
-        </div>
 
-        <div id="apptab-tools" class="app-tab-panel">
-          <div class="project-grid">
-<!-- THE PHANTOM -->
+          <!-- ━━ TOOLS & UTILITIES ━━ -->
+          <div class="proj-category-label" id="tools-cat">▌ TOOLS &amp; UTILITIES</div>
+
+          <!-- THE PHANTOM -->
           <article class="project-card">
             <div class="project-header">
               <h3 class="project-name">THE PHANTOM</h3>
@@ -258,7 +293,8 @@
               <a href="https://github.com/FluidFortune/The-Phantom" class="btn" target="_blank" rel="noopener">VIEW ON GITHUB</a>
             </div>
           </article>
-<!-- SPADRA SMELTER -->
+
+          <!-- SPADRA SMELTER -->
           <article class="project-card">
             <div class="project-header">
               <h3 class="project-name">SPADRA SMELTER</h3>
@@ -270,7 +306,8 @@
               <a href="https://spadra-smelter.fluidfortune.com" class="btn btn--primary" target="_blank" rel="noopener">LAUNCH TOOL</a>
             </div>
           </article>
-<!-- TROJAN HORSE -->
+
+          <!-- TROJAN HORSE -->
           <article class="project-card">
             <div class="project-header">
               <h3 class="project-name">TROJAN HORSE</h3>
@@ -281,7 +318,8 @@
               <a href="https://github.com/FluidFortune/trojan-horse" class="btn" target="_blank" rel="noopener">VIEW ON GITHUB</a>
             </div>
           </article>
-<!-- THE LIGHTHOUSE -->
+
+          <!-- THE LIGHTHOUSE -->
           <article class="project-card">
             <div class="project-header">
               <h3 class="project-name">THE LIGHTHOUSE</h3>
@@ -293,7 +331,8 @@
               <a href="https://github.com/FluidFortune/the-lighthouse" class="btn" target="_blank" rel="noopener">VIEW ON GITHUB</a>
             </div>
           </article>
-<!-- LITTLE SOUL -->
+
+          <!-- LITTLE SOUL -->
           <article class="project-card">
             <div class="project-header">
               <h3 class="project-name">LITTLE SOUL</h3>
@@ -305,13 +344,12 @@
               <a href="https://little-soul.fluidfortune.com" class="btn btn--primary" target="_blank" rel="noopener">OPEN BUILDER</a>
             </div>
           </article>
-          </div>
-        </div>
 
-        <div id="apptab-media-tools" class="app-tab-panel">
-          <div class="project-grid">
-<!-- WOZBOT — spans full width to accommodate the video -->
-          <article class="project-card project-card--featured project-card--wide" id="wozbot">
+          <!-- ━━ MEDIA & CONTENT ━━ -->
+          <div class="proj-category-label" id="media-cat">▌ MEDIA &amp; CONTENT</div>
+
+          <!-- WOZBOT — spans full width to accommodate the video -->
+          <article class="project-card project-card--featured project-card--wide" id="wozbot" style="grid-column: 1 / -1;">
             <div class="project-header">
               <h3 class="project-name">WOZBOT</h3>
               <span class="project-badge project-badge--live">● LIVE SYSTEM</span>
@@ -340,7 +378,8 @@
               </div>
             </div>
           </article>
-<!-- PUNKY -->
+
+          <!-- PUNKY -->
           <article class="project-card">
             <div class="project-header">
               <h3 class="project-name">PUNKY</h3>
@@ -352,12 +391,11 @@
               <a href="https://punky.fluidfortune.com" class="btn btn--primary" target="_blank" rel="noopener">OPEN EDITOR</a>
             </div>
           </article>
-          </div>
-        </div>
 
-        <div id="apptab-the-project" class="app-tab-panel">
-          <div class="project-grid">
-<!-- THE PROJECT — living document, spans full width -->
+          <!-- ━━ THE PROJECT ━━ -->
+          <div class="proj-category-label" id="project-cat">▌ THE PROJECT</div>
+
+          <!-- THE PROJECT — living document, spans full width -->
           <article class="project-card project-card--wide" style="grid-column: 1 / -1;">
             <div class="project-header">
               <h3 class="project-name">THE FLUID FORTUNE PROJECT</h3>
@@ -368,16 +406,12 @@
               <a href="project.html" class="btn btn--primary">READ THE DOCUMENT →</a>
             </div>
           </article>
-          </div>
+
         </div>
-
-      </div>
-    </div><!-- /app-panel -->
-
       </div>
     </section>
 
-        <!-- ═══════════════════════════════════════ SIDE PROJECTS -->
+    <!-- ═══════════════════════════════════════ SIDE PROJECTS -->
     <section class="section section--dark" id="side-projects">
       <div class="section-inner">
         <h2 class="section-title">[ THE SIDE PROJECTS ]</h2>
@@ -505,7 +539,6 @@
               <a href="https://podcasts.apple.com/us/podcast/i-am-an-actor/id1895304979" class="btn btn--primary" target="_blank" rel="noopener" style="background:#7c3aed;border-color:#8b5cf6;color:#fff;font-family:var(--font-mono);font-size:.65rem;letter-spacing:.1em;padding:.55rem 1.1rem;text-decoration:none;display:inline-block">▶ LISTEN ON APPLE PODCASTS →</a>
             </div>
           </div>
-          </div>
 
         </div><!-- /media-grid -->
 
@@ -572,7 +605,7 @@
   <footer class="footer">
     <div class="footer-inner">
 
-      <!-- ☢ PAGE COUNTER — tacky by design, awesome by execution -->
+      <!-- ☢ PAGE COUNTER -->
       <div class="counter-widget" aria-label="Paradigms aligned counter">
 
         <div class="orb-counter">
@@ -623,7 +656,7 @@
     // Year
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Mobile nav toggle — hardened
+    // Mobile nav toggle
     const toggle = document.getElementById('navToggle');
     const links  = document.getElementById('navLinks');
 
@@ -641,7 +674,7 @@
       });
     });
 
-    // Close on outside tap (mobile)
+    // Close on outside tap
     document.addEventListener('click', function(e) {
       if (!toggle.contains(e.target) && !links.contains(e.target)) {
         links.classList.remove('nav-links--open');
@@ -673,8 +706,6 @@
     // ── PAGE COUNTER ──
     (function() {
       const KEY = 'ff_visit_count';
-      // Seed at a plausible "already had some visitors" number so it
-      // doesn't start at 0000001 on day one — adjust seed as you like
       const SEED = 1138;
       let count = parseInt(localStorage.getItem(KEY) || '0', 10);
       if (count < SEED) count = SEED;
@@ -690,7 +721,6 @@
         cell.className = 'counter-digit';
         cell.setAttribute('data-digit', d);
         cell.textContent = d;
-        // stagger the flicker slightly per digit
         cell.style.animationDelay = (i * 0.07) + 's';
         container.appendChild(cell);
       });
@@ -707,7 +737,7 @@
     // Typewriter effect on hero sub
     const sub = document.querySelector('.tagline-sub');
     if (sub) {
-      nst originalText = sub.textContent;
+      const originalText = sub.textContent;
       sub.textContent = '';
       let i = 0;
       function type() {
@@ -720,24 +750,16 @@
       setTimeout(type, 800);
     }
 
-  </script>
-
-  <!-- ── PROJECT PANEL TABS ───────────────────────────── -->
-  <script>
-  (function() {
-    var panels = document.querySelectorAll('#projects-panel .app-tab-panel');
-    var btns   = document.querySelectorAll('#projects-panel .app-tab-btn');
-    function activateProj(id) {
-      btns.forEach(function(b){ b.classList.toggle('active', b.dataset.apptab === id); });
-      panels.forEach(function(p){ p.classList.toggle('active', p.id === 'apptab-' + id); });
-      var body = document.querySelector('#projects-panel .app-panel-body');
-      if (body) body.scrollTop = 0;
-    }
-    btns.forEach(function(btn){
-      btn.addEventListener('click', function(){ activateProj(btn.dataset.apptab); });
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+      anchor.addEventListener('click', function(e) {
+        var target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({behavior: 'smooth', block: 'start'});
+        }
+      });
     });
-    activateProj('flagship');
-  })();
   </script>
 
 </body>
