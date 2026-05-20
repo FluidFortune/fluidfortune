@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The SPI Bus Treaty | Pisces Moon OS</title>
-  <meta name="description" content="Standalone architectural whitepaper documenting the SPI Bus Treaty — a four-rule shared-bus arbitration protocol for concurrent SD, LoRa, and display operation on the ESP32-S3. Audit verified across 54 take sites in v1.2.0.">
-  <link rel="canonical" href="https://fluidfortune.com/spi-bus-treaty.html">
+  <title>Device Architecture | Pisces Moon OS — Three-Device Hardware Reference</title>
+  <meta name="description" content="Architectural comparison of the three Pisces Moon OS deployment targets — T-Deck Plus, T-LoRa Pager, and Cardputer ADV. Same SPI Bus Treaty, same Ghost Engine, hardware spanning the entire memory tier of the ESP32-S3 chip class from 8 MB PSRAM to no PSRAM.">
+  <link rel="canonical" href="https://fluidfortune.com/device-architecture.html">
 
   <meta property="og:type" content="article">
-  <meta property="og:url" content="https://fluidfortune.com/spi-bus-treaty.html">
-  <meta property="og:title" content="The SPI Bus Treaty | Pisces Moon OS">
-  <meta property="og:description" content="A four-rule shared-bus arbitration protocol on the ESP32-S3, hardened across three deployment targets including the no-PSRAM Cardputer ADV. The protocol that makes the Ghost Engine possible.">
+  <meta property="og:url" content="https://fluidfortune.com/device-architecture.html">
+  <meta property="og:title" content="Device Architecture | Pisces Moon OS">
+  <meta property="og:description" content="The treaty doesn't change. The hardware around the treaty does. Three deployment targets, one operating system, the entire memory tier of the ESP32-S3.">
   <meta property="og:image" content="https://fluidfortune.com/courtjester.jpg">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -77,25 +77,37 @@
     li strong{color:var(--ink)}
     blockquote{border-left:3px solid var(--ink-faint);padding:.25rem 1.25rem;margin:1.5rem 0}
     blockquote p{font-style:italic;font-size:.95rem;color:var(--ink-mid);margin-bottom:0}
-
-    .rule{background:var(--paper);border:1px solid var(--rule);border-left:3px solid var(--ink);padding:1.25rem 1.5rem;margin:1.25rem 0}
-    .rule-num{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.15em;color:var(--ink-light);text-transform:uppercase;margin-bottom:.4rem}
-    .rule-title{font-family:var(--font-disp);font-size:1.15rem;font-weight:600;color:var(--ink);line-height:1.3;margin-bottom:.75rem}
-    .rule-text{font-size:.92rem;color:var(--ink-mid);line-height:1.8;font-weight:300}
-
-    .failure{background:var(--accent-pale);border:1px solid var(--accent-pale);border-left:3px solid var(--accent);padding:1.1rem 1.4rem;margin:1.5rem 0}
-    .failure-label{font-family:var(--font-mono);font-size:.58rem;letter-spacing:.15em;color:var(--accent-dim);margin-bottom:.55rem;text-transform:uppercase}
-    .failure-title{font-family:var(--font-disp);font-size:1.05rem;font-weight:600;color:var(--ink);margin-bottom:.6rem;line-height:1.3}
-    .failure p{font-size:.9rem;color:var(--ink-mid);line-height:1.8;margin-bottom:.6rem;font-weight:300}
-    .failure p:last-child{margin-bottom:0}
+    h3.subhead{font-family:var(--font-disp);font-size:1.15rem;font-weight:600;color:var(--ink);letter-spacing:-.005em;margin:2.5rem 0 .85rem;padding-bottom:.35rem;border-bottom:1px solid var(--rule)}
+    h4.subsub{font-family:var(--font-disp);font-size:1.02rem;font-weight:600;color:var(--ink);margin:1.75rem 0 .65rem}
 
     .table-wrap{overflow-x:auto;margin:1.5rem 0;border:1px solid var(--rule)}
-    table{width:100%;border-collapse:collapse;font-family:var(--font-body);font-size:.88rem;background:var(--paper)}
-    th{background:var(--paper-dark);color:var(--ink);font-family:var(--font-mono);font-size:.6rem;letter-spacing:.1em;padding:.65rem .85rem;text-align:left;border-bottom:2px solid var(--ink);font-weight:500;text-transform:uppercase}
-    td{padding:.55rem .85rem;border-top:1px solid var(--rule);color:var(--ink-mid);vertical-align:top;line-height:1.65;font-weight:300}
-    td:first-child{color:var(--ink);font-weight:500;font-family:var(--font-mono);font-size:.83rem}
+    table{width:100%;border-collapse:collapse;font-family:var(--font-body);font-size:.86rem;background:var(--paper)}
+    th{background:var(--paper-dark);color:var(--ink);font-family:var(--font-mono);font-size:.58rem;letter-spacing:.1em;padding:.6rem .8rem;text-align:left;border-bottom:2px solid var(--ink);font-weight:500;text-transform:uppercase}
+    td{padding:.5rem .8rem;border-top:1px solid var(--rule);color:var(--ink-mid);vertical-align:top;line-height:1.6;font-weight:300}
+    td:first-child{color:var(--ink);font-weight:500;font-family:var(--font-mono);font-size:.81rem}
+
+    .callout{background:var(--paper-dark);border-left:3px solid var(--accent);padding:1.1rem 1.4rem;margin:1.5rem 0}
+    .callout .c-label{font-family:var(--font-mono);font-size:.58rem;letter-spacing:.15em;color:var(--accent-dim);margin-bottom:.55rem;text-transform:uppercase}
+    .callout p{font-size:.9rem;color:var(--ink-mid);line-height:1.8;margin-bottom:.65rem;font-weight:300}
+    .callout p:last-child{margin-bottom:0}
+    .callout strong{color:var(--ink)}
+
+    .callout-green{background:var(--green-pale);border-left-color:var(--green)}
+    .callout-green .c-label{color:var(--green)}
+
+    pre{background:var(--paper-dark);border:1px solid var(--rule);border-left:3px solid var(--ink-light);padding:.85rem 1.1rem;margin:1rem 0;overflow-x:auto;font-family:var(--font-mono);font-size:.78rem;line-height:1.6;color:var(--ink-mid)}
+    pre code{background:none;border:0;padding:0;color:var(--ink-mid);font-size:inherit}
+
+    .device-card{background:var(--paper);border:1px solid var(--rule);border-left:3px solid var(--ink);padding:1.25rem 1.5rem;margin:1.25rem 0}
+    .device-label{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.15em;color:var(--ink-light);text-transform:uppercase;margin-bottom:.4rem}
+    .device-name{font-family:var(--font-disp);font-size:1.18rem;font-weight:600;color:var(--ink);letter-spacing:-.005em;margin-bottom:.85rem}
+    .device-text{font-size:.92rem;color:var(--ink-mid);line-height:1.8;font-weight:300}
+
+    .device-cardputer{border-left-color:var(--accent);background:var(--accent-pale)}
+    .device-cardputer .device-label{color:var(--accent-dim)}
 
     .closing{border-top:2px solid var(--ink);margin-top:3.5rem;padding-top:1.75rem}
+    .closing-quote{font-family:var(--font-disp);font-size:1.25rem;font-style:italic;font-weight:400;color:var(--ink);line-height:1.4;margin-bottom:1.25rem;letter-spacing:-.005em}
     .closing p{font-family:var(--font-mono);font-size:.72rem;color:var(--ink-light);line-height:1.95;margin-bottom:.4rem;font-weight:400}
     .closing strong{color:var(--ink)}
     .closing a{color:var(--accent-dim)}
@@ -130,17 +142,21 @@
 
   <aside class="toc">
     <span class="toc-label">Contents</span>
-    <a href="#problem"><span class="num">I.</span>The Physics of the Conflict</a>
-    <a href="#failures"><span class="num">II.</span>Four Field Failures</a>
-    <a href="#rules"><span class="num">III.</span>The Four Rules</a>
-    <a href="#audit"><span class="num">IV.</span>v1.2.0 Audit Results</a>
-    <a href="#prior-art"><span class="num">V.</span>Prior Art &amp; Precedent</a>
-    <a href="#enforcement"><span class="num">VI.</span>Enforcement &amp; Contract</a>
+    <a href="#overview"><span class="num">I.</span>The Three Devices</a>
+    <a href="#glance"><span class="num">II.</span>At-a-Glance Comparison</a>
+    <a href="#display"><span class="num">III.</span>Display</a>
+    <a href="#input"><span class="num">IV.</span>Input</a>
+    <a href="#power"><span class="num">V.</span>Power Management</a>
+    <a href="#treaty"><span class="num">VI.</span>The SPI Bus Treaty</a>
+    <a href="#boot"><span class="num">VII.</span>Boot Sequence</a>
+    <a href="#rendering"><span class="num">VIII.</span>Width-Aware Rendering</a>
+    <a href="#cardputer"><span class="num">IX.</span>Cardputer ADV — No PSRAM</a>
+    <a href="#pitfalls"><span class="num">X.</span>Common Pitfalls</a>
     <div class="toc-divider"></div>
     <div class="toc-divider-label">Companion Documents</div>
     <a href="sovereignty.html" class="ext"><span class="num">↗</span>White Paper</a>
     <a href="engineering-record.html" class="ext"><span class="num">↗</span>Engineering Record</a>
-    <a href="device-architecture.html" class="ext"><span class="num">↗</span>Device Architecture</a>
+    <a href="spi-bus-treaty.html" class="ext"><span class="num">↗</span>SPI Bus Treaty</a>
     <div class="toc-divider"></div>
     <div class="toc-divider-label">Project</div>
     <a href="pisces-moon.html" class="ext"><span class="num">↗</span>Pisces Moon OS</a>
@@ -150,175 +166,330 @@
   <main class="content">
 
     <div class="masthead">
-      <div class="masthead-eyebrow">Pisces Moon OS · Architectural Whitepaper</div>
-      <h1 class="masthead-title">The SPI Bus Treaty</h1>
-      <p class="masthead-sub">A four-rule shared-bus arbitration protocol for concurrent SD, LoRa, and display operation on the ESP32-S3 — and the reason the Ghost Engine never stops.</p>
+      <div class="masthead-eyebrow">Pisces Moon OS · Device Architecture Reference</div>
+      <h1 class="masthead-title">Three Devices,<br>One Treaty</h1>
+      <p class="masthead-sub">Hardware reference for the three Tier 1 deployment targets — spanning the entire memory tier of the ESP32-S3 chip class, from 8 MB PSRAM down to no PSRAM at all.</p>
       <div class="masthead-meta">
         <span>Eric Becker · Fluid Fortune</span>
         <span>v1.2.0 · May 19, 2026</span>
-        <span class="ver">Audit Verified</span>
+        <span class="ver">Hardware Reference</span>
       </div>
     </div>
 
     <div class="abstract">
       <div class="abstract-label">Abstract</div>
-      <p>The Espressif ESP32-S3 exposes a single hardware SPI peripheral block that, on the LilyGo T-Deck Plus, T-LoRa Pager, and similar devices, is wired to three independent consumers: the MicroSD card, the SX1262 LoRa radio, and the ST7789/ST7796U display controller. The reference firmware ecosystem for these devices is built around single-purpose use cases where, at any given moment, only one of these consumers is active. Pisces Moon OS is not that. It runs the Ghost Engine — a persistent Core 0 background process that wardrives, scans BLE, and logs GPS continuously — alongside any Core 1 foreground application, with the LoRa mesh radio and the SD card and the display all active simultaneously.</p>
-      <p>This document specifies the <strong>SPI Bus Treaty</strong>: a formal four-rule arbitration protocol enforced by a recursive mutex (<code>spi_mutex</code>) that every component of the operating system and every third-party ELF module must obey. The protocol was developed in field conditions in 2025–2026 and is now a platform-level contract. <strong>v1.2.0 audit: 54 take sites, 56 give sites verified across 12 files.</strong> The Treaty is the architectural precondition for everything else Pisces Moon does.</p>
+      <p>Pisces Moon OS v1.2.0 ships on three physically different ESP32-S3 handhelds: the LilyGo T-Deck Plus, the LilyGo T-LoRa Pager, and the M5Stack Cardputer ADV. They share an SoC family but differ in almost every other way — display controller, input architecture, power management, peripheral wiring, SPI bus topology, and most consequentially the presence or absence of external PSRAM. Code that compiled fine on one device misbehaved in subtle, hard-to-debug ways on the next because the same Arduino API call talks to entirely different hardware underneath.</p>
+      <p>This document is the architectural reference that lets one source tree compile to all three targets. The SPI Bus Treaty is invariant. The Ghost Engine model is invariant. The application contract is invariant. The hardware integration — display drivers, input drivers, power rails, boot sequences, memory allocation strategies — varies per device and is gated behind <code>#ifdef DEVICE_*</code> defines. <strong>The treaty doesn't change. The hardware around the treaty does.</strong></p>
     </div>
 
-    <!-- I. PHYSICS -->
-    <section class="s" id="problem">
-      <div class="s-header"><div class="s-num">I.</div><h2 class="s-title">The Physics of the Conflict</h2></div>
+    <!-- I. OVERVIEW -->
+    <section class="s" id="overview">
+      <div class="s-header"><div class="s-num">I.</div><h2 class="s-title">The Three Devices</h2></div>
 
-      <p>SPI is a synchronous serial protocol with four signal lines — SCK (clock), MOSI (master out), MISO (master in), and an active-low chip-select per peripheral. The ESP32-S3 has two general-purpose SPI peripherals (SPI2 and SPI3) and a third dedicated to flash memory. The LilyGo T-Deck Plus, T-LoRa Pager, and M5Stack Cardputer ADV all wire SD, LoRa, and display to the same SPI peripheral block, distinguished only by chip-select line.</p>
+      <p>Three Tier 1 deployment targets, all validated in v1.2.0, all running the same operating system from the same source tree.</p>
 
-      <p>When two consumers attempt to drive the bus simultaneously — even momentarily — the failure modes are not graceful. The SD card's CMD0 initialization sequence is timing-sensitive: a glitch on SCK during command issuance corrupts the response and the controller enters an error state requiring a full power cycle to recover. The LoRa radio's SX1262 SPI command set assumes the bus is quiet for the duration of a transaction; concurrent SD traffic causes the radio to mis-parse its own command queue and enter undefined states. The display controller's pixel-flush sequence relies on tight timing between command bytes and data bytes; SPI contention produces visible tearing, dropped frames, or display freeze.</p>
-
-      <p>None of these failures present as “SPI contention.” The Guru Meditation crash dumps point at memory addresses where execution happened to be when the corruption propagated — not at the source of the corruption. The first symptom of an SPI conflict in this OS was a non-deterministic reboot during heavy field operation. The hypothesis that the SPI bus was the shared resource being contested took several months and many field sessions to establish.</p>
-    </section>
-
-    <!-- II. FAILURES -->
-    <section class="s" id="failures">
-      <div class="s-header"><div class="s-num">II.</div><h2 class="s-title">Four Field Failures</h2></div>
-
-      <p>The Treaty was not designed in advance. It was extracted from four specific failure modes that recurred across field operations in 2025–2026. Each is documented here with the symptom, the root cause, and the rule it produced.</p>
-
-      <div class="failure">
-        <div class="failure-label">Failure 1 · Downtown Los Angeles, March 2025</div>
-        <div class="failure-title">Guru Meditation under concurrent SD + LoRa load</div>
-        <p>T-Deck Plus running Ghost Engine wardrive + LoRa mesh receiver in a dense RF environment (40+ APs, active LoRa mesh traffic). Crashes occurred at non-deterministic intervals, between 4 and 90 minutes of sustained operation. Crash addresses varied. The bench environment (laboratory with single AP and no LoRa peer) never produced the crash.</p>
-        <p>Root cause: SD write operations and LoRa receive interrupts both manipulated the SPI peripheral block. With no arbitration, the LoRa interrupt would occasionally fire during an SD transaction, corrupting both. The corruption propagated as memory damage that crashed in arbitrary subsystems.</p>
-        <p><strong>Produced Rule 1: hit-and-run.</strong></p>
+      <div class="device-card">
+        <div class="device-label">Target 1A · Origin Device</div>
+        <div class="device-name">LilyGo T-Deck Plus</div>
+        <div class="device-text">ESP32-S3, 8 MB PSRAM, 16 MB flash. ST7789 320×240 display. Physical mechanical trackball + TCA8418 QWERTY + GT911 capacitive touch. SX1262 LoRa radio. ATGM336H GPS module. AXP2101 PMU with direct GPIO rail gating. The original target — every architectural pattern in Pisces Moon OS was first proven here. 49 applications. Production firmware.</div>
       </div>
 
-      <div class="failure">
-        <div class="failure-label">Failure 2 · Lincoln Heights, May 2025</div>
-        <div class="failure-title">Watchdog reboot under sustained SD write</div>
-        <p>Ghost Engine writing wardrive CSV continuously during a long-form field session. Every 15–25 minutes, the watchdog timer fired and the device rebooted. No crash dump — clean reboot.</p>
-        <p>Root cause: an SD write extending across multiple sectors held the SPI bus for tens of milliseconds. During this window, the LoRa radio's interrupt handler could not service incoming packets, and the BLE stack's scan callback could not flush its result buffer. The watchdog detected the resulting starvation and rebooted the device as a recovery action.</p>
-        <p><strong>Produced Rule 2: no extended holds.</strong></p>
+      <div class="device-card">
+        <div class="device-label">Target 1B · Pager Form Factor</div>
+        <div class="device-name">LilyGo T-LoRa Pager</div>
+        <div class="device-text">ESP32-S3, 8 MB PSRAM, 16 MB flash. ST7796U 480×222 display (renders correctly at 480×240 with no clipping). Synthetic trackball via TCA8418 — no physical ball. AW9523 keyboard expander. SX1262 LoRa radio. MIA-M10Q multi-constellation GPS. DRV2605 haptic driver. XL9555 I/O expander gates most peripheral rails. AXP2101 PMU underneath the expander. 52 applications. Production firmware.</div>
       </div>
 
-      <div class="failure">
-        <div class="failure-label">Failure 3 · Pasadena, July 2025</div>
-        <div class="failure-title">WiFi scanner deadlock with Gemini AI client</div>
-        <p>The Gemini AI client (Core 1 foreground app) and the Ghost Engine wardrive scanner (Core 0 background) both required WiFi radio access. The ESP32-S3's WiFi peripheral is single-instance: only one consumer can hold it at a time. Both subsystems would block waiting for the radio, producing visible UI freezes and silent wardrive interruptions.</p>
-        <p>Root cause: WiFi radio arbitration was not explicit. Each subsystem assumed it could use the radio whenever it needed to. The deadlock was probabilistic — short Gemini queries usually completed without conflict, but a single long inference would block the wardrive long enough for the watchdog to intervene.</p>
-        <p><strong>Produced Rule 3: radio-traffic mutual exclusion via shared boolean flag.</strong></p>
-      </div>
-
-      <div class="failure">
-        <div class="failure-label">Failure 4 · Bench, December 2025</div>
-        <div class="failure-title">Nuke operation under Treaty discipline</div>
-        <p>The Ghost Partition Nuke — sector-level zero-overwrite of sensitive data files before FAT unlinking — must hold the SPI bus for the duration of the wipe, in violation of Rule 2 (no extended holds). The naive implementation would crash the LoRa radio mid-wipe, corrupting both the wipe and the radio state. The wipe could not be safely executed during normal operation.</p>
-        <p>Root cause: the operation that needs the bus most exclusively is also the most sensitive to interruption. Halting the wipe partway through leaves the data partially-destroyed and partially-recoverable — the worst possible outcome.</p>
-        <p><strong>Produced Rule 4: destructive operations under Treaty discipline at boot, before Ghost Engine spawn.</strong></p>
+      <div class="device-card device-cardputer">
+        <div class="device-label">Target 1C · The Generalization Proof</div>
+        <div class="device-name">M5Stack Cardputer ADV</div>
+        <div class="device-text">ESP32-S3FN8 (Stamp-S3A). <strong>No PSRAM.</strong> 320 KB internal SRAM, 8 MB flash. Credit-card form factor. ST7789V2 240×135 display on its own SPI bus (HSPI) — separate from the SD + LoRa bus (FSPI). 56-key full QWERTY via TCA8418 with FN modifier layer. Cap LoRa-1262 module adds SX1262 (+27dBm) and AT6668 multi-constellation GNSS over the 2×7-pin expansion header. 47 applications. The proof that the methodology generalizes to no-PSRAM hardware.</div>
       </div>
     </section>
 
-    <!-- III. THE RULES -->
-    <section class="s" id="rules">
-      <div class="s-header"><div class="s-num">III.</div><h2 class="s-title">The Four Rules</h2></div>
-
-      <p>The Treaty consists of four rules. They are binding on first-party OS code, third-party ELF modules loaded at runtime from SD, and any future hardware target. Violation produces immediate crashes, watchdog reboots, or test failures. The rules are short enough to be remembered and specific enough to be checked.</p>
-
-      <div class="rule">
-        <div class="rule-num">Rule 1</div>
-        <div class="rule-title">Hit and run</div>
-        <div class="rule-text">Every SPI consumer acquires the bus mutex, performs its operation, and releases the mutex immediately. No idle holds. No long-running state retained across mutex releases. The mutex is a hot resource: take it, use it, return it. The recursive mutex (<code>spi_mutex</code>) permits nested operations within a single component, but the outermost component is responsible for releasing the same number of times it acquired.</div>
-      </div>
-
-      <div class="rule">
-        <div class="rule-num">Rule 2</div>
-        <div class="rule-title">No extended holds</div>
-        <div class="rule-text">No operation may hold the SPI bus for longer than 50 milliseconds under any circumstances during normal operation. Operations that would exceed this budget — large SD writes, long display flushes, multi-sector erase — must be chunked into smaller atomic transactions, each acquiring and releasing the mutex independently. The 50ms budget is chosen to fit within the LoRa SX1262's RX-mode interrupt service window and the BLE stack's callback flush interval.</div>
-      </div>
-
-      <div class="rule">
-        <div class="rule-num">Rule 3</div>
-        <div class="rule-title">Radio-traffic mutual exclusion via shared boolean flag</div>
-        <div class="rule-text">The WiFi radio is a single-instance peripheral on the ESP32-S3. The Ghost Engine wardrive scanner and the foreground AI client share access via a <code>wifi_in_use</code> boolean. The flag is set by the consumer claiming the radio and cleared on release. Consumers check the flag before claiming; if set, they yield and retry. On the Cardputer ADV (no PSRAM), this rule is extended into full WiFi mode-locking with hard teardown — CLIENT and SCANNER modes are mutually exclusive at the OS level, with full <code>esp_wifi_stop()</code> + <code>esp_wifi_deinit()</code> between transitions.</div>
-      </div>
-
-      <div class="rule">
-        <div class="rule-num">Rule 4</div>
-        <div class="rule-title">Destructive operations under Treaty discipline at boot</div>
-        <div class="rule-text">Operations that violate Rule 2 by necessity — Nuke sector overwrite, full SD format, encrypted partition key destruction — execute under <code>spi_mutex</code> discipline at boot, before the Ghost Engine task spawns. During this boot window, no other SPI consumer is active. The operation has exclusive access to the bus for as long as it needs. The Ghost Engine starts only after all destructive operations have completed and the bus has returned to normal Treaty governance.</div>
-      </div>
-    </section>
-
-    <!-- IV. AUDIT -->
-    <section class="s" id="audit">
-      <div class="s-header"><div class="s-num">IV.</div><h2 class="s-title">v1.2.0 Audit Results</h2></div>
-
-      <p>The Treaty is enforced by recursive mutex (<code>spi_mutex</code>), not by static analysis. Every site that touches the SPI bus must call <code>spi_mutex_take()</code> before its first transaction and <code>spi_mutex_give()</code> after its last. A manual audit was conducted for v1.2.0 to verify that every take has a matching give, no operations exceed the 50ms hold budget, and no consumer holds the bus during a yield.</p>
+    <!-- II. AT A GLANCE -->
+    <section class="s" id="glance">
+      <div class="s-header"><div class="s-num">II.</div><h2 class="s-title">At-a-Glance Comparison</h2></div>
 
       <div class="table-wrap">
         <table>
-          <thead><tr><th>File</th><th>Takes</th><th>Gives</th><th>Notes</th></tr></thead>
+          <thead><tr><th>Property</th><th>T-Deck Plus</th><th>T-LoRa Pager</th><th>Cardputer ADV</th></tr></thead>
           <tbody>
-            <tr><td>core/ghost_engine.cpp</td><td>12</td><td>12</td><td>Wardrive scan write loop, BLE callback flush</td></tr>
-            <tr><td>core/wardrive_task.cpp</td><td>8</td><td>8</td><td>Session file creation + per-frame write</td></tr>
-            <tr><td>radio/lora_driver.cpp</td><td>6</td><td>6</td><td>SX1262 command queue + interrupt handler</td></tr>
-            <tr><td>radio/sd_filesystem.cpp</td><td>9</td><td>10</td><td>One extra give covers a rare recovery path</td></tr>
-            <tr><td>ui/display_driver.cpp</td><td>7</td><td>7</td><td>Pixel flush + command sequencing</td></tr>
-            <tr><td>boot/late_sd_init.cpp</td><td>4</td><td>4</td><td>Cold SPI restart for T-LoRa Pager</td></tr>
-            <tr><td>security/nuke.cpp</td><td>3</td><td>3</td><td>Boot-time only, exclusive bus access</td></tr>
-            <tr><td>elf/sandbox.cpp</td><td>2</td><td>2</td><td>ELF module load + verify</td></tr>
-            <tr><td>apps/recorder.cpp</td><td>1</td><td>1</td><td>Audio capture write</td></tr>
-            <tr><td>apps/mesh_messenger.cpp</td><td>1</td><td>1</td><td>Message persistence</td></tr>
-            <tr><td>apps/audio_player.cpp</td><td>1</td><td>1</td><td>WAV streaming read</td></tr>
-            <tr><td>apps/elf_browser.cpp</td><td>0</td><td>1</td><td>Defensive give in error path</td></tr>
-            <tr><td><strong>Total</strong></td><td><strong>54</strong></td><td><strong>56</strong></td><td>Two extra gives are defensive recovery paths</td></tr>
+            <tr><td>SoC</td><td>ESP32-S3 (N16R8)</td><td>ESP32-S3 (N16R8)</td><td>ESP32-S3FN8 (Stamp-S3A)</td></tr>
+            <tr><td>PSRAM</td><td>8 MB</td><td>8 MB</td><td><strong>None</strong></td></tr>
+            <tr><td>Flash</td><td>16 MB</td><td>16 MB</td><td>8 MB</td></tr>
+            <tr><td>Internal SRAM</td><td>320 KB</td><td>320 KB</td><td>320 KB</td></tr>
+            <tr><td>Display controller</td><td>ST7789</td><td>ST7796U</td><td>ST7789V2</td></tr>
+            <tr><td>Display resolution</td><td>320×240</td><td>480×240 (datasheet 480×222)</td><td>240×135</td></tr>
+            <tr><td>Display SPI bus</td><td>FSPI (shared)</td><td>FSPI (shared)</td><td>HSPI (dedicated)</td></tr>
+            <tr><td>Input</td><td>Trackball + TCA8418 QWERTY + GT911 touch</td><td>Synthetic trackball + TCA8418 + AW9523</td><td>56-key QWERTY via TCA8418 + FN layer</td></tr>
+            <tr><td>LoRa radio</td><td>SX1262 (onboard)</td><td>SX1262 (onboard)</td><td>SX1262 (Cap LoRa-1262 module)</td></tr>
+            <tr><td>GPS</td><td>ATGM336H</td><td>MIA-M10Q (multi-constellation)</td><td>AT6668 (multi-constellation, Cap module)</td></tr>
+            <tr><td>PMU</td><td>AXP2101 + direct GPIO</td><td>AXP2101 + XL9555 expander</td><td>M5 internal</td></tr>
+            <tr><td>BLE stack</td><td>Bluedroid (Arduino-ESP32)</td><td>Bluedroid (Arduino-ESP32)</td><td>NimBLE (ESP-IDF)</td></tr>
+            <tr><td>Apps registered</td><td>49</td><td>52</td><td>47</td></tr>
+            <tr><td>Status (v1.2.0)</td><td>Validated</td><td>Validated</td><td>Validated</td></tr>
           </tbody>
         </table>
       </div>
 
-      <p>The two extra gives are intentional defensive code: the SD filesystem driver and ELF browser each contain a recovery path that releases the mutex in error conditions where a previous acquire may not be tracked. The recursive mutex tolerates extra gives without harm.</p>
+      <p>The same source tree compiles to all three targets. Per-device behavior is gated behind <code>#ifdef DEVICE_TDECK_PLUS</code>, <code>#ifdef DEVICE_TLORAPAGER</code>, and <code>#ifdef DEVICE_CARDPUTER_ADV</code>. The OS knows which target it is running on; the application contract does not need to. 47 applications run identically across all three devices despite the underlying hardware differences documented below.</p>
     </section>
 
-    <!-- V. PRIOR ART -->
-    <section class="s" id="prior-art">
-      <div class="s-header"><div class="s-num">V.</div><h2 class="s-title">Prior Art &amp; Precedent</h2></div>
+    <!-- III. DISPLAY -->
+    <section class="s" id="display">
+      <div class="s-header"><div class="s-num">III.</div><h2 class="s-title">Display</h2></div>
 
-      <p>The technique of mutex-arbitrated SPI is not new. Every operating system kernel that drives more than one SPI peripheral simultaneously uses some form of arbitration. The contribution of the SPI Bus Treaty is not the technique — it is the protocol: the named, documented, audited contract that every component must obey, published as a public reference for any future project on this hardware class.</p>
+      <h4 class="subsub">T-Deck Plus — ST7789 320×240</h4>
+      <p>Standard ST7789 panel, 320×240 native resolution, RGB565 color. Driven by Arduino_GFX_Library directly over SPI. Backlight on GPIO 42. Reset is a direct GPIO — can be pulsed synchronously. <code>gfx</code> is typed as <code>Arduino_GFX *</code>.</p>
 
-      <p>The Treaty stands in a tradition of named arbitration protocols:</p>
+      <h4 class="subsub">T-LoRa Pager — ST7796U 480×240</h4>
+      <p>ST7796U panel wider than the datasheet specifies — datasheet says 480×222, the panel renders correctly at 480×240 with no clipping. Driven by a custom <code>PMDispTLoRaPager</code> class wrapping the same API surface as Arduino_GFX. Backlight is the same GPIO 42 pin number but a different power rail. Display reset routed through the XL9555 I/O expander on P06 — must be pulsed via I²C, not direct GPIO. <code>gfx</code> is typed as <code>PMDispTLoRaPager *</code>.</p>
 
-      <ul>
-        <li><strong>Unix filesystem locking conventions (1970s)</strong> — established formal rules for competing processes sharing a filesystem. The conventions were not new techniques (file locks predate Unix); the contribution was naming the rules and making them platform-wide.</li>
-        <li><strong>Apollo Guidance Computer priority scheduling protocol (1969)</strong> — formal rules for competing tasks sharing a processor under load. The 1202 alarm during the lunar landing was the protocol working as designed: the lower-priority task was sacrificed to preserve the higher-priority one.</li>
-        <li><strong>Nintendo N64 RSP time budget (1996)</strong> — formal rules for competing subsystems sharing the Reality Signal Processor. The budget was not new (time-slicing predates the N64); the contribution was the documented protocol that every game developer had to follow.</li>
-      </ul>
+      <h4 class="subsub">Cardputer ADV — ST7789V2 240×135</h4>
+      <p>Smaller ST7789V2 panel at 240×135 on its own dedicated SPI bus (HSPI), separate from the SD + LoRa shared bus (FSPI). The split bus is the single biggest architectural benefit of the Cardputer hardware design — display traffic does not contend with SD or LoRa for SPI access, simplifying Treaty compliance for any app that draws while logging. The trade-off is significantly less screen real estate, requiring per-app rendering adjustments documented in Section VIII.</p>
 
-      <p>In each case the solution was not a patch — it was a protocol. A named standard. A thing that could be taught, documented, and enforced across an entire platform. The SPI Bus Treaty is the application of this approach to the ESP32-S3 hardware class. To the best of our knowledge, no prior published reference for this protocol exists on this chip family. If reviewers can identify prior art, we will document and credit it — this paper is offered with that invitation.</p>
+      <h4 class="subsub">Conditional gfx declaration</h4>
+      <pre><code>#ifdef DEVICE_TLORAPAGER
+extern PMDispTLoRaPager *gfx;
+#else
+extern Arduino_GFX *gfx;
+#endif</code></pre>
+      <p>Every app file that draws to the display starts with this declaration. The API surface is identical past this point. The display driver implementation absorbs the device difference.</p>
     </section>
 
-    <!-- VI. ENFORCEMENT -->
-    <section class="s" id="enforcement">
-      <div class="s-header"><div class="s-num">VI.</div><h2 class="s-title">Enforcement &amp; Contract</h2></div>
+    <!-- IV. INPUT -->
+    <section class="s" id="input">
+      <div class="s-header"><div class="s-num">IV.</div><h2 class="s-title">Input</h2></div>
 
-      <p>The Treaty is enforced by three mechanisms that work together:</p>
+      <p>The input architecture is the single biggest divergence between the three devices and the source of the most subtle bugs encountered during cross-device porting.</p>
 
+      <h4 class="subsub">T-Deck Plus — physical trackball + TCA8418 + touch</h4>
+      <p>5-pin mechanical trackball wired to direct ESP32 GPIOs with internal pullups. <code>update_trackball()</code> performs edge-detection with a lockout window to prevent runaway scrolling. <code>update_trackball_game()</code> uses a shorter lockout suitable for gameplay. TCA8418 keyboard controller on I²C — the same chip used on the T-LoRa Pager and Cardputer, same FIFO-polling pattern. GT911 capacitive touch on I²C (SDA=18, SCL=8), reset on GPIO 21.</p>
+
+      <h4 class="subsub">T-LoRa Pager — synthetic trackball, no physical ball</h4>
+      <p>No trackball at all. The OS synthesizes trackball events from arrow-key presses on the AW9523 keyboard expander to maintain API compatibility with apps that expect trackball semantics. Apps written for the T-Deck Plus run unmodified — the synthesis layer absorbs the hardware difference. GPIO 21, which is TOUCH_RST on T-Deck Plus, is SD_CS on T-LoRa Pager — see Problem 7 in the white paper for the cross-device collision this produced.</p>
+
+      <h4 class="subsub">Cardputer ADV — 56-key QWERTY with FN modifier layer</h4>
+      <p>Full QWERTY keyboard with 56 physical keys via TCA8418, accessed through an FN modifier layer for arrow keys, special characters, and function keys. The FN layer is documented in the firmware in <code>cardputer_keymap.h</code> and exposed to apps via the same key-event API as the other two devices. No trackball synthesis required — apps that expect arrow-key navigation simply receive arrow-key events. Apps that expect trackball semantics receive a software adapter that synthesizes from arrow keys, the same as on the T-LoRa Pager.</p>
+
+      <h4 class="subsub">Universal input convention</h4>
+      <p>All three devices expose the same key-event API: <code>pm_input_get_event()</code> returns a struct with key, modifier, and event-type fields. Apps written against this API run identically on all three. Hardware differences are absorbed in the per-device input driver implementations.</p>
+    </section>
+
+    <!-- V. POWER -->
+    <section class="s" id="power">
+      <div class="s-header"><div class="s-num">V.</div><h2 class="s-title">Power Management</h2></div>
+
+      <h4 class="subsub">T-Deck Plus — AXP2101 + direct GPIO rails</h4>
+      <p>AXP2101 PMU handles battery charging and voltage regulation. <code>BOARD_POWERON = GPIO 10</code> gates the main peripheral rail. Sleep path: backlight LOW, panel sleep, <code>BOARD_POWERON</code> LOW disables peripherals. Simple, direct path.</p>
+
+      <h4 class="subsub">T-LoRa Pager — AXP2101 + XL9555 I/O expander</h4>
+      <p>AXP2101 is still present, but most peripheral power gating happens through an XL9555 I/O expander on the I²C bus. The XL9555 must be initialized before any of its gated peripherals can be used. <code>xl9555_init()</code> runs during boot; <code>xl9555_set_bit(pin, true/false)</code> toggles individual rails.</p>
+
+      <h4 class="subsub">XL9555 pin map (T-LoRa Pager)</h4>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>XL9555 Pin</th><th>Function</th></tr></thead>
+          <tbody>
+            <tr><td>P00</td><td>LORA_EN — SX1262 power enable</td></tr>
+            <tr><td>P01</td><td>GPS_EN — MIA-M10Q power enable</td></tr>
+            <tr><td>P02</td><td>SENSOR_EN — onboard sensors</td></tr>
+            <tr><td>P03</td><td>DRV2605_EN — haptic driver enable</td></tr>
+            <tr><td>P06</td><td>DISP_RESET — display controller reset</td></tr>
+            <tr><td>P07</td><td>KB_RESET — keyboard controller reset</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4 class="subsub">Sleep path on T-LoRa Pager</h4>
+      <p>Significantly more complex than the T-Deck. Disable haptic via XL9555 P03 LOW. Stop GPS via XL9555 P01 LOW. Stop LoRa via XL9555 P00 LOW. Sleep display via XL9555 P06 pulse. AXP2101 enters low-power state last, after all peripherals have been gated. The walkdown sequence matters — gating peripherals in the wrong order leaves residual current draw that defeats the sleep budget.</p>
+
+      <h4 class="subsub">Cardputer ADV — M5 internal management</h4>
+      <p>M5Stack uses its own internal power management on the Cardputer ADV. Battery charging and voltage regulation are handled by M5 hardware. The OS does not need to interact with the PMU directly for normal operation. Sleep and shutdown paths use M5's documented APIs. The convention from the T-Deck and T-LoRa Pager — explicit peripheral gating before low-power entry — still applies, but most of the work is done by the hardware itself rather than orchestrated by software.</p>
+    </section>
+
+    <!-- VI. TREATY -->
+    <section class="s" id="treaty">
+      <div class="s-header"><div class="s-num">VI.</div><h2 class="s-title">The SPI Bus Treaty — Per-Device Application</h2></div>
+
+      <p>The Treaty is invariant. The hardware it governs is not. The full Treaty specification — its four rules, the audit results, and the prior art — is documented in the <a href="spi-bus-treaty.html">SPI Bus Treaty whitepaper</a>. This section documents how each rule applies on each device.</p>
+
+      <h4 class="subsub">T-Deck Plus — full Treaty discipline</h4>
+      <p>Display, SD card, and SX1262 LoRa radio all share FSPI. The Treaty applies in its full form: every transaction wrapped in <code>spi_mutex_take()</code> / <code>spi_mutex_give()</code>. The <code>wifi_in_use</code> flag arbitrates WiFi radio access between the Ghost Engine and the foreground AI client. This is the device where the Treaty was first developed.</p>
+
+      <h4 class="subsub">T-LoRa Pager — Treaty plus deferred SD init</h4>
+      <p>Same FSPI bus, same three consumers, same Treaty discipline. The difference is that SD initialization runs in a deferred background task (<code>late_sd_init_task</code>) after all other peripherals have completed init, with a full <code>SPI.end()</code> + 20ms wait + <code>SPI.begin()</code> cold restart in the middle. The Treaty applies to all SD operations once mount completes; the <code>sd_in_use</code> flag prevents Ghost Engine from attempting to use SD before mount succeeds. See Problem 8 in the white paper for the bug this works around.</p>
+
+      <h4 class="subsub">Cardputer ADV — Treaty plus WiFi mode-locking</h4>
+      <p>Display is on its own SPI bus (HSPI), simplifying Treaty compliance — display traffic cannot contend with SD or LoRa. SD and LoRa share FSPI; the Treaty applies to their interactions. The major addition on this device is WiFi mode-locking: the no-PSRAM constraint forces full <code>esp_wifi_stop()</code> + <code>esp_wifi_deinit()</code> + reinit on every transition between CLIENT and SCANNER modes, because the WiFi stack's per-mode buffers cannot coexist in 320 KB of SRAM. The Treaty's Rule 3 (radio mutual exclusion via shared boolean) is extended into Rule 3-CARDPUTER: hardware-honest mode arbitration with full teardown, not flag arbitration.</p>
+
+      <h4 class="subsub">sd_in_use flag</h4>
+      <p>An additional convention on the T-LoRa Pager and Cardputer ADV: every SD operation checks <code>g_sd_ready</code> (set by <code>late_sd_init_task</code> on successful mount) and increments <code>g_sd_in_use</code> for the duration of the operation. The Ghost Engine's <code>ensure_session_file()</code> respects this flag, deferring its operations if SD is busy with foreground work. The Treaty enforces ordering at the bus level; the <code>sd_in_use</code> flag enforces ordering at the filesystem level.</p>
+    </section>
+
+    <!-- VII. BOOT -->
+    <section class="s" id="boot">
+      <div class="s-header"><div class="s-num">VII.</div><h2 class="s-title">Boot Sequence</h2></div>
+
+      <h4 class="subsub">T-Deck Plus — ~3 seconds to launcher</h4>
       <ol>
-        <li><strong>The recursive mutex (<code>spi_mutex</code>).</strong> Every SPI consumer must acquire the mutex before its first transaction and release after its last. The mutex is recursive, so nested operations within a single component do not deadlock. The mutex is mandatory — there is no “take if available” path. A consumer that cannot acquire the mutex must yield and retry.</li>
-        <li><strong>Audit.</strong> The v1.2.0 audit (Section IV) verified that every take has a matching give. The audit is repeated for every release. Future versions will add static analysis to enforce the pattern at compile time.</li>
-        <li><strong>Documentation.</strong> The Treaty is documented in this paper and in the source tree. Third-party ELF module developers are required to follow the Treaty as a condition of running on the platform. The Treaty is the public contract — any module that violates it is a bug in that module, not in the OS.</li>
+        <li>ESP32 powers up.</li>
+        <li>Arduino <code>setup()</code> runs.</li>
+        <li><code>pinMode(BOARD_POWERON, OUTPUT)</code>, then HIGH — peripheral rail on.</li>
+        <li>Initialize PMU (AXP2101) over I²C.</li>
+        <li>Initialize display over SPI.</li>
+        <li>Initialize SD card over SPI — synchronous, blocks until complete.</li>
+        <li>Mount or create vault directory.</li>
+        <li>Auto-connect WiFi.</li>
+        <li>Spawn Ghost Engine on Core 0.</li>
+        <li>Launcher takes over on Core 1.</li>
       </ol>
 
-      <p>The Treaty is what makes the Ghost Engine possible. The Ghost Engine is the entire reason Pisces Moon OS exists. The relationship between the two is not incidental — the OS was designed around the Engine, and the Engine could not run without the Treaty. <strong>The treaty doesn't change. The hardware around the treaty does.</strong> The same four rules protect the bus on the T-Deck Plus (8 MB PSRAM), the T-LoRa Pager (8 MB PSRAM, deferred boot), and the Cardputer ADV (no PSRAM, mode-locked WiFi). The protocol generalized to the entire memory tier of the ESP32-S3 chip class.</p>
+      <h4 class="subsub">T-LoRa Pager — ~2 seconds to launcher, ~6 seconds to SD ready</h4>
+      <ol>
+        <li>ESP32 powers up.</li>
+        <li>Arduino <code>setup()</code> runs.</li>
+        <li>Initialize I²C bus.</li>
+        <li>Initialize PMU (AXP2101).</li>
+        <li>Initialize XL9555 I/O expander — unique to T-LoRa Pager.</li>
+        <li>Walk XL9555 bits HIGH: LORA_EN, GPS_EN, SENSOR_EN, DRV2605_EN.</li>
+        <li>Initialize display (XL9555 P06 pulse for reset, then SPI init).</li>
+        <li>Initialize keyboard controllers (TCA8418 + AW9523).</li>
+        <li>Spawn <code>late_sd_init_task</code> on Core 0 — deferred SD mount.</li>
+        <li>Launcher takes over on Core 1 immediately. Apps that need SD poll <code>g_sd_ready</code>.</li>
+        <li>Background: <code>late_sd_init_task</code> performs <code>SPI.end()</code> + 20ms wait + <code>SPI.begin()</code> cold restart + mount retry loop. Sets <code>g_sd_ready = true</code> on success.</li>
+        <li>Ghost Engine spawns after SD ready or 15-second timeout.</li>
+      </ol>
 
-      <p><strong>Two-device live-traffic validation (bench, May 20, 2026):</strong> Mesh Messenger send/receive confirmed between T-Deck Plus and Cardputer ADV with Cap LoRa-1262, both on the LongFast channel, concurrent with active wardrive logging on both devices. SD transcripts written to <code>/mesh_logs/messages.csv</code> on each device while WiFi scan results were simultaneously written to wardrive CSV. Both Rule 1 (hit and run) and Rule 2 (no extended holds) survived contact with real LoRa interrupt traffic interleaved with SD writes on the same bus. The Treaty held across the 8 MB PSRAM and no-PSRAM ends of the chip tier simultaneously — proof that the protocol is correctly specified, not merely correctly observed.</p>
-
-      <p>The contribution of this document is the protocol itself — named, documented, audited, and offered as a starting point for any future project on this hardware class that needs to coordinate concurrent peripheral access on a shared SPI bus. The protocol is open source under AGPL-3.0. The reference implementation is at <a href="https://github.com/FluidFortune/pisces-moon-os">github.com/FluidFortune/pisces-moon-os</a>.</p>
+      <h4 class="subsub">Cardputer ADV — ~2 seconds to launcher</h4>
+      <ol>
+        <li>ESP32 powers up.</li>
+        <li>Arduino <code>setup()</code> runs.</li>
+        <li>Initialize HSPI for display, FSPI for SD + LoRa.</li>
+        <li>Initialize display on HSPI (no contention with SD or LoRa).</li>
+        <li>Initialize SD on FSPI — synchronous.</li>
+        <li>Initialize TCA8418 keyboard.</li>
+        <li>If Cap LoRa-1262 module present: initialize SX1262 + AT6668 GPS on FSPI.</li>
+        <li>Spawn Ghost Engine on Core 0 with PSRAM flag isolation — <code>BOARD_HAS_PSRAM</code> not defined for this build.</li>
+        <li>Launcher takes over on Core 1.</li>
+      </ol>
     </section>
 
+    <!-- VIII. RENDERING -->
+    <section class="s" id="rendering">
+      <div class="s-header"><div class="s-num">VIII.</div><h2 class="s-title">Width-Aware Rendering</h2></div>
+
+      <p>Every app file that draws to the display starts with this convention at the top:</p>
+
+      <pre><code>#ifdef DEVICE_TLORAPAGER
+  extern PMDispTLoRaPager *gfx;
+  static constexpr int DISP_W = 480;
+  static constexpr int DISP_H = 240;
+#elif defined(DEVICE_CARDPUTER_ADV)
+  extern Arduino_GFX *gfx;
+  static constexpr int DISP_W = 240;
+  static constexpr int DISP_H = 135;
+#else
+  extern Arduino_GFX *gfx;
+  static constexpr int DISP_W = 320;
+  static constexpr int DISP_H = 240;
+#endif</code></pre>
+
+      <p>All hardcoded references to specific pixel widths become <code>DISP_W</code>. Headers span full width on each device. Content scales appropriately.</p>
+
+      <h4 class="subsub">Rules</h4>
+      <ul>
+        <li>Apps render at full <code>DISP_W × DISP_H</code> on each device.</li>
+        <li>Games keep their 320×240 canvas as a reference frame, centered horizontally on the T-LoRa Pager via <code>X_OFF = (480 - 320) / 2 = 80</code>. On the Cardputer's 240×135 screen, games are not portable — they require per-game adaptation or omission from the Cardputer build.</li>
+        <li>Centering pattern: <code>setCursor(DISP_W / 2 - textWidth / 2, y)</code>.</li>
+        <li>Right-anchoring pattern: <code>setCursor(DISP_W - margin, y)</code>.</li>
+        <li>Vertical layout: <code>DISP_H</code> is 240 on T-Deck and T-LoRa Pager, 135 on Cardputer. Apps that assume 240 rows of UI must compress or paginate on Cardputer.</li>
+      </ul>
+
+      <h4 class="subsub">Cardputer 240×135 layout strategies</h4>
+      <p>The Cardputer's display is significantly smaller than the other two targets. Three strategies are used in the codebase: <strong>(1) compression</strong> — smaller fonts, tighter line spacing, reduced padding; <strong>(2) pagination</strong> — multi-page UIs where the T-Deck shows a single-screen list, the Cardputer shows the same list across two or three pages with page-indicator dots; <strong>(3) omission</strong> — games and visualization apps that cannot meaningfully scale to 240×135 are excluded from the Cardputer build via <code>#ifndef DEVICE_CARDPUTER_ADV</code> guards around their registration.</p>
+    </section>
+
+    <!-- IX. CARDPUTER DETAIL -->
+    <section class="s" id="cardputer">
+      <div class="s-header"><div class="s-num">IX.</div><h2 class="s-title">Cardputer ADV — No PSRAM, Full Multi-Radio</h2></div>
+
+      <p>The Cardputer ADV is the most architecturally significant of the three devices because it demonstrates that the Pisces Moon methodology generalizes to the no-PSRAM extreme of the ESP32-S3 chip class. This section documents the device-specific work required to make that generalization real.</p>
+
+      <h4 class="subsub">The key architectural difference</h4>
+      <p>The Cardputer ADV uses the ESP32-S3FN8 (Stamp-S3A) variant. The FN8 has the same Xtensa LX7 CPU as the N16R8 variants in the T-Deck Plus and T-LoRa Pager, but it has <strong>no PSRAM</strong>. Total memory is 320 KB of internal SRAM plus 8 MB of flash. The 8 MB PSRAM that Pisces Moon's original memory architecture assumed is simply not present.</p>
+
+      <div class="callout">
+        <div class="c-label">Memory budget — verified May 2026</div>
+        <p>At the moment the wardrive task spawned in the v1.2.0 port, free heap measured <strong>97 KB</strong>. WiFi STA initialization requires approximately 54 KB. NimBLE observer initialization requires approximately 48 KB. The honest reading of these numbers in early development was that concurrent multi-radio operation on this hardware was impossible. The three architectural changes documented below reclaimed enough memory to make it work.</p>
+      </div>
+
+      <h4 class="subsub">Change 1 — Lazy app-state allocation</h4>
+      <p>Every always-on app buffer was moved out of static memory and into app-lifetime allocations. Mesh Messenger channel buffers, audio playlists, RetroPack ROM tables, ELF browser app lists, recorder file metadata — all allocated on app entry, released on app exit. The OS no longer reserves RAM for dormant apps. <strong>Result: 81 KB of static memory returned to the heap before the user did anything.</strong> Static footprint dropped from 190 KB to 109 KB. Free heap at task-spawn rose from 97 KB to 219 KB.</p>
+
+      <h4 class="subsub">Change 2 — WiFi mode-locking with hard teardown</h4>
+      <p>CLIENT mode (Gemini AI client) and SCANNER mode (Ghost Engine wardrive) made mutually exclusive at the OS level. Mode transitions perform full <code>esp_wifi_stop()</code> + <code>esp_wifi_deinit()</code> teardown before re-init in the new mode. The per-mode buffers cannot coexist in 320 KB of SRAM. Hardware-honest arbitration, not software flag arbitration.</p>
+
+      <h4 class="subsub">Change 3 — PlatformIO PSRAM flag isolation</h4>
+      <p><code>-DBOARD_HAS_PSRAM</code> stripped from the Cardputer build target. The ESP-IDF heap allocator no longer attempts PSRAM allocations that would silently fall through to internal SRAM, masking the real memory pressure.</p>
+
+      <h4 class="subsub">Result — verified field measurements</h4>
+      <ul>
+        <li><strong>219 KB</strong> free heap after WiFi STA init.</li>
+        <li><strong>174 KB</strong> free heap after NimBLE observer init.</li>
+        <li><strong>125 KB</strong> free heap during active wardrive: 24 BLE devices, 14 WiFi networks, GPS lock at 27 satellites.</li>
+        <li><strong>Four concurrent radios</strong> on hardware with 320 KB of total SRAM.</li>
+        <li><strong>47 applications</strong> registered. Real-time SD logging. Persistent multi-app state.</li>
+      </ul>
+
+      <h4 class="subsub">Cap LoRa-1262 module</h4>
+      <p>The Cardputer ADV's LoRa and GPS capabilities come from the M5Stack Cap LoRa-1262 module, which plugs into the 2×7-pin expansion header on the top edge of the device. The module adds: SX1262 LoRa transceiver with +27dBm output stage (higher power than the onboard SX1262 in the T-Deck or T-LoRa Pager), AT6668 multi-constellation GNSS, and a small antenna integrated into the module housing. The OS detects the Cap module at boot via I²C presence check and conditionally enables LoRa and GPS apps. <strong>Bench validation May 20, 2026:</strong> Mesh Messenger send/receive confirmed between Cardputer ADV with Cap LoRa-1262 and T-Deck Plus on the LongFast channel, concurrent with active wardrive logging on both devices.</p>
+
+      <h4 class="subsub">Known issues (v1.2.0)</h4>
+      <ul>
+        <li>Cap LoRa-1262 module validated — bench validation May 20, 2026: two-device mesh send/receive confirmed between T-Deck Plus (<code>!f1bc15a9</code>) and Cardputer ADV with Cap LoRa-1262 (<code>!04043a1d</code>) on LongFast channel, with concurrent active wardrive logging on both devices and SD transcripts written to <code>/mesh_logs/messages.csv</code>.</li>
+        <li>Audio playback apps that buffer entire WAV files in memory are unavailable — streaming-only playback supported on Cardputer.</li>
+        <li>Games that exceed 240×135 native resolution are excluded from the Cardputer build.</li>
+        <li>The 56-key keyboard's FN modifier layer has no physical key labels for FN-shifted characters; a printed reference card ships with the device documentation.</li>
+      </ul>
+    </section>
+
+    <!-- X. PITFALLS -->
+    <section class="s" id="pitfalls">
+      <div class="s-header"><div class="s-num">X.</div><h2 class="s-title">Common Pitfalls</h2></div>
+
+      <p>These are the failure modes encountered during T-LoRa Pager and Cardputer ADV bring-up, documented so they can be avoided on the next hardware port.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Pitfall</th><th>Fix</th></tr></thead>
+          <tbody>
+            <tr><td>01</td><td>Hardcoded 320 widths — renders correctly on T-Deck, draws a narrowing column on T-LoRa Pager's 480px screen</td><td>Use <code>DISP_W</code> throughout</td></tr>
+            <tr><td>02</td><td>Hardcoded <code>setCursor(160, y)</code> for centering — 160 is center of 320 but ⅓ of 480</td><td><code>setCursor(DISP_W / 2 - textWidth / 2, y)</code></td></tr>
+            <tr><td>03</td><td>Right-anchored elements via <code>setCursor(280, y)</code> — T-Deck-centric, leaves gap on wider screen</td><td><code>setCursor(DISP_W - margin, y)</code></td></tr>
+            <tr><td>04</td><td>GPIO 21 used as TOUCH_RST on T-Deck — same pin is SD_CS on T-LoRa Pager, causes SD mount corruption</td><td>Gate touch init behind <code>#ifdef DEVICE_TDECK_PLUS</code></td></tr>
+            <tr><td>05</td><td>Synchronous SD mount in <code>setup()</code> on T-LoRa Pager — blocks boot, sometimes never completes due to SPI state corruption</td><td>Use <code>late_sd_init_task</code> with cold SPI restart</td></tr>
+            <tr><td>06</td><td>Direct GPIO writes to peripheral power rails on T-LoRa Pager — pin is gated through XL9555 expander, not direct</td><td>Use <code>xl9555_set_bit(pin, true/false)</code></td></tr>
+            <tr><td>07</td><td>Static buffer declarations in app files on Cardputer — consumes scarce SRAM whether app is running or not</td><td>Allocate on app entry, release on app exit (lazy app-state)</td></tr>
+            <tr><td>08</td><td><code>ps_malloc()</code> calls in apps assumed to fall back gracefully on no-PSRAM — actually returns NULL on Cardputer</td><td>Wrap in <code>#ifdef BOARD_HAS_PSRAM</code> with internal-RAM fallback path</td></tr>
+            <tr><td>09</td><td>WiFi mode transitions via <code>esp_wifi_set_mode()</code> on Cardputer — leaks buffers, eventually OOMs</td><td>Full <code>esp_wifi_stop()</code> + <code>esp_wifi_deinit()</code> + reinit in target mode</td></tr>
+            <tr><td>10</td><td>Bluedroid BLE stack on Cardputer — too large for 320 KB SRAM</td><td>Use NimBLE (smaller footprint, ESP-IDF native)</td></tr>
+            <tr><td>11</td><td>Games designed for 320×240 forced onto Cardputer 240×135 — UI elements clipped, controls unreachable</td><td>Exclude from Cardputer build via <code>#ifndef DEVICE_CARDPUTER_ADV</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>The pitfalls share a common shape: an assumption that worked on the origin device fails silently or catastrophically on a different device with the same SoC family. The pattern is recurrent enough that it has earned its own discipline: <strong>before any new hardware port, audit every assumption about pin assignment, power rail topology, memory availability, and peripheral initialization order against the new device's actual schematic.</strong> The schematic is the source of truth, not the marketing material and not the previous port.</p>
+    </section>
+
+    <!-- CLOSING -->
     <div class="closing">
-      <p><strong>The SPI Bus Treaty</strong> — v1.2.0 — May 19, 2026</p>
+      <p class="closing-quote">“The treaty doesn't change. The hardware around the treaty does.”</p>
+      <p><strong>Device Architecture Reference</strong> — Pisces Moon OS v1.2.0 — May 19, 2026</p>
       <p>Eric Becker · <a href="https://fluidfortune.com">Fluid Fortune</a> · <a href="mailto:forge@fluidfortune.com">forge@fluidfortune.com</a></p>
-      <p>Companion documents: <a href="sovereignty.html">white paper</a> · <a href="engineering-record.html">engineering record</a> · <a href="device-architecture.html">device architecture</a></p>
+      <p>Companion documents: <a href="sovereignty.html">white paper</a> · <a href="engineering-record.html">engineering record</a> · <a href="spi-bus-treaty.html">SPI Bus Treaty</a></p>
       <p>Source: <a href="https://github.com/FluidFortune/pisces-moon-os">github.com/FluidFortune/pisces-moon-os</a></p>
-      <p>Licensed under AGPL-3.0.</p>
     </div>
 
   </main>
