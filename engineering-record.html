@@ -3,644 +3,435 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Engineering Record | Fluid Fortune</title>
-  <meta name="description" content="Fluid Fortune Engineering Record — Problems Encountered. Solutions Discovered. Lessons Documented. The complete technical record of the Fluid Fortune project stack.">
+  <title>Engineering Record | Pisces Moon OS — ESP32-S3 Reference Architecture</title>
+  <meta name="description" content="The Pisces Moon Engineering Record. A reference architecture for the ESP32-S3 hardware class. Eleven engineering problems documented and solved. Three deployment targets across the entire memory tier (0 / 2 / 8 MB PSRAM). What the chip is actually capable of when the OS is real.">
   <link rel="canonical" href="https://fluidfortune.com/engineering-record.html">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://fluidfortune.com/engineering-record.html">
+  <meta property="og:title" content="Engineering Record | Pisces Moon OS — ESP32-S3 Reference Architecture">
+  <meta property="og:description" content="A reference architecture for the ESP32-S3 hardware class. Eleven engineering problems documented and solved across three deployment targets. What the chip is actually capable of when the OS is real.">
+  <meta property="og:image" content="https://fluidfortune.com/courtjester.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700;900&family=Inter:wght@400;500;600&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700;900&family=Inter:wght@400;500;600&family=Lora:ital,wght@0,400;0,600;1,400&display=swap"></noscript>
   <style>
     :root {
-      --bg:       #0d1117;
-      --bg2:      #161b22;
-      --bg3:      #1e2530;
-      --fg:       #e6edf3;
-      --fg2:      #8b949e;
-      --fg3:      #484f58;
-      --green:    #00ff41;
-      --green2:   #00c032;
-      --green3:   #1a3a1a;
-      --amber:    #f59e0b;
-      --amber2:   #2e1f0a;
-      --red:      #ef4444;
-      --red2:     #2a0a0a;
-      --border:   #30363d;
-      --font-ui:  'Inter', sans-serif;
-      --font-mono:'Share Tech Mono', monospace;
-      --font-disp:'Orbitron', monospace;
-      --max-w:    860px;
-      --toc-w:    240px;
+      --black:#050a05;--deep:#0d1117;--surface:#161b22;--border:#30363d;
+      --green:#00ff41;--green-dim:#00c032;--green-mute:#1a3a1a;
+      --amber:#ffb700;--amber-dim:#cc9200;
+      --blue:#58a6ff;--text:#e6edf3;--text-dim:#8b949e;--text-muted:#484f58;
+      --font-mono:'Share Tech Mono',monospace;
+      --font-ui:'Inter',sans-serif;
+      --font-disp:'Orbitron',monospace;
+      --font-serif:'Lora',Georgia,serif;
+      --max-w:740px;
     }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { font-size: 16px; scroll-behavior: smooth; }
-    body { background: var(--bg); color: var(--fg); font-family: var(--font-mono); line-height: 1.75; -webkit-font-smoothing: antialiased; }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:var(--deep);color:var(--text);font-family:var(--font-serif);line-height:1.85;font-size:1.05rem}
 
-    /* ── NAV ── */
-    nav { background: var(--bg2); border-bottom: 1px solid var(--border); padding: .6rem 2rem; display: flex; align-items: center; gap: 1.5rem; position: sticky; top: 0; z-index: 200; }
-    nav a { font-size: .65rem; letter-spacing: .12em; color: var(--fg2); text-decoration: none; transition: color .15s; }
-    nav a:hover { color: var(--green); }
-    nav .brand { color: var(--green); font-family: var(--font-disp); font-size: .7rem; }
-    nav .spacer { flex: 1; }
+    nav{background:var(--black);border-bottom:1px solid var(--border);padding:.75rem 1.5rem;display:flex;align-items:center;gap:1.5rem;position:sticky;top:0;z-index:100}
+    nav a{font-family:var(--font-disp);font-size:.75rem;color:var(--green);text-decoration:none;letter-spacing:.12em}
+    nav a:hover{color:#fff}
+    nav .back{color:var(--text-dim);font-family:var(--font-mono);font-size:.68rem}
+    nav .back:hover{color:var(--green-dim)}
+    nav .nav-spacer{flex:1}
+    nav .doc-label{font-family:var(--font-mono);font-size:.55rem;color:var(--text-muted);letter-spacing:.15em;border:1px solid var(--border);padding:.15rem .5rem}
 
-    /* ── LAYOUT ── */
-    .layout { display: flex; max-width: calc(var(--max-w) + var(--toc-w) + 4rem); margin: 0 auto; padding: 0 1.5rem; gap: 3rem; align-items: flex-start; }
+    .hero{max-width:var(--max-w);margin:0 auto;padding:4rem 1.5rem 2.5rem;border-bottom:1px solid var(--border)}
+    .kicker{font-family:var(--font-mono);font-size:.58rem;letter-spacing:.2em;color:var(--green-dim);margin-bottom:.75rem;display:flex;align-items:center;gap:.75rem}
+    .kicker::after{content:'';flex:1;height:1px;background:var(--green-mute)}
+    .hero h1{font-family:var(--font-disp);font-size:clamp(1.4rem,4vw,2rem);color:#fff;font-weight:900;letter-spacing:.04em;line-height:1.2;margin-bottom:.75rem}
+    .hero-sub{font-family:var(--font-serif);font-size:1rem;color:var(--text-dim);font-style:italic;margin-bottom:1.5rem;line-height:1.6}
+    .hero-meta{font-family:var(--font-mono);font-size:.6rem;color:var(--text-muted);letter-spacing:.1em;display:flex;gap:1.5rem;flex-wrap:wrap;align-items:center}
+    .hero-meta .ver{color:var(--amber-dim);border:1px solid var(--amber-dim);padding:.1rem .5rem}
 
-    /* ── TOC ── */
-    .toc { width: var(--toc-w); flex-shrink: 0; position: sticky; top: 52px; padding: 2rem 0; max-height: calc(100vh - 52px); overflow-y: auto; }
-    .toc-title { font-family: var(--font-disp); font-size: .6rem; letter-spacing: .2em; color: var(--green); margin-bottom: 1rem; padding-bottom: .5rem; border-bottom: 1px solid var(--border); }
-    .toc a { display: block; font-size: .62rem; color: var(--fg2); text-decoration: none; padding: .2rem 0; letter-spacing: .04em; transition: color .15s; border-left: 2px solid transparent; padding-left: .5rem; margin-bottom: .1rem; }
-    .toc a:hover { color: var(--green); border-left-color: var(--green); }
-    .toc a.sub { font-size: .58rem; color: var(--fg3); padding-left: 1rem; }
-    .toc a.sub:hover { color: var(--fg2); border-left-color: var(--fg3); }
-    ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: var(--bg); } ::-webkit-scrollbar-thumb { background: var(--border); }
+    .abstract{max-width:var(--max-w);margin:0 auto;padding:2rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    .abstract-label{font-family:var(--font-mono);font-size:.55rem;letter-spacing:.2em;color:var(--text-muted);margin-bottom:.75rem}
+    .abstract p{font-family:var(--font-ui);font-size:.88rem;color:var(--text-dim);line-height:1.75;margin-bottom:1rem}
+    .abstract p:last-child{margin-bottom:0}
 
-    /* ── CONTENT ── */
-    .content { flex: 1; min-width: 0; padding: 2.5rem 0 6rem; }
-
-    /* ── MASTHEAD ── */
-    .masthead { border-bottom: 2px solid var(--green); padding-bottom: 2rem; margin-bottom: 3rem; }
-    .masthead-eyebrow { font-size: .58rem; letter-spacing: .25em; color: var(--green); margin-bottom: .5rem; }
-    .masthead-title { font-family: var(--font-disp); font-size: clamp(1.4rem, 4vw, 2.2rem); color: var(--green); letter-spacing: .05em; line-height: 1.1; margin-bottom: .5rem; }
-    .masthead-sub { font-size: .82rem; color: var(--fg2); font-style: italic; margin-bottom: 1rem; }
-    .masthead-meta { font-size: .62rem; color: var(--fg3); letter-spacing: .08em; }
-    .masthead-meta a { color: var(--green); text-decoration: none; }
-    .callout-top { border: 1px solid var(--amber); background: var(--amber2); padding: .75rem 1rem; margin-top: 1.5rem; font-size: .75rem; color: var(--amber); letter-spacing: .05em; }
-    .callout-top strong { color: var(--amber); }
-
-    /* ── TYPOGRAPHY ── */
-    p { font-size: .9rem; color: var(--fg2); line-height: 1.85; margin-bottom: 1.1rem; }
-    strong { color: var(--fg); }
-    em { color: var(--fg2); font-style: italic; }
-    code { font-family: var(--font-mono); font-size: .82em; color: var(--green); background: var(--bg3); padding: .1em .3em; border: 1px solid var(--border); }
-    ul { margin: .75rem 0 1rem 1.5rem; }
-    li { font-size: .88rem; color: var(--fg2); line-height: 1.75; margin-bottom: .3rem; }
-    blockquote { border-left: 3px solid var(--green); padding: .75rem 1.25rem; margin: 1.5rem 0; background: var(--bg2); }
-    blockquote p { font-size: .85rem; color: var(--fg2); font-style: italic; margin: 0; }
-
-    /* ── SECTION HEADERS ── */
-    h2.section-major {
-      font-family: var(--font-disp);
-      font-size: 1.1rem;
-      color: var(--green);
-      letter-spacing: .08em;
-      padding: 1rem 1.25rem;
-      background: var(--green3);
-      border-left: 4px solid var(--green);
-      margin: 3rem 0 1.5rem;
+    .doc-toc{
+      max-width:var(--max-w);margin:3rem auto;padding:1.5rem 2rem;
+      background:rgba(0,0,0,.4);border:1px solid var(--border);border-left:3px solid var(--green);
     }
-    h3.section-sub {
-      font-size: .9rem;
-      color: var(--fg);
-      letter-spacing: .06em;
-      margin: 2rem 0 .75rem;
-      padding-bottom: .4rem;
-      border-bottom: 1px solid var(--border);
-    }
-    h3.section-problem {
-      font-size: .88rem;
-      color: var(--amber);
-      letter-spacing: .06em;
-      margin: 2rem 0 .75rem;
-      padding: .5rem .75rem;
-      background: var(--amber2);
-      border-left: 3px solid var(--amber);
-    }
+    .doc-toc-label{font-family:var(--font-mono);font-size:.62rem;letter-spacing:.22em;color:var(--text-muted);text-transform:uppercase;margin-bottom:1rem}
+    .doc-toc-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:.5rem 1.5rem;list-style:none;padding:0;margin:0}
+    .doc-toc-list a{font-family:var(--font-mono);font-size:.72rem;color:var(--green-dim);text-decoration:none;padding:.3rem 0;display:block;transition:.15s}
+    .doc-toc-list a:hover{color:var(--green);padding-left:.4rem}
+    .doc-toc-list .toc-num{color:var(--text-muted);margin-right:.6rem;font-size:.65rem}
 
-    /* ── SIDEBAR (plain english) ── */
-    .sidebar {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-left: 3px solid #4fc3f7;
-      padding: 1rem 1.25rem;
-      margin: 1.25rem 0;
-    }
-    .sidebar-title {
-      font-size: .7rem;
-      color: #4fc3f7;
-      letter-spacing: .1em;
-      margin-bottom: .5rem;
-      font-weight: 500;
-    }
-    .sidebar p { font-size: .82rem; color: var(--fg2); margin-bottom: .5rem; }
-    .sidebar p:last-child { margin-bottom: 0; }
+    .doc-body{max-width:var(--max-w);margin:0 auto;padding:0 1.5rem 6rem}
 
-    /* ── TABLES ── */
-    .er-table { width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem; font-size: .78rem; }
-    .er-table td { border: 1px solid var(--border); padding: .5rem .75rem; color: var(--fg2); vertical-align: top; }
-    .er-table tr:first-child td { background: var(--bg3); color: var(--fg); font-weight: 500; }
-    .er-table tr:nth-child(even) td { background: var(--bg2); }
+    .section{padding:3rem 0 0;border-top:1px solid var(--border);margin-top:3rem;scroll-margin-top:2rem}
+    .section:first-child{margin-top:2rem;border-top:none}
+    .section-num{font-family:var(--font-mono);font-size:.55rem;letter-spacing:.2em;color:var(--text-muted);margin-bottom:.4rem}
+    .section-title{font-family:var(--font-disp);font-size:clamp(.9rem,2.5vw,1.1rem);color:var(--green);font-weight:700;letter-spacing:.08em;margin-bottom:1.5rem;line-height:1.3}
 
-    /* ── FOOTER ── */
-    footer { border-top: 1px solid var(--border); padding: 2rem; text-align: center; }
-    footer p { font-size: .62rem; color: var(--fg3); letter-spacing: .08em; margin-bottom: .3rem; }
-    footer a { color: var(--green); text-decoration: none; }
+    h3.subsection-title{font-family:var(--font-disp);font-size:.95rem;color:#fff;font-weight:700;letter-spacing:.06em;margin:2rem 0 1rem;line-height:1.35}
 
-    @media(max-width: 900px) {
-      .layout { flex-direction: column; }
-      .toc { display: none; }
-    }
+    p{margin-bottom:1.3rem;color:var(--text)}
+    p:last-child{margin-bottom:0}
+    strong{color:#fff;font-weight:600;font-family:var(--font-ui)}
+    em{color:var(--text-dim);font-style:italic}
+    a{color:var(--blue);text-decoration:underline;text-underline-offset:3px}
+    a:hover{color:#fff}
+    code{font-family:var(--font-mono);color:var(--amber);font-size:.88em;background:rgba(255,183,0,.05);padding:.05em .35em;border:1px solid rgba(255,183,0,.15);border-radius:2px}
+
+    blockquote{border-left:3px solid var(--green-dim);margin:2rem 0;padding:1rem 1.5rem;background:var(--surface);font-style:italic;color:var(--text-dim);font-size:1rem;line-height:1.7}
+
+    .pattern-block{border:1px solid var(--border);background:var(--surface);padding:1.5rem;margin:1.5rem 0;position:relative}
+    .pattern-block::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--green-dim)}
+    .pattern-num{font-family:var(--font-mono);font-size:.55rem;letter-spacing:.2em;color:var(--green-dim);margin-bottom:.4rem}
+    .pattern-title{font-family:var(--font-disp);font-size:.9rem;color:#fff;font-weight:700;letter-spacing:.06em;margin-bottom:1rem}
+    .pattern-sub{font-family:var(--font-mono);font-size:.62rem;letter-spacing:.12em;color:var(--text-muted);margin:.75rem 0 .4rem;text-transform:uppercase}
+
+    .callout{background:var(--black);border:1px solid var(--border);border-left:3px solid var(--amber-dim);padding:1rem 1.25rem;margin:1.5rem 0}
+    .callout-label{font-family:var(--font-mono);font-size:.55rem;letter-spacing:.2em;color:var(--amber-dim);margin-bottom:.5rem}
+    .callout p{font-size:.85rem;color:var(--text-dim);font-family:var(--font-ui);line-height:1.7;margin-bottom:.5rem}
+    .callout p:last-child{margin-bottom:0}
+
+    .table-wrap{overflow-x:auto;margin:1.5rem 0}
+    table{width:100%;border-collapse:collapse;font-family:var(--font-ui);font-size:.82rem}
+    th{background:var(--black);color:var(--green-dim);font-family:var(--font-mono);font-size:.6rem;letter-spacing:.12em;padding:.5rem .75rem;text-align:left;border:1px solid var(--border)}
+    td{padding:.5rem .75rem;border:1px solid var(--border);color:var(--text-dim);vertical-align:top}
+    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+    td:first-child{color:var(--text);font-family:var(--font-mono);font-size:.78rem}
+
+    .closing{border-top:1px solid var(--border);margin-top:3rem;padding-top:2rem;font-family:var(--font-mono);font-size:.65rem;color:var(--text-muted);letter-spacing:.08em;line-height:2}
+    .closing strong{color:var(--green-dim)}
+
+    footer{border-top:1px solid var(--border);padding:2rem 1.5rem;text-align:center;font-family:var(--font-mono);font-size:.62rem;color:var(--text-muted)}
+    footer a{color:var(--green-dim);text-decoration:none}
+    footer a:hover{color:var(--green)}
+
+    @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+    .hero{animation:fadeIn .5s ease both}
+
+    @media(max-width:600px){.hero h1{font-size:1.4rem}}
   </style>
 </head>
 <body>
 
 <nav>
-  <a href="https://fluidfortune.com" class="brand">FLUID FORTUNE</a>
-  <a href="https://fluidfortune.com">← MAIN SITE</a>
-  <a href="https://fluidfortune.com/sovereignty.html">WHITE PAPER</a>
-  <a href="https://portfolio.fluidfortune.com">PORTFOLIO</a>
-  <div class="spacer"></div>
-  <a href="https://github.com/FluidFortune" target="_blank" rel="noopener">GITHUB</a>
+  <a href="https://fluidfortune.com">FLUID FORTUNE</a>
+  <a href="https://fluidfortune.com" class="back">← MAIN SITE</a>
+  <div class="nav-spacer"></div>
+  <span class="doc-label">ENGINEERING RECORD</span>
 </nav>
 
-<div class="layout">
-
-  <!-- TABLE OF CONTENTS -->
-  <aside class="toc">
-    <div class="toc-title">// CONTENTS</div>
-    <a href="#intro">Introduction</a>
-    <a href="#section-1">1. Pisces Moon OS</a>
-    <a href="#section-1-3" class="sub">Boot Sequence</a>
-    <a href="#section-1-4" class="sub">SPI Bus Conflict</a>
-    <a href="#section-1-4" class="sub">Memory Exhaustion</a>
-    <a href="#section-1-5" class="sub">Dual-Core Sync</a>
-    <a href="#section-1-6" class="sub">Dense RF Instability</a>
-    <a href="#section-1-7" class="sub">GPS Variation</a>
-    <a href="#section-1-8" class="sub">I2S DMA Ceiling</a>
-    <a href="#section-1-9" class="sub">BSS Overflow</a>
-    <a href="#section-1-10" class="sub">NimBLE Singleton</a>
-    <a href="#section-1-11" class="sub">USB CDC vs HID</a>
-    <a href="#section-1-12" class="sub">Trackball Lockout</a>
-    <a href="#section-1-13" class="sub">Ghost Partition</a>
-    <a href="#section-2">2. Pisces Moon Linux</a>
-    <a href="#section-2-1" class="sub">Contaminated Hardware</a>
-    <a href="#section-2-2" class="sub">Q508 SSH Detection</a>
-    <a href="#section-2-3" class="sub">XFCE Menu</a>
-    <a href="#section-2-4" class="sub">Proto-Trojan Horse</a>
-    <a href="#section-3">3. The Phantom</a>
-    <a href="#section-3-1" class="sub">Memory Problem</a>
-    <a href="#section-3-2" class="sub">Frozen Brain</a>
-    <a href="#section-3-3" class="sub">Sports Data</a>
-    <a href="#section-3-4" class="sub">Tier Zero</a>
-    <a href="#section-4">4. Spadra TIS</a>
-    <a href="#section-5">5. WozBot</a>
-    <a href="#section-6">6. Publishing Stack</a>
-    <a href="#section-7">7. VaporwareOS</a>
-    <a href="#section-8">8. Economic Argument</a>
-    <a href="#section-9">9. What Remains</a>
-  </aside>
-
-  <!-- MAIN CONTENT -->
-  <main class="content">
-
-    <div class="masthead">
-      <div class="masthead-eyebrow">// FLUID FORTUNE — CONFIDENTIAL ENGINEERING REFERENCE</div>
-      <div class="masthead-title">ENGINEERING RECORD</div>
-      <div class="masthead-sub">Problems Encountered. Solutions Discovered. Lessons Documented.</div>
-      <div class="masthead-meta">Version 1.0 — April 2026 — Eric Becker // <a href="https://fluidfortune.com">FluidFortune.com</a></div>
-      <div class="callout-top">
-        <strong>AVAILABILITY:</strong> This document is available to the DEF CON 34 CFP Review Board (Submission ID: 1349) and enterprise licensing inquiries on request.
-        The six canonical engineering problems from Section 1 are also covered in the public
-        <a href="https://fluidfortune.com/sovereignty.html" style="color:var(--amber)">Sovereignty White Paper →</a>
-      </div>
-    </div>
-
-    <div id="intro">
-<p>Engineering Record</p>
-<p><em>Problems Encountered. Solutions Discovered. Lessons Documented.</em></p>
-<p>Version 1.0 — April 2026</p>
-<p>Eric Becker // FluidFortune.com</p>
-<p>This document is a record of problems encountered, diagnosed, and solved across the Fluid Fortune project stack. It is written for two audiences simultaneously: the technical reader who wants to understand the specific engineering decisions and why they were made, and the non-technical reader who wants to understand what was actually accomplished and why it is significant.</p>
-<p>Where a technical concept requires deep domain knowledge to understand, a plain English sidebar appears immediately following. These sidebars are not simplifications — they are translations. The technical explanation is accurate. The sidebar makes it accessible.</p>
-<p>The projects covered in this document, in the order they are addressed:</p>
-<ul>
-<li>Pisces Moon OS — custom general-purpose operating system for the</li>
-<li>LilyGO T-Deck Plus (ESP32-S3)</li>
-</ul>
-<ul>
-<li>Pisces Moon Linux — the companion tablet platform running Debian</li>
-<li>13 on a Fujitsu Q508</li>
-</ul>
-<ul>
-<li>The Phantom — local AI agent framework running on home hardware</li>
-</ul>
-<ul>
-<li>Spadra Threat Intelligence System — distributed network security</li>
-<li>monitoring</li>
-</ul>
-<ul>
-<li>WozBot — lightweight local AI proof of concept</li>
-</ul>
-<ul>
-<li>Fluid Fortune Publishing Infrastructure — Punky, Static, and the</li>
-<li>zero-server publishing stack</li>
-</ul>
-<ul>
-<li>VaporwareOS — embedded satirical platform and technical critique</li>
-</ul>
-<p>Each section follows the same structure: what the project is, what problems it encountered, what solutions were developed, and what those solutions proved about the technology and the philosophy behind it.</p>
-<blockquote>
-<p>*The problems are not incidental to the story. They are the story.</p>
-<p>Every solution documented here is a discovery — something that did</p>
-<p>not exist in public documentation before this project encountered the</p>
-<p>need and worked out the answer.*</p>
-</blockquote>
-<h2 id="section-1" class="section-major">1. Pisces Moon OS</h2>
-<h3 class="section-sub">The First Known Documented Dual-Core Persistent Background Tasking OS for Field Intelligence on the ESP32-S3</h3>
-<p>The LilyGO T-Deck Plus is a \$50 handheld device with a color screen, a physical QWERTY keyboard, a touchscreen, a trackball, and five wireless radios: WiFi, Bluetooth Low Energy, LoRa long-range radio, and GPS. It runs on the ESP32-S3 microcontroller at 240 megahertz across two processor cores simultaneously.</p>
-<p>Before Pisces Moon OS, every piece of software ever written for this hardware did one thing. A wardriving tool. A mesh radio platform. A game. When you turned on the device, it did its one function and nothing else.</p>
-<p>Pisces Moon OS is a true general-purpose operating system for this hardware — one where you launch different apps, switch between them, and the device's identity is not defined by what is currently running. As of v1.0.0, it ships 47 applications across 7 categories. It was the first known documented dual-core persistent background tasking OS for field intelligence on this hardware class.</p>
-<p>+———————————————————————--+</p>
-<div class="sidebar">
-<div class="sidebar-title">📘 Plain English: What makes this unusual</div>
-<p>Think of the difference between a microwave oven and a smartphone. A</p>
-<p>microwave has one job. A smartphone can run any app. Before Pisces</p>
-<p>Moon OS, every ESP32-S3 device was essentially a microwave. This</p>
-<p>project turned one into a smartphone — on \$50 of hardware, without</p>
-<p>any of the infrastructure that smartphones rely on. That had never</p>
-<p>been done on this class of chip before.</p>
-<p>+———————————————————————--+</p>
-<p>+———————————————————————--+</p>
-<div class="sidebar-title">📘 Plain English: Why the backlight waits</div>
-<p>If you turn the backlight on before the display's video memory is</p>
-<p>initialized, the screen shows white noise — a flash of garbage</p>
-<p>pixels — before the first real frame renders. Holding the backlight</p>
-<p>off means the first thing the user ever sees is the correct image. A</p>
-<p>small detail that separates "real device" from "prototype."</p>
-<p>+———————————————————————--+</p>
-<p>+———————————————————————--+</p>
-<div class="sidebar-title">📘 Plain English: The WiFi cursor bug</div>
-<p>The WiFi SDK internally uses the same SPI hardware as the display.</p>
-<p>When WiFi initializes, it changes SPI state, which corrupts where the</p>
-<p>display thinks it is currently drawing. If you start a line of text,</p>
-<p>call WiFi init, then finish the line, the text lands in the wrong</p>
-<p>place. Fix: always finish the complete display line first, then call</p>
-<p>WiFi. Simple once you know the cause. Invisible and maddening before</p>
-<p>you do.</p>
-<p>+———————————————————————--+</p>
-<p>+———————————————————————--+</p>
-<div class="sidebar-title">📘 Plain English: Why Core 0 waits 15 seconds</div>
-<p>Core 1 is still finishing boot when Core 0 starts. If Core 0</p>
-<p>immediately touches the SD card and WiFi radio, it collides with Core</p>
-<p>1's initialization before the Treaty system is fully in place. The</p>
-<p>15-second delay is a deliberate safety margin: by then, Core 1 has</p>
-<p>finished and the mutex is operational.</p>
-<p>+———————————————————————--+</p>
-<p>+———————————————————————--+</p>
-<div class="sidebar-title">📘 Plain English: What is actually happening while you use the</div>
-<p>device**</p>
-<p>The T-Deck has two independent processors running simultaneously. One</p>
-<p>runs whatever you are looking at on screen. The other one —</p>
-<p>invisibly, silently, always — is scanning for WiFi networks,</p>
-<p>logging Bluetooth devices, and recording GPS coordinates. Playing</p>
-<p>chess, reading a document, doing nothing. The Ghost Engine is always</p>
-<p>running. The device is always watching.</p>
-<p>+———————————————————————--+</p>
-<p>+———————————————————————--+</p>
-<div class="sidebar-title">📘 Plain English: The shared bus problem</div>
-<p>Imagine four people trying to use the same telephone line</p>
-<p>simultaneously. When only one person is on the call, everything</p>
-<p>works. When two people try to talk at once, both conversations are</p>
-<p>destroyed. The SPI bus is that telephone line. The SD card, LoRa</p>
-<p>radio, and display are the people. Without rules about who can talk</p>
-<p>and when, everything crashes. Pisces Moon OS needed to invent those</p>
-<p>rules — they did not exist for this hardware configuration anywhere</p>
-<p>in public documentation.</p>
-<p>+———————————————————————--+</p>
-<p><strong>⚠ THE PROBLEM: SPI Bus Contention</strong></p>
-<p>Multiple hardware components sharing one SPI bus. Any two components</p>
-<p>attempting simultaneous access corrupts both transactions and crashes</p>
-<p>the device. No documented solution existed for this specific hardware</p>
-<p>configuration running a general-purpose OS.</p>
-<p>+———————————————————————--+ +———————————————————————--+</p>
-<p><strong>✓ THE SOLUTION: The SPI Bus Treaty</strong></p>
-<p>A formal architectural agreement governing every component of the OS.</p>
-<p>Four rules: (1) Hit and run — open a file, write, close, release</p>
-<p>immediately. Never hold the bus. (2) No extended holds — no</p>
-<p>encryption during writes, no formatting during operation, nothing</p>
-<p>that monopolizes the bus. (3) Radio traffic management — a shared</p>
-<p>flag (wifi_in_use) tells the wardrive task when WiFi is in use for an</p>
-<p>API call, so it pauses its scan window. (4) Metadata-only destructive</p>
-<p>functions — the security Nuke sequence deletes index files</p>
-<p>(milliseconds) rather than formatting the card (seconds). A FreeRTOS</p>
-<p>mutex (spi_mutex) enforces the Treaty in code: every component</p>
-<p>touching shared hardware must acquire the mutex first and release it</p>
-<p>immediately after.</p>
-<p>+———————————————————————--+ +———————————————————————--+</p>
-<p>+———————————————————————--+</p>
-<div class="sidebar-title">📘 Plain English: The RAM problem</div>
-<p>Imagine you have a small desk (320KB SRAM) and a large filing cabinet</p>
-<p>in the corner (8MB PSRAM). Every time you need to work on something,</p>
-<p>your instinct is to put it on the desk — but the desk fills up fast</p>
-<p>when you're working on seven things at once. The filing cabinet is</p>
-<p>sitting there empty. The fix: tell the computer to automatically put</p>
-<p>large items in the filing cabinet instead of cramming them onto the</p>
-<p>desk.</p>
-<p>+———————————————————————--+</p>
-<p><strong>⚠ THE PROBLEM: SRAM Exhaustion</strong></p>
-<p>All heap allocations defaulted to 320KB internal SRAM. Running</p>
-<p>multiple simultaneous applications, radio stacks, and background</p>
-<p>tasks exhausted available SRAM, causing allocation failures and</p>
-<p>crashes. The 8MB PSRAM chip was present but unused.</p>
-<p>+———————————————————————--+ +———————————————————————--+</p>
-<p><strong>✓ THE SOLUTION: PSRAM Heap Redirect</strong></p>
-<p>A single build flag — CONFIG_SPIRAM_USE_MALLOC=1 — instructs the</p>
-<p>memory management system to automatically route heap allocations</p>
-<p>above a threshold to PSRAM. Applications and libraries require no</p>
-<p>changes. Internal SRAM is now reserved for small, fast, time-critical</p>
-<p>buffers. Everything else goes to PSRAM. This was not a documented</p>
-<p>solution for an ESP32-S3 OS context — no previous firmware was</p>
-<p>complex enough to require it.</p>
-<p>+———————————————————————--+ +———————————————————————--+</p>
-<p>+———————————————————————--+</p>
-<div class="sidebar-title">📘 Plain English: Two cores, one set of hardware</div>
-<p>Think of two workers sharing one set of tools. If both reach for the</p>
-<p>same tool at the same time, you get a conflict. The solution is a</p>
-<p>sign-out system: before using a shared tool, you check it out. When</p>
-<p>done, you check it back in. Anyone else who needs it waits. Pisces</p>
-<p>Moon OS implements this as a software "mutex" — a lock that</p>
-<p>ensures only one core touches shared hardware at a time.</p>
-<p>+———————————————————————--+</p>
-<p><strong>✓ THE SOLUTION: The Dual-Core Architecture with SPI Mutex</strong></p>
-<p>The wardrive task is pinned to Core 0 via xTaskCreatePinnedToCore()</p>
-<p>with a deliberate 15-second startup delay, allowing Core 1 to</p>
-<p>complete boot before Core 0 begins touching shared hardware. The SPI</p>
-<p>mutex (part of the Bus Treaty) coordinates SD card access between</p>
-<p>cores. A parallel wifi_in_use flag coordinates WiFi radio access.</p>
-<p>Neither core needs to know what the other is doing — coordination</p>
-<p>happens through shared state flags, not direct coupling.</p>
-<p>+———————————————————————--+ +———————————————————————--+</p>
-<p>+———————————————————————--+</p>
-<div class="sidebar-title">📘 Plain English: The dense city problem</div>
-<p>Imagine you're taking notes every time someone walks past you. In a</p>
-<p>quiet hallway, this is easy. In a crowded train station, people are</p>
-<p>passing faster than you can write. You run out of notepad space and</p>
-<p>drop everything. The solution: instead of writing everything down</p>
-<p>immediately, hand notes to a queue and process them at a manageable</p>
-<p>pace.</p>
-<p>+———————————————————————--+</p>
-<p><strong>✓ THE SOLUTION: ISR-Safe BLE Queue</strong></p>
-<p>BLE advertisement callbacks now do the minimum possible work: they</p>
-<p>push a small record into a lock-free circular queue and return</p>
-<p>immediately. A separate task on Core 0 drains the queue at a</p>
-<p>controlled pace. The ISR never overflows because it does almost</p>
-<p>nothing. The queue absorbs bursts. Validated in real-world testing:</p>
-<p>40+ WiFi access points and 100+ BLE devices, no crash.</p>
-<p>+———————————————————————--+ +———————————————————————--+</p>
-<p><strong>✓ THE SOLUTION: Auto-Baud GPS Detection</strong></p>
-<p>The GPS initialization routine tries 9600 baud first. If no valid</p>
-<p>NMEA sentences are received within a timeout, it switches to 38400.</p>
-<p>The RX buffer was also increased from the default 128 bytes to 512</p>
-<p>bytes — the default overflows during the 2-4 second WiFi scan</p>
-<p>windows that block the CPU, causing GPS fix acquisition to stall.</p>
-<p>+———————————————————————--+ +———————————————————————--+</p>
-<p>+———————————————————————--+</p>
-<div class="sidebar-title">📘 Plain English: The audio memory problem</div>
-<p>The PSRAM heap redirect from Problem 1.3 was a great solution — but</p>
-<p>it only works for some kinds of memory. The audio system uses a</p>
-<p>different kind of memory allocation that bypasses the redirect</p>
-<p>entirely and always takes from the small desk (SRAM). With the desk</p>
-<p>already crowded, there was no room for audio. The fix: make the audio</p>
-<p>system ask for less desk space.</p>
-<p>+———————————————————————--+</p>
-<p><strong>✓ THE SOLUTION: I2S DMA Budget Rule</strong></p>
-<p>DMA buffers capped at 4 buffers × 512 bytes = 4KB (down from 16KB).</p>
-<p>Read buffers moved to ps_malloc() — PSRAM-allocated on launch,</p>
-<p>freed on exit. Warmup buffers reduced from 8KB stack allocations to</p>
-<p>512-byte stack arrays. This constraint is now documented as a hard</p>
-<p>rule for all future I2S users in the OS.</p>
-<p>+———————————————————————--+ +———————————————————————--+</p>
-<p>+———————————————————————--+</p>
-<div class="sidebar-title">📘 Plain English: The static global problem</div>
-<p>Imagine every app leaving its furniture in the hallway even when the</p>
-<p>app is closed. The hallway fills up. The PSRAM redirect was supposed</p>
-<p>to send large items to the storage room — but it only works for</p>
-<p>items you specifically request storage for. If you declare something</p>
-<p>as always-available-in-the-hallway, it stays in the hallway. The fix:</p>
-<p>stop leaving furniture in the hallway. Bring it out when the app</p>
-<p>opens, put it away when it closes.</p>
-<p>+———————————————————————--+</p>
-<p><strong>⚠ THE PROBLEM: BSS Overflow — 70,120 Bytes</strong></p>
-<p>Static global arrays across 8 new apps loaded permanently into</p>
-<p>internal SRAM at boot: RF spectrum waterfall buffer (105KB), probe</p>
-<p>device arrays (27KB), packet analysis structures (9KB), and others.</p>
-<p>Total BSS pressure exceeded available SRAM by 70KB.</p>
-<p>+———————————————————————--+ +———————————————————————--+</p>
-<p><strong>✓ THE SOLUTION: PSRAM Dynamic Allocation Pattern</strong></p>
-<p>All large data structures converted from static globals to</p>
-<p>ps_malloc() allocated on app launch and freed on exit. The RF</p>
-<p>waterfall buffer (105KB) alone moved to PSRAM. Total moved from BSS</p>
-<p>to PSRAM: \~137KB, resolving the 70KB deficit with margin. This</p>
-<p>pattern is now documented as the required approach for any large</p>
-<p>buffer in the OS — no large arrays in global scope.</p>
-<p>+———————————————————————--+ +———————————————————————--+</p>
-<p><strong>✓ THE SOLUTION: NimBLE Ownership Protocol</strong></p>
-<p>wardrive.cpp owns NimBLE permanently for the lifetime of the session.</p>
-<p>Any app requiring BLE access calls wardrive_ble_stop() before using</p>
-<p>the scan object — which halts the active scan and clears callbacks</p>
-<p>cleanly — and wardrive_ble_resume() when finished. The app in the</p>
-<p>middle has exclusive, clean access. No app may call</p>
-<p>NimBLEDevice::init() or deinit() under any circumstances.</p>
-<p>+———————————————————————--+ +———————————————————————--+</p>
-<p>+———————————————————————--+</p>
-<div class="sidebar-title">📘 Plain English: The USB identity problem</div>
-<p>A USB device tells the computer what it is when it plugs in. It can</p>
-<p>say "I'm a serial port" or "I'm a keyboard" — but not both at</p>
-<p>once. The T-Deck needs to be a serial port for development work. For</p>
-<p>keyboard injection testing, it needs to be a keyboard. These are</p>
-<p>physically the same socket but logically incompatible identities.</p>
-<p>+———————————————————————--+</p>
-<p><strong>✓ THE SOLUTION: Dual Build System</strong></p>
-<p>Two separate build environments in platformio.ini. The standard build</p>
-<p>(esp32s3) uses CDC serial mode — full development capability,</p>
-<p>PlatformIO flashing, stable GPIO1. The HID build (esp32s3_hid) uses</p>
-<p>USB HID mode — keyboard injection, no serial console. The USB Ducky</p>
-<p>app detects which build is running and displays appropriate UI for</p>
-<p>each case. BLE Ducky provides keyboard injection in the standard</p>
-<p>build without any reflashing required.</p>
-<p>+———————————————————————--+ +———————————————————————--+</p>
-<p><strong>✓ THE SOLUTION: Split Trackball API</strong></p>
-<p>update_trackball() retains the 250ms lockout for all UI navigation</p>
-<p>— unchanged. A new update_trackball_game() provides an 80ms lockout</p>
-<p>for game loops. All existing UI code is unaffected. All game loops</p>
-<p>call the game variant. Future games must use update_trackball_game().</p>
-<p>+———————————————————————--+ +———————————————————————--+</p>
-<p>+———————————————————————--+</p>
-<div class="sidebar-title">📘 Plain English: What the Ghost Partition does</div>
-<p>Imagine a briefcase with a hidden compartment. The visible section</p>
-<p>has innocent contents — maps, a calculator, some notes. The hidden</p>
-<p>section requires two separate keys to open. If you enter the wrong</p>
-<p>combination, the briefcase shows you the innocent section anyway,</p>
-<p>with no indication that a hidden section exists. If you need to</p>
-<p>destroy the hidden contents quickly, one code wipes the filing system</p>
-<p>— leaving the data physically present but permanently unreachable</p>
-<p>through normal means. This is the Ghost Partition.</p>
-<p>+———————————————————————--+</p>
-<p><strong>✓ THE SOLUTION: Fresh Minimal Install Protocol</strong></p>
-<p>Decision: wipe and reinstall from scratch with Debian 13 minimal XFCE</p>
-<p>— only XFCE checked during installation, no LibreOffice, no extras,</p>
-<p>nothing. A minimal install has no mystery leftovers. If something</p>
-<p>breaks, it is attributable to the current install script, not to</p>
-<p>historical contamination. This is now the documented baseline for the</p>
-<p>Pisces Moon Linux install.</p>
-<p>+———————————————————————--+ +———————————————————————--+</p>
-<p><strong>✓ THE SOLUTION: Direct Question Over Silent Detection</strong></p>
-<p>When no \$DISPLAY is set, the installer asks directly: "Is this a</p>
-<p>Fujitsu Q508?" The user types yes or no. No clever detection</p>
-<p>required. Simple input beats clever inference when the clever</p>
-<p>inference fails on the most common use case.</p>
-<p>+———————————————————————--+ +———————————————————————--+</p>
-<p><strong>✓ THE SOLUTION: Correct Menu Registration Path</strong></p>
-<p>Menu file moved to</p>
-<p>/etc/xdg/menus/applications-merged/pisces-moon.menu.</p>
-<p>update-desktop-database run after installation. App launch method</p>
-<p>changed from xdg-open (which requires a browser to be configured) to</p>
-<p>chromium \--app= (which opens each HTML app as a standalone</p>
-<p>borderless window — a functional proto-Trojan Horse wrapper).</p>
-<p>+———————————————————————--+ +———————————————————————--+</p>
-<p>+———————————————————————--+</p>
-<div class="sidebar-title">📘 Plain English: What The Phantom does</div>
-<p>When you ask a local AI "what was the Dodgers score last night?",</p>
-<p>the model has no idea — it was trained months ago and cannot access</p>
-<p>the internet. The Phantom solves this by checking the score BEFORE</p>
-<p>asking the model. It finds the answer, writes it into the question,</p>
-<p>and hands the model a message that says "given that the Dodgers won</p>
-<p>4-2, tell me about the game." The model looks like it knows. The</p>
-<p>Phantom actually knew.</p>
-<p>+———————————————————————--+</p>
-<p><strong>⚠ THE PROBLEM: Local AI Has No Memory</strong></p>
-<p>Each conversation session starts completely fresh. Context</p>
-<p>established in previous sessions is lost. The model cannot recall</p>
-<p>corrections, preferences, or ongoing projects. This makes local AI</p>
-<p>feel significantly less capable than cloud alternatives, regardless</p>
-<p>of actual model quality.</p>
-<p>+———————————————————————--+ +———————————————————————--+</p>
-<p><strong>✓ THE SOLUTION: ChromaDB Vector Memory</strong></p>
-<p>ChromaDB runs entirely locally — no cloud, no API key. After every</p>
-<p>conversation turn, each message is converted to a mathematical vector</p>
-<p>representing its meaning and stored. Before every turn, the system</p>
-<p>retrieves the five most semantically similar past exchanges — not</p>
-<p>by keyword search but by meaning. "How has Miguel Rojas been</p>
-<p>performing?" retrieves conversations about Dodgers players even if</p>
-<p>they used different words. Combined with automatic conversation</p>
-<p>distillation (after 60 turns, older exchanges are summarized into a</p>
-<p>compact memory snapshot), The Phantom maintains genuine continuity</p>
-<p>across sessions.</p>
-<p>+———————————————————————--+ +———————————————————————--+</p>
-<p>+———————————————————————--+</p>
-<div class="sidebar-title">📘 Plain English: How vector memory works</div>
-<p>Keyword search asks "does this document contain the word</p>
-<p>'baseball'?" Vector search asks "is this document about the same</p>
-<p>subject as the question I'm asking?" It finds related content even</p>
-<p>when the words are completely different. This is how human memory</p>
-<p>actually works — you remember things by association, not by exact</p>
-<p>word match. ChromaDB gives a local AI something close to that.</p>
-<p>+———————————————————————--+</p>
-<p><strong>✓ THE SOLUTION: Two-Stage Web Intelligence</strong></p>
-<p>Before every conversation turn, two detection stages run. First: a</p>
-<p>keyword check for trigger phrases ("search", "score", "who is",</p>
-<p>"latest"). If keywords are present, web search runs. Second: if</p>
-<p>keywords miss, the model itself is asked in a single 5-token query</p>
-<p>whether it needs web access for this question. This catches queries</p>
-<p>that keyword matching would miss — "How has Miguel Rojas performed</p>
-<p>this season?" contains no trigger keyword but the model correctly</p>
-<p>identifies that it needs current data. Web results are scraped in</p>
-<p>full (not just snippet summaries), with a paywall bypass cascade</p>
-<p>using 12ft.io.</p>
-<p>+———————————————————————--+ +———————————————————————--+</p>
-<p><strong>✓ THE SOLUTION: MLB Stats API Integration</strong></p>
-<p>The Phantom integrates directly with the official MLB Stats API —</p>
-<p>free, no key required — for real-time scores, full season</p>
-<p>statistics, and player biographical data. Every player lookup</p>
-<p>auto-writes to phantom_databases/mlb_players.json in a format</p>
-<p>compatible with Pisces Moon apps on the tablet and T-Deck. The</p>
-<p>database export function minifies JSON for device transfer. The</p>
-<p>distinction between at-bats and plate appearances is correctly</p>
-<p>maintained.</p>
-<p>+———————————————————————--+ +———————————————————————--+</p>
-<p><strong>✓ THE SOLUTION: The Log Aggregator</strong></p>
-<p>A single aggregation service pulls from all nodes on a schedule,</p>
-<p>merges events into one chronological timeline, and runs correlation</p>
-<p>checks automatically. The question "did the IP that hit our cloud VM</p>
-<p>at 5:38 AM also appear in local network traffic?" was unanswerable</p>
-<p>before the Aggregator. Now it is answered automatically every 30</p>
-<p>minutes without human intervention.</p>
-<p>+———————————————————————--+ +———————————————————————--+</p>
-<p>+———————————————————————--+</p>
-<div class="sidebar-title">📘 Plain English: Why WozBot exists</div>
-<p>Nobody shares a productivity assistant with their friends. But a</p>
-<p>boisterous AI that tells terrible 1970s hardware puns and recounts</p>
-<p>Apple Computer history from the inside? That gets posted on Reddit.</p>
-<p>When someone finds the GitHub repo, they find Fluid Fortune, and they</p>
-<p>find The Phantom, and they think: hm. The joke bot is the Trojan</p>
-<p>Horse. The Phantom is what's inside.</p>
-<p>+———————————————————————--+</p>
-<p><strong>✓ THE SOLUTION: The Minimal Proof of Concept</strong></p>
-<p>WozBot demonstrates the core architecture — local model + system</p>
-<p>prompt + web interface + server — in a form anyone can experience</p>
-<p>without technical knowledge. It is live at wozbot.fluidfortune.com,</p>
-<p>running on bare metal in the Fluid Fortune private perimeter,</p>
-<p>tunneled to the public internet via Cloudflare. No cloud compute. No</p>
-<p>corporate data center. No ongoing cost beyond electricity. The joke</p>
-<p>is the point. The architecture behind the joke is also the point.</p>
-<p>+———————————————————————--+ +———————————————————————--+</p>
-<p>+———————————————————————--+</p>
-<div class="sidebar-title">📘 Plain English: The WordPress problem</div>
-<p>WordPress is bloat. Not a little bloat — architectural bloat. A</p>
-<p>blog post is a text file. WordPress requires a database server, a PHP</p>
-<p>runtime, a web server, a plugin ecosystem with its own security</p>
-<p>vulnerabilities, and a hosting provider. Punky replaces the entire</p>
-<p>stack with one HTML file and a GitHub account. The blog that results</p>
-<p>is faster, cheaper (free), more durable, and owned completely by the</p>
-<p>person who wrote the posts.</p>
-<p>+———————————————————————--+</p>
-<p><strong>✓ THE SOLUTION: Punky — GitHub as the Server</strong></p>
-<p>Punky is a single HTML file. Open it in Chrome. Write a post using a</p>
-<p>rich text editor. Click publish. Punky calls the GitHub API directly</p>
-<p>from your browser, creates the post file in your repository, updates</p>
-<p>the JSON manifest, regenerates the RSS feed and sitemap. Your GitHub</p>
-<p>token stays in your browser. Your posts go to your repository. The</p>
-<p>cost of running a blog on Punky: \$0/month.</p>
-<p>+———————————————————————--+ +———————————————————————--+</p>
-<p><strong>✓ THE SOLUTION: Static — Archive.org as the Host</strong></p>
-<p>Static is Punky's sibling, built for audio. Audio files go to</p>
-<p>archive.org — the Internet Archive, a non-profit digital library</p>
-<p>that has been preserving the web since 1996 and has no business model</p>
-<p>that requires monetizing your audience. Episode pages and RSS feeds</p>
-<p>are generated by Static and served by GitHub Pages. The shows cannot</p>
-<p>be deplatformed by a hosting company changing its terms. Total cost:</p>
-<p>\$0/month.</p>
-<p>+———————————————————————--+ +———————————————————————--+</p>
-<p>+———————————————————————--+</p>
-<div class="sidebar-title">📘 Plain English: Why build a satirical embedded OS</div>
-<p>The most credible criticism of the technology industry comes from</p>
-<p>inside it. A developer who has shipped production code earns the</p>
-<p>right to criticize production code. VaporwareOS is built with</p>
-<p>professional-grade embedded engineering — PSRAM framebuffers, BLE</p>
-<p>HID, passive RF monitoring — so the critique cannot be dismissed as</p>
-<p>the work of someone who does not understand the engineering. The joke</p>
-<p>is built from the same materials as the thing it is joking about.</p>
-<p>That is what makes it land.</p>
-<p>+———————————————————————--+</p>
-<p>+———————————————————————--+</p>
-<div class="sidebar-title">📘 Plain English: Why the irony is the point</div>
-<p>The firmware that mocks progress bars that lie has its own serial</p>
-<p>monitor reporting "init complete" while the display shows nothing.</p>
-<p>This is not a failure. It is the most honest thing VaporwareOS does.</p>
-<p>The court jester is lying on the floor of the throne room. The bit</p>
-<p>landed anyway. When the screen eventually works, the first image will</p>
-<p>be VAPOR OS, then EVERYTHING, then a subtitle: "Alpha Version:</p>
-<p>Whatever Your Mind Believes It To Be." This is the most honest thing</p>
-<p>the device will ever say.</p>
-<p>+———————————————————————--+</p>
+<div class="hero">
+  <div class="kicker">PISCES MOON OS — REFERENCE ARCHITECTURE</div>
+  <h1>The ESP32-S3 Engineering Record</h1>
+  <p class="hero-sub">What the chip is actually capable of when the operating system is real.</p>
+  <div class="hero-meta">
+    <span>MAY 2026</span>
+    <span class="ver">v1.2.0 "MULTI-DEVICE"</span>
+    <span>ERIC BECKER // FLUID FORTUNE</span>
+  </div>
 </div>
+
+<div class="abstract">
+  <div class="abstract-label">ABSTRACT</div>
+  <p>Pisces Moon OS v1.2.0 ships a four-radio multi-app handheld operating system — preemptive multitasking, persistent dual-core background intelligence collection, runtime-loadable application modules, real-time SD logging, FAT32 file management — on a $50 microcontroller with <strong>320 KB of internal SRAM and no external memory of any kind.</strong> For reference: the IBM-compatible Compaq Presario that ran Windows 3.1 in 1995 had 4 MB of RAM. The Cardputer ADV running Pisces Moon has one-twelfth of that. The Compaq ran cooperative multitasking. The Cardputer runs preemptive multitasking with concurrent WiFi, Bluetooth Low Energy, GPS, and LoRa radios all coordinating in real time. This is not a benchmark or a tech demo. It is a shipping operating system.</p>
+  <p>This engineering record documents how that became possible. Eleven engineering problems solved on the way — none of which had documented prior solutions on this hardware platform. Eight architectural patterns hardened into platform-level disciplines: the SPI Bus Treaty, the Ghost Engine task model, lazy app-state allocation, WiFi mode-locking with hard teardown, lazy boot initialization, runtime radio tuning, the three-layer ELF sandbox, and the three-tier memory architecture that allows the same OS to run from zero PSRAM through 8 MB PSRAM with a single codebase.</p>
+  <p>The deeper claim is in the methodology: <strong>name the constraint, document the protocol, make it a platform contract.</strong> The treaties this methodology produced — SPI Bus Treaty on the S3, UART Peripheral Map on the P4 — are the expressions. The methodology is the contribution. The Cardputer result is the proof that it generalizes to hardware the industry treats as incapable of running an OS at all.</p>
+  <p>The Espressif ESP32-S3 is a dramatically more capable chip than its marketing implies. The chip vendors sell it as a smart-home endpoint, an AI inference accelerator, a WiFi-and-Bluetooth IoT module. The chip is also the platform for what this document describes. The reference firmware did not show it. The vendor marketing did not describe it. The chip was always capable. The operating system is the proof.</p>
+</div>
+
+<div class="doc-toc">
+  <div class="doc-toc-label">▸ TABLE OF CONTENTS ◂</div>
+  <ul class="doc-toc-list">
+    <li><a href="#thesis"><span class="toc-num">I.</span>The Thesis</a></li>
+    <li><a href="#chip"><span class="toc-num">II.</span>The Chip vs The Marketing</a></li>
+    <li><a href="#targets"><span class="toc-num">III.</span>Three Deployment Targets</a></li>
+    <li><a href="#patterns"><span class="toc-num">IV.</span>Eight Architectural Patterns</a></li>
+    <li><a href="#problems"><span class="toc-num">V.</span>Eleven Engineering Problems</a></li>
+    <li><a href="#methodology"><span class="toc-num">VI.</span>The Methodology</a></li>
+    <li><a href="#whats-next"><span class="toc-num">VII.</span>What's Next</a></li>
+    <li><a href="sovereignty.html"><span class="toc-num">↗</span>Sovereignty White Paper</a></li>
+    <li><a href="spi-bus-treaty.html"><span class="toc-num">↗</span>SPI Bus Treaty Whitepaper</a></li>
+    <li><a href="device-architecture.html"><span class="toc-num">↗</span>Device Architecture Reference</a></li>
+  </ul>
+</div>
+
+<div class="doc-body">
+
+  <!-- I. THESIS -->
+  <div class="section" id="thesis">
+    <div class="section-num">I</div>
+    <h2 class="section-title">THE THESIS — WHAT THIS DOCUMENT PROVES</h2>
+
+    <p>The ESP32-S3 has been treated by the industry as a single-purpose appliance. The reference firmware that ships from chip vendors targets that model. The Arduino sketches that populate the maker ecosystem reinforce that model. The result is that most ESP32-S3 devices ship with software that uses a fraction of what the chip can do.</p>
+
+    <p>Pisces Moon OS demonstrates the other path. A single operating system, deployed across three physically different ESP32-S3 handheld devices, running 49 to 52 native applications on each with concurrent four-radio coordination on devices that have it, and a multi-app launcher with persistent state on devices that don't. The Ghost Engine never stops collecting on any of them. The SPI Bus Treaty arbitrates the shared bus on all of them. The same firmware codebase produces all three binaries.</p>
+
+    <p>This is not a benchmark. It is not a tech demo. It is a shipping operating system with eleven documented engineering problems solved, eight architectural patterns documented as platform-level disciplines, and a verifiable public codebase. The proof is not the claim — the proof is the code, the binaries, and the field validation.</p>
+
+    <blockquote>This document is the engineering record of how Pisces Moon OS came to be possible on the ESP32-S3 hardware class. It is also, by accident, a description of what the chip is capable of doing when the operating system is treated as the engineering problem instead of an implementation detail.</blockquote>
+
+    <p>The work began with the T-Deck Plus and a single, defining technical question: <em>can persistent dual-core background tasking work on shared-bus hardware without crashing?</em> The answer required inventing the SPI Bus Treaty. From there, the question expanded: <em>can the same OS run on a second device with different GPIO assignments?</em> That required Problems 7 and 8 and the hardware abstraction layer. Then: <em>can it run on a device with one-twentieth the memory?</em> That required Problem 11 and a complete reframing of how an embedded OS manages always-on app state. The pattern at each scale was identical: name the constraint, document the protocol, make it a platform contract.</p>
+
+    <p>The record below is what got built, in the order it had to be built, with the patterns that emerged when each problem turned out to be the same shape as the last.</p>
+  </div>
+
+  <!-- II. THE CHIP VS THE MARKETING -->
+  <div class="section" id="chip">
+    <div class="section-num">II</div>
+    <h2 class="section-title">THE CHIP VS THE MARKETING</h2>
+
+    <p>Espressif's documentation for the ESP32-S3 is technically excellent. The technical reference manual is comprehensive, the SDK is well-maintained, and the silicon is genuinely well-engineered. Credit where due: this is one of the better-documented embedded platforms in current production.</p>
+
+    <p>The marketing copy is a different document. The ESP32-S3 product page describes a chip optimized for <em>"AIoT applications,"</em> with selling points framed around AI inference acceleration via vector instructions, dual-band WiFi 802.11 b/g/n at 2.4 GHz, Bluetooth Low Energy 5, USB OTG, and the standard array of peripherals. It is sold as a building block for smart-home endpoints, voice assistants, smart-display controllers, and industrial IoT sensors. The implied use case is: <em>a device that does one thing well, on WiFi, with optional BLE for setup.</em></p>
+
+    <p>This is not wrong. It is just incomplete. The chip ships with capability the marketing does not describe.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Capability</th><th>How Espressif Markets It</th><th>What Pisces Moon Demonstrates</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Dual-core CPU</td><td>"Higher performance for AI workloads"</td><td>True concurrent multitasking: Core 0 runs persistent radio intelligence collection while Core 1 runs interactive applications, with formal mutex-governed shared-resource arbitration.</td></tr>
+          <tr><td>WiFi + BLE coexistence</td><td>"Simultaneous WiFi and BLE for IoT setup"</td><td>Continuous concurrent operation under sustained load: WiFi scanning, BLE observer scanning, with packet capture and association tracking maintained across a multi-hour field session.</td></tr>
+          <tr><td>PSRAM support</td><td>"Up to 8 MB external RAM for application data"</td><td>A three-tier memory architecture (0 / 2 / 8 MB) with shared codebase, demonstrating that the OS is portable across the entire memory range of the chip class without sacrificing functionality.</td></tr>
+          <tr><td>Peripheral set (SPI, I2C, UART, I2S)</td><td>"Rich peripheral options for diverse applications"</td><td>Four radios on a single device, with shared-bus arbitration governed by a formal architectural protocol. The peripherals are not used in isolation — they are choreographed.</td></tr>
+          <tr><td>PMS (Permission Management System)</td><td>Documented in the TRM, not in marketing</td><td>The first known documented hardware-enforced ELF module sandbox on the chip class, using PMS region permissions combined with Xtensa exception handler hijacking for general-purpose OS application isolation.</td></tr>
+          <tr><td>Application model</td><td>"Arduino IDE / ESP-IDF examples"</td><td>A general-purpose handheld operating system with 49–52 applications per device, persistent state, runtime-loadable ELF modules, and a documented application development model that does not require reflashing the firmware to add or update applications.</td></tr>
+        </tbody>
+      </table>
     </div>
 
-  </main>
+    <p>The asymmetry is not a criticism of Espressif. Their marketing targets the volume customers — the smart-home OEMs, the IoT module integrators, the AI accelerator buyers — who collectively ship hundreds of millions of devices and pay the bills. The marketing reflects the use cases their customers actually buy. Nobody at Espressif is wrong about what their chip is selling for. They are simply silent about what it is also capable of.</p>
+
+    <p>This document fills that silence. The clearest way to show what was left on the table is to compare the most resource-constrained Pisces Moon target — the Cardputer ADV with zero PSRAM — to a desktop computer from thirty-one years earlier:</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th></th><th>Compaq Presario CDS 524 (1995)</th><th>M5Stack Cardputer ADV (2026)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>CPU</td><td>Intel 486SX @ 66 MHz, single core, no FPU</td><td>Xtensa LX7 @ 240 MHz, dual core, hardware FPU</td></tr>
+          <tr><td>RAM</td><td>4 MB</td><td><strong>320 KB usable internal SRAM (no external memory)</strong></td></tr>
+          <tr><td>Storage</td><td>400 MB hard disk</td><td>8 MB flash + MicroSD</td></tr>
+          <tr><td>Form factor</td><td>Desktop tower + monitor + keyboard</td><td>Credit-card pocketable handheld with built-in QWERTY</td></tr>
+          <tr><td>Operating system</td><td>MS-DOS 6.2 + Windows 3.1</td><td>Pisces Moon OS v1.2.0</td></tr>
+          <tr><td>Multitasking</td><td>Cooperative (apps must voluntarily yield)</td><td>Preemptive (FreeRTOS with priority-based scheduling)</td></tr>
+          <tr><td>Concurrent radios</td><td>None (no networking on base configuration)</td><td>Four — WiFi, BLE, GPS, LoRa — all coordinating in real time</td></tr>
+          <tr><td>App lifecycle</td><td>Single foreground app, no background state</td><td>Multi-app with persistent state, runtime ELF module loading</td></tr>
+          <tr><td>Filesystem</td><td>FAT16 on internal drive</td><td>FAT32 on removable storage with hot-swap support</td></tr>
+          <tr><td>Retail price (then-current)</td><td>$1,499</td><td>$50</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>The Compaq had twelve and a half times the RAM. It could not have done what the Cardputer does — not with that operating system, and not with a different one designed for hardware that size. Cooperative multitasking cannot safely run a radio scanner alongside a foreground app. There was no networking stack ready to coordinate four radios. The architectural primitives were not in place.</p>
+
+    <p>The Cardputer can do it because the operating system was designed for what the chip actually is. FreeRTOS provides preemptive scheduling. ESP-IDF provides direct hardware access without OS overhead. The SPI Bus Treaty arbitrates the shared bus. The WiFi mode-locking enforces radio mutual exclusion. The lazy app-state allocation keeps boot heap available for the radio drivers. Architecture was spent, instead of memory. <strong>Architecture written by hand, in C, against hardware primitives directly.</strong></p>
+
+    <p>This is the asymmetry the marketing leaves unsaid. The Compaq spent memory on abstractions — window manager, GDI, message queues, app heaps, segment management — that gave general-purpose flexibility at the cost of efficiency. Pisces Moon spends architecture on specialization — Treaty mutex for one specific bus, mode-locking for one specific radio, lazy init for one specific boot path — that gives radio-handheld capability at the cost of being unable to run Photoshop. Both are operating systems. They optimize for different things. One ran on a $1,499 desktop. The other runs in a $50 pocket device. The chip in the pocket has dramatically less RAM. It is dramatically more capable.</p>
+
+    <blockquote>The Compaq came with an operating system because the world of 1995 expected computers to ship with operating systems. The Cardputer comes with a SoC because the world of 2026 expects microcontrollers to ship with whatever you write yourself. Pisces Moon closes that gap.</blockquote>
+
+    <p>This is what a microcontroller looks like when you give it a real operating system. The chip was always capable. The platform support was always capable. The radios were always capable. The missing piece was someone willing to put in the engineering hours to coordinate them and to keep saying <em>this is solvable</em> when conventional wisdom said it wasn't.</p>
+  </div>
+
+  <!-- III. THREE DEPLOYMENT TARGETS -->
+  <div class="section" id="targets">
+    <div class="section-num">III</div>
+    <h2 class="section-title">THREE DEPLOYMENT TARGETS — ONE OPERATING SYSTEM</h2>
+
+    <p>Pisces Moon OS v1.2.0 "Multi-Device" ships from a single PlatformIO project that produces three distinct firmware binaries, one for each supported device. The codebase is unified. Hardware differences are isolated behind <code>#ifdef DEVICE_*</code> blocks and a hardware abstraction layer (<code>hal_pins.h</code>, <code>hal_display.h</code>, <code>hal_input.h</code>). The application code does not know which device it is running on. It calls <code>pm_input_read()</code> and gets keystrokes; it calls <code>gfx-&gt;print()</code> and gets text on whatever display the device has.</p>
+
+    <div class="callout">
+      <div class="callout-label">TARGET 1 — LILYGO T-DECK PLUS — TIER 1 — FIELD INTELLIGENCE DEVICE</div>
+      <p>ESP32-S3 at 240 MHz, <strong>8 MB PSRAM</strong>, QWERTY keyboard, LoRa radio (SX1262), GPS (ATGM336H), WiFi, Bluetooth LE, I2S audio (ES8311), MicroSD storage, TCA8418 I2C keyboard controller. Retail: $50. The origin device — every architectural pattern documented in this record was first encountered, named, and solved on this hardware. 49 native applications. Ghost Engine on Core 0. Full SPI Bus Treaty implementation. Reference architecture for the platform.</p>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">TARGET 2 — LILYGO T-LORA PAGER — TIER 1 — FIELD INTELLIGENCE DEVICE (PORTED)</div>
+      <p>ESP32-S3 at 240 MHz, <strong>8 MB PSRAM</strong>, QWERTY keyboard via TCA8418 I2C controller, LoRa radio (SX1262), GPS (MIA-M10Q), WiFi, Bluetooth LE, MicroSD storage. ST7796U 480×222 display. DRV2605 haptic driver. XL9555 I2C GPIO expander gating power to all peripherals. Retail: $45. 52 native applications. The successful port of v1.1.x → v1.2.0 surfaced four engineering problems unique to this hardware: GPIO 21 dual-function conflict (Problem 7), SPI bus state corruption requiring deferred SD mount (Problem 8), Ghost Engine silent failure under deferred mount conditions (Problem 9), and platform variant header path requirements. All resolved in v1.2.0. The Ghost Engine, SPI Bus Treaty, and Bridge protocol operate identically to the T-Deck Plus implementation.</p>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">TARGET 3 — M5STACK CARDPUTER ADV — TIER 1 — VALIDATED v1.2.0</div>
+      <p>ESP32-S3FN8 at 240 MHz, <strong>no PSRAM</strong> (320 KB usable internal SRAM only), 8 MB flash. Compact credit-card form factor. 240×135 ST7789 display. Full QWERTY keyboard. MicroSD slot. Built-in microphone. IR transmitter. M5Stack Cap expansion connector. With the Cap LoRa-1262 attached: adds SX1262 LoRa (27 dBm) and AT6668 multi-constellation GPS. Retail: $50. 47 native applications. The proof that the OS generalizes downward to the hardest version of the memory problem. Concurrent four-radio operation (WiFi + BLE + GPS + LoRa) confirmed with 125 KB free heap during active wardrive scanning. Problem 11 documents the architectural changes required.</p>
+    </div>
+
+    <p>The three-tier memory architecture is the defining property of the v1.2.0 release. The same OS, with the same application catalog, the same Bridge protocol, the same SPI Bus Treaty, runs on devices with zero PSRAM, 2 MB of PSRAM (Heltec V4 class — pending), and 8 MB of PSRAM, with hardware differences confined to <code>#ifdef</code> blocks. A wardrive log produced on Cardputer is byte-for-byte compatible with one produced on T-Deck Plus. A mesh message sent from Cardputer reaches T-LoRa Pager. A file saved to SD on one device can be read by the others.</p>
+
+    <p>The implication is not that the Cardputer was made to behave like a T-Deck Plus. The implication is that the OS was designed honestly enough that the same architecture survives across an order-of-magnitude difference in available memory. This is the platform claim: <em>one operating system, three deployment targets, no compromises on the protocol.</em></p>
+  </div>
+
+  <!-- IV. EIGHT ARCHITECTURAL PATTERNS -->
+  <div class="section" id="patterns">
+    <div class="section-num">IV</div>
+    <h2 class="section-title">EIGHT ARCHITECTURAL PATTERNS</h2>
+
+    <p>The patterns below are the platform-level disciplines that emerged from the engineering work. Each was discovered by encountering a specific failure mode, naming the constraint, and formalizing the response into a contract that every subsequent component of the OS honors. They are documented here in the order they were established. On PSRAM-equipped devices, some of them cost nothing and are invisible. On the Cardputer, they are the difference between "single-purpose firmware" and "multi-radio handheld computer."</p>
+
+    <div class="pattern-block">
+      <div class="pattern-num">PATTERN 1</div>
+      <div class="pattern-title">The SPI Bus Treaty</div>
+      <p>The first known documented formal behavioral protocol governing shared-bus arbitration on the ESP32-S3. Four rules every OS component and ELF module developer must follow: hit-and-run (open, write, close, release immediately), no extended holds, radio traffic management via shared boolean flag, metadata-only destructive operations. Implemented as a recursive mutex (<code>spi_mutex</code>) with 500ms timeout, named ownership debug logging, ISR-safe variants, and per-device sentinel flags. 54 take sites across 12 files; 56 give sites verified. Audit document published as <code>docs/SPI-TREATY-AUDIT.md</code>. The full architectural whitepaper is at <a href="spi-bus-treaty.html">spi-bus-treaty.html</a>.</p>
+    </div>
+
+    <div class="pattern-block">
+      <div class="pattern-num">PATTERN 2</div>
+      <div class="pattern-title">The Ghost Engine Task Model</div>
+      <p>A persistent FreeRTOS task pinned to Core 0 that runs the radio intelligence collection workload continuously — wardrive, BLE scanning, GPS logging, mesh listening — independent of any foreground application activity on Core 1. The defining invariant is that <em>the device is always collecting.</em> The Ghost Engine has no visible interface. It produces no notification. To a casual observer, the device looks like a toy. To the operator, the Ghost Engine is the entire point. Every other architectural decision in the OS exists in service of one guarantee: the Ghost Engine never stops.</p>
+    </div>
+
+    <div class="pattern-block">
+      <div class="pattern-num">PATTERN 3 — THE TURNING POINT</div>
+      <div class="pattern-title">Lazy App-State Allocation</div>
+      <p>This pattern is the moment the project stopped treating the chip as a microcontroller and started treating it as a computer that happened to be small. The framing change is more important than the technical change.</p>
+      <p>The technical change: every always-on app buffer was moved out of static memory and into app-lifetime allocations. Mesh Messenger channel buffers, audio player playlists, RetroPack ROM tables, ELF browser app lists, recorder file metadata — all moved to allocation on app entry, release on app exit. The OS no longer reserves RAM for dormant apps. <strong>Result on Cardputer: 81 KB of static memory returned to the heap before the user did anything.</strong> The static RAM footprint dropped from 190 KB to 109 KB. The free heap at task-spawn time rose from 97 KB to 219 KB.</p>
+      <p>The framing change: the embedded systems industry has a default assumption that always-on apps reserve always-on memory. This assumption is correct for single-purpose firmware where there is only one app. It is wrong for a multi-app OS, because a multi-app OS by definition has many apps that are not currently in use. The static-memory cost of "always-on apps in a multi-app OS" had never been recognized as the dominant memory pressure on this hardware class because no previous project had built a multi-app OS on it.</p>
+      <p>This is what unlocked the Cardputer. Before this pattern was applied, the honest read of the heap measurements was that concurrent multi-radio operation on a no-PSRAM ESP32-S3 was hardware-impossible. After this pattern was applied, it ran with comfortable headroom. The constraint was never the hardware. The constraint was an architectural assumption inherited from single-purpose firmware. <strong>Discipline:</strong> if an app's state is not in use, it does not belong in static memory.</p>
+    </div>
+
+    <div class="pattern-block">
+      <div class="pattern-num">PATTERN 4</div>
+      <div class="pattern-title">WiFi Mode-Locking with Hard Teardown</div>
+      <p>WiFi-as-scanner (used by wardrive, packet sniffer, beacon spotter) and WiFi-as-client (used by Gemini, Bridge HTTP, file manager) cannot coexist on Cardputer within the available memory budget. The OS enforces the mutual exclusion at the WiFi-mode level rather than hoping users avoid the conflict. A central module (<code>wifi_mode.cpp</code>) tracks the current WiFi mode as a global enum and provides <code>request_wifi_mode()</code> as the gate. On mode conflict on Cardputer, the user is prompted; on confirmation, the current mode's resources are fully torn down (including NimBLE and the WiFi driver) and the new mode initializes fresh. ~61 KB reclaimed per teardown — sufficient headroom for the new mode. On PSRAM-equipped targets the same call is permissive. <strong>Discipline:</strong> enforce hardware constraints at the OS level honestly, not by hoping users do the right thing.</p>
+    </div>
+
+    <div class="pattern-block">
+      <div class="pattern-num">PATTERN 5</div>
+      <div class="pattern-title">Lazy Boot Initialization</div>
+      <p>Defer subsystems that consume meaningful heap until first use. On Cardputer, the WiFi autoconnect logic and the Gemini chat client do not initialize at boot — they initialize on first use of a WiFi-client app or the Gemini chat app respectively, recovering ~25 KB at startup. Saved WiFi credentials still persist on SD via the <code>wifi_manager</code> module, so the user is not asked to re-enter their password. The Gemini client's idempotent-init pattern made the deferral safe with no API redesign. <strong>Discipline:</strong> if a subsystem can be initialized on first use without changing the user-facing behavior, defer it.</p>
+    </div>
+
+    <div class="pattern-block">
+      <div class="pattern-num">PATTERN 6</div>
+      <div class="pattern-title">Runtime Radio Tuning When Build-Flag Tuning Fails</div>
+      <p>Arduino-ESP32 links against pre-compiled libraries (<code>libbt.a</code>) that bake the ESP-IDF sdkconfig defaults in at library compile time. Setting <code>CONFIG_BT_NIMBLE_*</code> as PlatformIO build flags only affects code that gets compiled fresh within the project — the underlying Bluetooth controller never sees these flags, producing init hangs when the two sides disagree on resource layout. The honest response: tune NimBLE at runtime via the API instead. Set the scan duplicate cache to a small bounded value, use passive scanning instead of active, disable result storage. These are unconditional wins applied in the Cardputer wardrive path. <strong>Discipline:</strong> when the build system cannot deliver the tuning you need, the runtime API often can. Document the failed path so the next developer doesn't repeat the experiment.</p>
+    </div>
+
+    <div class="pattern-block">
+      <div class="pattern-num">PATTERN 7</div>
+      <div class="pattern-title">The Three-Layer ELF Sandbox</div>
+      <p>The first known documented hardware-enforced ELF module sandbox on the ESP32-S3 for a general-purpose OS. Layer 1: <code>xt_set_exception_handler()</code> registers a custom handler for PMS violation exceptions (EXCCAUSE_LOAD_PROHIBITED / EXCCAUSE_STORE_PROHIBITED) that intercepts before the ESP-IDF panic handler. If the faulting PC is inside the ELF PSRAM region, execution redirects to a fault trampoline in IRAM that kills the ELF task and returns the OS to the launcher — the Ghost Engine never pauses. Layer 2: direct register writes to the PMS base address (0x600C1000) mark OS SRAM read-only during ELF execution. Layer 3: ELF runs in a dedicated FreeRTOS task at priority 5 (below Ghost Engine priority 7) with semaphore-based completion signaling. <strong>Honest limitation:</strong> protects against buggy ELFs, not adversarial code. The PMS write-protects OS SRAM but cannot prevent an ELF from reading arbitrary addresses. No MMU means no virtual address spaces. Documented in v1.2.0 alongside the SPI Bus Treaty audit.</p>
+    </div>
+
+    <div class="pattern-block">
+      <div class="pattern-num">PATTERN 8</div>
+      <div class="pattern-title">Three-Tier Memory Architecture from a Single Codebase</div>
+      <p>The PlatformIO build configuration is split into a shared base and per-tier build-flag groups. <code>build_flags_psram</code> contains <code>BOARD_HAS_PSRAM</code>, <code>CONFIG_SPIRAM_USE_MALLOC=1</code>, and the PSRAM cache workaround. T-Deck Plus and T-LoRa Pager inherit this block; Cardputer does not. The Cardputer environment instead defines <code>DEVICE_NO_PSRAM</code> and configures the allocator honestly — no PSRAM probe-and-fail path on every malloc, no false expectations baked into the memory model. The same source tree produces three binaries with different memory disciplines. <strong>Discipline:</strong> shared build flags should describe shared hardware capability. When the hardware differs, the build flags must differ — silently inheriting flags from a PSRAM-equipped sibling produces bugs that "just work" on the sibling and fail mysteriously on the variant.</p>
+    </div>
+
+    <p>These eight patterns are now the platform contract. New apps written for Pisces Moon are required to honor them. New hardware targets ported to the platform are tested against them. The pattern names themselves — <em>SPI Bus Treaty, Ghost Engine, Mode-Locking, Lazy App-State Allocation</em> — are the vocabulary the codebase uses internally and the documentation uses externally. They are the platform's idioms.</p>
+  </div>
+
+  <!-- V. ELEVEN ENGINEERING PROBLEMS -->
+  <div class="section" id="problems">
+    <div class="section-num">V</div>
+    <h2 class="section-title">ELEVEN ENGINEERING PROBLEMS — THE PROOF</h2>
+
+    <p>Each of the patterns above emerged from solving a specific concrete engineering problem. The problems are documented in detail in the <a href="sovereignty.html">Sovereignty White Paper</a> and the <a href="spi-bus-treaty.html">SPI Bus Treaty whitepaper</a>. They are summarized here for completeness of the engineering record.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Problem</th><th>Pattern</th><th>Device</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>SPI Bus Conflict — LoRa + SD on shared bus crashes under concurrent load</td><td>The SPI Bus Treaty</td><td>T-Deck Plus</td></tr>
+          <tr><td>2</td><td>PSRAM Heap Exhaustion under simultaneous workloads</td><td>PSRAM heap redirection via <code>CONFIG_SPIRAM_USE_MALLOC=1</code></td><td>T-Deck Plus</td></tr>
+          <tr><td>3</td><td>Dual-Core SD Card Synchronization — SdFat list corruption</td><td>FreeRTOS mutex + radio state flag</td><td>T-Deck Plus</td></tr>
+          <tr><td>4</td><td>Dense RF Environment Instability — BLE stack overflow in urban density</td><td>Stack sizing + scan buffering + GPS drain loops</td><td>T-Deck Plus</td></tr>
+          <tr><td>5</td><td>Security Architecture Constraint — AES violates the Treaty</td><td>Metadata deletion + threat model calibration</td><td>T-Deck Plus</td></tr>
+          <tr><td>6</td><td>GPS Module Hardware Variation across LilyGO production batches</td><td>Baud rate auto-detection</td><td>T-Deck Plus</td></tr>
+          <tr><td>7</td><td>GPIO Pin Collision — GPIO 21 = TOUCH_RST on T-Deck, SD_CS on Pager</td><td>Conditional compilation with hardware defines</td><td>T-LoRa Pager</td></tr>
+          <tr><td>8</td><td>SPI Bus State Corruption — SD CMD0 fails on cold boot</td><td>Deferred mount with cold SPI restart</td><td>T-LoRa Pager</td></tr>
+          <tr><td>9</td><td>Ghost Engine Silent Failure — phantom session file with O_APPEND-without-O_CREAT</td><td>Lazy session-file creation</td><td>T-LoRa Pager</td></tr>
+          <tr><td>10</td><td>ELF Module Execution Without Hardware Isolation</td><td>Three-Layer ELF Sandbox (PMS + exception hijack)</td><td>T-Deck Plus / All</td></tr>
+          <tr><td>11</td><td>Concurrent Multi-Radio Operation on a No-PSRAM ESP32-S3</td><td>Lazy app-state allocation + WiFi mode-locking + PlatformIO flag isolation</td><td>Cardputer ADV</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Eleven problems. Eight patterns. Three devices. One codebase. The full technical write-up of each problem — root cause, why diagnosis was hard, the specific solution — is in the <a href="sovereignty.html">Sovereignty White Paper</a>. Problems 1, 3, 5, 7, 8, and 9 all involve the SPI Bus Treaty directly or indirectly. Problem 11 involves Patterns 3, 4, and 8 working together. The patterns overlap because the problems overlap. That is what makes them patterns.</p>
+
+    <div class="callout" style="border-left-color:var(--green);background:#040904;margin-top:2rem">
+      <div class="callout-label" style="color:var(--green)">▌ THE CARDPUTER RESULT — WHY PROBLEM 11 IS DIFFERENT</div>
+      <p style="color:var(--text)">Problems 1 through 10 were engineering work on hardware with 8 MB of PSRAM. They prove the operating system works. <strong style="color:var(--green)">Problem 11 was building the same operating system on hardware with 1/25th of that memory.</strong> It proves the architecture works.</p>
+      <p style="color:var(--text)">The Cardputer ADV ships with 320 KB of internal SRAM and no external memory of any kind. The ESP32-S3FN8 variant simply does not include PSRAM. When the v1.2.0 port began, the honest read of the heap measurements at the moment the wardrive task spawned — 97 KB free, with WiFi requiring 54 KB and NimBLE requiring 48 KB — was that concurrent multi-radio operation on this hardware was impossible. The industry's expectation for a no-PSRAM ESP32-S3 is single-purpose firmware. The chip is sold for that workload.</p>
+      <p style="color:var(--text)">Three architectural changes — lazy app-state allocation, WiFi mode-locking with hard teardown, and PlatformIO PSRAM flag isolation — reclaimed 81 KB of static memory before the user did anything, established hardware-honest WiFi mode arbitration, and removed false PSRAM expectations from the allocator. The result: <strong style="color:var(--green)">219 KB free heap after WiFi STA init. 174 KB after NimBLE observer init. 125 KB free during active wardrive scanning with 24 BLE devices, 14 WiFi networks, and GPS lock at 27 satellites.</strong> Four concurrent radios. Real-time SD logging. Persistent multi-app state. 47 applications. On a chip with 320 KB total.</p>
+      <p style="color:var(--text)">A Compaq Presario from 1995 had twelve times the RAM and could not have done this. Not because the Compaq was incapable, but because no operating system available for that hardware was designed to coordinate four concurrent radios with real-time bus arbitration on shared peripherals. The architectural primitives did not exist. The chip in the Cardputer has dramatically less memory and dramatically more capability — because the operating system was designed for what the chip actually is, not for what the marketing said it should be.</p>
+      <p style="color:var(--text)"><strong style="color:var(--green)">This is the engineering feat. Not the OS itself. The OS on this hardware.</strong> Eight patterns generalized from the PSRAM-equipped origin devices down to the no-PSRAM extreme of the same chip class, with no compromise on the application catalog, the Bridge protocol, or the Ghost Engine invariant. The Cardputer running Pisces Moon OS is the proof that the methodology generalizes. It is also, to the best of our knowledge, the most capable multi-radio handheld operating system shipping on a no-PSRAM microcontroller in the current market.</p>
+    </div>
+  </div>
+
+  <!-- VI. METHODOLOGY -->
+  <div class="section" id="methodology">
+    <div class="section-num">VI</div>
+    <h2 class="section-title">THE METHODOLOGY — NAME THE CONSTRAINT, DOCUMENT THE PROTOCOL, MAKE IT A PLATFORM CONTRACT</h2>
+
+    <p>Every problem in the table above was solved by the same three-step process.</p>
+
+    <p><strong>First: name the constraint honestly.</strong> The SPI bus on the ESP32-S3 cannot be safely shared between the LoRa radio and the SD card under arbitrary task interleaving — that is the constraint. The Cardputer's internal SRAM cannot hold both the WiFi-STA driver state and the NimBLE Observer state simultaneously — that is the constraint. The Arduino-ESP32 framework's pre-compiled libraries do not respond to PlatformIO build-flag tuning of internal Bluetooth buffer counts — that is the constraint. Each constraint, once named, stops being a mysterious crash and becomes an engineering specification.</p>
+
+    <p><strong>Second: document the protocol.</strong> The SPI Bus Treaty is a written document. The WiFi mode-locking rules are a written document. The lazy app-state allocation discipline is a written document. The PlatformIO build-flag isolation is a written document with a historical note explaining why the alternative approaches were tried and failed. Future developers — including future versions of the author — encounter the protocol before they encounter the failure mode it prevents. The documentation is the architecture.</p>
+
+    <p><strong>Third: make it a platform contract.</strong> Every component of the OS is written to honor the protocol. Every ELF module developer is required to honor the protocol. New apps are reviewed against the protocols. New hardware targets are tested against them. The protocols are not suggestions or guidelines — they are the conditions under which the OS works at all. Violating the SPI Bus Treaty causes Guru Meditation errors. Violating the WiFi mode contract triggers a modal dialog and a hard teardown. The contract is enforced by the architecture itself, not by developer discipline alone.</p>
+
+    <blockquote>The methodology is the invention. The treaties are its expressions.</blockquote>
+
+    <p>This is what generalizes across hardware. The SPI Bus Treaty applies to one specific hardware constraint on the ESP32-S3. The methodology that produced it produced the UART Peripheral Map on the ESP32-P4 (where the constraint is different but the principle is identical), the four-core convention for P4's HP0/HP1/LP/C6 architecture, the WiFi mode-locking discipline for memory-constrained variants, the lazy app-state allocation discipline for static-memory pressure. Different problems, same shape. Different protocols, same methodology.</p>
+
+    <p>The architectural contribution of Pisces Moon OS is not any specific protocol. The architectural contribution is the methodology that turns ad-hoc workarounds into platform contracts. That generalizes. That is portable. That is the part that matters when this hardware class evolves and the next set of constraints emerges.</p>
+  </div>
+
+  <!-- VII. WHAT'S NEXT -->
+  <div class="section" id="whats-next">
+    <div class="section-num">VII</div>
+    <h2 class="section-title">WHAT'S NEXT</h2>
+
+    <p>v1.2.0 "Multi-Device" is the platform proof. Three devices, one OS, eleven problems documented, eight patterns hardened. The work past this point is extension, not bring-up.</p>
+
+    <p>The methodology now extends to a different SoC family entirely. <strong>First boot on ESP32-P4 hardware was confirmed May 13, 2026.</strong> The P4 is dual RISC-V HP cores at 360 MHz with 32 MB HEX PSRAM, a separate ESP32-C6 connected via SDIO for radio operations, an LP core available as a Sentinel watchdog, and MIPI-DSI display output. The Ghost Engine no longer runs on shared silicon — it runs on dedicated hardware (the C6) with its own processor and its own clock domain. The methodology that produced the SPI Bus Treaty produced new protocols here: a formal UART peripheral map governing four serial controllers across four physical connections, and a four-core convention assigning explicit named roles to each processing unit. Different hardware. Same governance principle.</p>
+
+    <p>P4 development is rapidly evolving. The launcher renders. 57 apps register. The build framework is in place. The remaining work is application-level: porting the wardrive dashboard pattern across the other reference apps, implementing the status bar and control center, wiring the C6 bridge for promiscuous WiFi capture, integrating BLE on the new framework. None of this is bring-up effort. It is forward motion on a working platform.</p>
+
+    <p>The Pisces Moon project's near-term roadmap also includes the addition of a stationary deployment variant on Heltec V4 hardware (ESP32-S3R2 with 2 MB PSRAM, SX1262 LoRa at 27 dBm, AT6668 GPS, 2800 mAh battery with solar charging) — adding a third memory tier between Cardputer (0 PSRAM) and the LilyGO devices (8 MB PSRAM). This will validate the platform across the complete memory range of the ESP32-S3 class and demonstrate that the architectural patterns documented in this record generalize cleanly to additional hardware variants.</p>
+
+    <p>What this engineering record does not yet document is what comes after the embedded targets are exhausted. The Linux distribution (Pisces Moon Linux), the Android APK target, the Luckfox Pico 86 Panel, and the cross-platform Trojan Horse application runtime all exist. They constitute Tier 2 of the platform — sovereign computing on hardware the industry has declared obsolete. They have their own engineering record. They will be documented separately when the work to consolidate them reaches the same level of formal architectural completeness as the ESP32-S3 work documented here.</p>
+
+    <div style="margin-top:3rem;padding:2rem;background:var(--surface);border-left:3px solid var(--green);border:1px solid var(--border)">
+      <p style="font-family:var(--font-disp);font-size:1rem;color:var(--green);font-weight:700;letter-spacing:.06em;line-height:1.4;margin-bottom:1rem">THIS IS WHAT THE CHIP IS, WHEN THE OPERATING SYSTEM IS REAL.</p>
+      <p style="font-family:var(--font-ui);font-size:.95rem;color:var(--text);line-height:1.7;margin-bottom:0">The ESP32-S3 was always capable of what this document describes. The reference firmware did not show it. The chip vendor marketing did not describe it. The Arduino ecosystem reinforced a single-purpose-firmware paradigm that left the rest of the chip's capability on the table. Pisces Moon OS is what happens when an embedded chip is treated as a computer instead of a peripheral. The chip is the hero. The operating system is the proof.</p>
+    </div>
+  </div>
+
+  <!-- CLOSING -->
+  <div class="closing">
+    <p style="font-family:var(--font-ui);font-size:.85rem;color:var(--text-dim);font-style:italic;letter-spacing:0;line-height:1.8;border-left:2px solid var(--green-dim);padding-left:1rem;margin-bottom:1.5rem">"The solutions are individually documented. The problem they were assembled to solve was not."</p>
+    <p><strong>RELATED DOCUMENTS</strong></p>
+    <p><a href="sovereignty.html" style="color:var(--green-dim)">Sovereignty White Paper</a> — the full technical and philosophical argument for what Pisces Moon represents at the platform level. Eleven engineering problems documented in full detail.</p>
+    <p><a href="spi-bus-treaty.html" style="color:var(--green-dim)">SPI Bus Treaty Whitepaper</a> — the architectural whitepaper for the foundational pattern. Physics of the bus conflict, four named field failures, design primitives.</p>
+    <p><a href="device-architecture.html" style="color:var(--green-dim)">Device Architecture Reference</a> — full hardware comparison across all three Tier 1 devices including peripheral maps, common pitfalls, and porting guidance.</p>
+    <p><strong>PISCES MOON OS</strong> — v1.2.0 "MULTI-DEVICE" — May 2026</p>
+    <p>Eric Becker // <a href="https://fluidfortune.com" style="color:var(--green-dim)">Fluid Fortune</a> // Local Intelligence</p>
+    <p>Licensed under AGPL-3.0. All technical claims are verifiable against the public codebase.</p>
+    <p>GitHub: <a href="https://github.com/FluidFortune" style="color:var(--green-dim)">github.com/FluidFortune</a></p>
+    <p style="margin-top:1rem;font-style:italic;color:var(--text-muted)">"Reticulating Splines since '94."</p>
+  </div>
+
 </div>
 
 <footer>
-  <p>FLUID FORTUNE — LOCAL INTELLIGENCE — APRIL 2026</p>
-  <p><a href="https://fluidfortune.com">fluidfortune.com</a> // <a href="mailto:forge@fluidfortune.com">forge@fluidfortune.com</a> // <a href="https://github.com/FluidFortune">github.com/FluidFortune</a></p>
-  <p>The Ghost Engine never stops. The SPI Bus Treaty is why.</p>
+  <p>
+    <a href="https://fluidfortune.com">FLUID FORTUNE</a>
+    &nbsp;|&nbsp;
+    <a href="sovereignty.html">WHITE PAPER</a>
+    &nbsp;|&nbsp;
+    <a href="https://blog.fluidfortune.com">FIELD NOTES</a>
+    &nbsp;|&nbsp;
+    <a href="https://github.com/FluidFortune">GITHUB</a>
+  </p>
 </footer>
 
 </body>
