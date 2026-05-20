@@ -628,7 +628,9 @@ gfx->setCursor(DISP_W - margin, y);</code></pre>
 <footer>
   <a href="https://fluidfortune.com">FLUID FORTUNE</a> &nbsp;|&nbsp;
   <a href="pisces-moon.html">PISCES MOON</a> &nbsp;|&nbsp;
-  <a href="sovereignty.html">WHITE PAPER</a> &nbsp;|&nbsp;
+  <a href="engineering-record.html" style="color:var(--green-dim);text-decoration:none">ENGINEERING RECORD</a>
+    &nbsp;|&nbsp;
+    <a href="sovereignty.html">WHITE PAPER</a> &nbsp;|&nbsp;
   <a href="https://github.com/FluidFortune/pisces-moon-os">GITHUB</a> &nbsp;|&nbsp;
   AGPL-3.0 · ERIC BECKER · 2026
 </footer>
@@ -644,7 +646,7 @@ gfx->setCursor(DISP_W - margin, y);</code></pre>
     <div class="device-card tdeck" style="border-top-color:var(--purple,#bc8cff)">
       <div class="device-card-label" style="color:var(--purple,#bc8cff)">TARGET 5 — COMPACT FIELD DEVICE</div>
       <div class="device-card-title">CARDPUTER ADV</div>
-      <p>Credit-card form factor. ESP32-S3 Stamp-S3A core (same silicon class as T-Deck and T-LoRa Pager). 56-key full QWERTY via TCA8418. 240×135 ST7789V2 display on its own SPI bus (HSPI) — separate from the SD + LoRa bus (FSPI). Cap LoRa868 module adds SX1262 LoRa and AT6668 GNSS over the 2×7-pin expansion header. 47 apps. Device functional. Cap module pending for full radio validation.</p>
+      <p>Credit-card form factor. ESP32-S3 Stamp-S3A (ESP32-S3FN8) core — same Xtensa LX7 CPU as T-Deck and T-LoRa Pager but <strong>no PSRAM</strong>. 56-key full QWERTY via TCA8418. 240×135 ST7789V2 display on its own SPI bus (HSPI) — separate from the SD + LoRa bus (FSPI). Cap LoRa868 module adds SX1262 LoRa and AT6668 GNSS over the 2×7-pin expansion header. 47 apps. Device functional. Cap module pending for full radio validation.</p>
     </div>
   </div>
 
@@ -653,7 +655,7 @@ gfx->setCursor(DISP_W - margin, y);</code></pre>
     <thead><tr><th>Spec</th><th>Cardputer ADV</th><th>vs T-Deck Plus</th></tr></thead>
     <tbody>
       <tr><td>SoC</td><td>ESP32-S3 Stamp-S3A (S3FN8)</td><td>Same silicon class</td></tr>
-      <tr><td>PSRAM</td><td>8 MB octal</td><td>Same</td></tr>
+      <tr><td>PSRAM</td><td>None (ESP32-S3FN8 has no PSRAM)</td><td>T-Deck/Pager have 8 MB PSRAM — significant difference</td></tr>
       <tr><td>Flash</td><td>8 MB (half of T-Deck/Pager)</td><td>T-Deck has 16 MB</td></tr>
       <tr><td>Display</td><td>240×135 ST7789V2, IPS, landscape</td><td>T-Deck 320×240 — Cardputer is ~40% the pixels</td></tr>
       <tr><td>Display SPI</td><td>HSPI (dedicated, no Treaty contention)</td><td>T-Deck display shares SPI with SD + LoRa</td></tr>
@@ -674,6 +676,22 @@ gfx->setCursor(DISP_W - margin, y);</code></pre>
       <tr><td>App count</td><td>47 apps</td><td>49 apps</td></tr>
     </tbody>
   </table>
+
+  <div class="callout critical">
+    <div class="callout-label">⚠ NO PSRAM — ACTIVE ENGINEERING CONSTRAINT</div>
+    <p>The ESP32-S3FN8 has no PSRAM. The T-Deck Plus and T-LoRa Pager both have 8 MB PSRAM which Pisces Moon uses heavily throughout — Problem 2 in the engineering record documents how PSRAM heap redirection solved memory exhaustion under simultaneous workloads on T-Deck.</p>
+    <p>Without PSRAM, the Cardputer ADV is limited to the ESP32-S3's internal SRAM. The entire Pisces Moon memory architecture was designed around PSRAM availability. This is the single most significant hardware constraint separating the Cardputer from the other Tier 1 devices and the primary reason it is classified as alpha rather than production.</p>
+    <p><strong>Apps confirmed affected:</strong></p>
+    <ul style="margin:.5rem 0 .75rem 1.25rem;color:var(--text-dim);font-size:.85rem;line-height:1.8">
+      <li><strong>Wardrive WiFi scan</strong> — scan result buffers allocated via <code>ps_malloc()</code> return NULL on Cardputer. Likely root cause of the WiFi-0-networks bug observed in field testing. BLE scans work because BLE buffers are smaller and fit in internal SRAM.</li>
+      <li><strong>Gemini client</strong> — transcript scrollback buffer lives in PSRAM on T-Deck. Will crash or silently truncate on Cardputer on any substantial response.</li>
+      <li><strong>SQLite / database</strong> — PSRAM-backed page cache. May fail to initialize or degrade to unusable performance without PSRAM.</li>
+      <li><strong>Large wardrive result sets</strong> — in-memory network table is PSRAM-backed on T-Deck. On Cardputer, allocation will fail at some threshold.</li>
+    </ul>
+    <p><strong>Apps likely unaffected:</strong> Ghost Ride The Whip (read-only, small buffers), Calculator, Clock, Calendar, Hash Tool, and most lightweight utilities that don't accumulate large in-memory state.</p>
+    <p>The fix requires a systematic audit of every <code>ps_malloc()</code> call in the codebase — each needs either a reduced-size <code>malloc()</code> fallback under <code>#ifdef DEVICE_CARDPUTER_ADV</code>, or a graceful "insufficient memory" message rather than a NULL dereference. This work is in progress.</p>
+    <p style="margin-top:.75rem;font-family:var(--font-mono);font-size:.7rem;color:var(--text-muted)">Note: <code>platformio.ini</code> memory type for Cardputer should be <code>qio</code> — not <code>qio_opi</code> which is specifically for octal PSRAM and has no meaning on this hardware.</p>
+  </div>
 
   <h2>THE KEY ARCHITECTURAL DIFFERENCE</h2>
 
