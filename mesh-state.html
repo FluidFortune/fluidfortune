@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mesh State | Pisces Moon OS — LoRa Mesh Messenger Status</title>
+  <meta name="description" content="The current state of Pisces Moon Mesh — a working LoRa peer-to-peer messenger that shares radio-layer compatibility with Meshtastic. What works, what doesn't, what's coming. v1.2.0 Alpha.">
+  <link rel="canonical" href="https://fluidfortune.com/mesh-state.html">
+
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://fluidfortune.com/mesh-state.html">
+  <meta property="og:title" content="Mesh State | Pisces Moon OS">
+  <meta property="og:description" content="LoRa mesh messenger running on three ESP32-S3 devices including the no-PSRAM Cardputer ADV. Same radio settings as Meshtastic LongFast. What works, what doesn't, what's coming.">
+  <meta property="og:image" content="https://fluidfortune.com/courtjester.jpg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300&family=DM+Mono:wght@300;400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300&family=DM+Mono:wght@300;400;500&display=swap"></noscript>
+
+  <style>
+    :root{
+      --paper:#faf8f4; --paper-dark:#f0ede6; --ink:#1a1614; --ink-mid:#4a4340; --ink-light:#8a7f78; --ink-faint:#c5bdb5;
+      --accent:#c17f3a; --accent-dim:#9a6128; --accent-pale:#f5ead8; --rule:#ddd8d0; --green:#2d5a3d; --green-pale:#e8f0eb;
+      --red:#8a3a3a; --red-pale:#f5e6e3;
+      --font-disp:'Playfair Display',Georgia,serif; --font-body:'Source Serif 4',Georgia,serif; --font-mono:'DM Mono',monospace;
+      --max-w:760px; --toc-w:220px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{font-size:16px;scroll-behavior:smooth}
+    body{background:var(--paper);color:var(--ink);font-family:var(--font-body);line-height:1.75;-webkit-font-smoothing:antialiased}
+
+    nav.top{border-bottom:1px solid var(--rule);position:sticky;top:0;background:var(--paper);z-index:100}
+    nav.top .nav-inner{max-width:calc(var(--max-w) + var(--toc-w) + 4rem);margin:0 auto;padding:0 2rem;display:flex;gap:1.25rem;align-items:center;flex-wrap:wrap}
+    nav.top a{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.12em;color:var(--ink-light);text-decoration:none;padding:.9rem 0;border-bottom:2px solid transparent;transition:.15s;display:inline-block}
+    nav.top a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+    nav.top .doc-label{margin-left:auto;font-family:var(--font-mono);font-size:.56rem;letter-spacing:.15em;color:var(--ink-light);border:1px solid var(--rule);padding:.25rem .65rem;background:var(--paper-dark)}
+
+    .layout{display:flex;max-width:calc(var(--max-w) + var(--toc-w) + 4rem);margin:0 auto;padding:0 2rem;gap:3rem;align-items:flex-start}
+    .toc{width:var(--toc-w);flex-shrink:0;position:sticky;top:50px;padding:2.5rem 0;max-height:calc(100vh - 50px);overflow-y:auto}
+    .toc-label{font-family:var(--font-mono);font-size:.55rem;letter-spacing:.2em;color:var(--ink-light);margin-bottom:.75rem;padding-bottom:.4rem;border-bottom:1px solid var(--rule);display:block;text-transform:uppercase}
+    .toc a{display:block;font-family:var(--font-mono);font-size:.62rem;color:var(--ink-mid);text-decoration:none;padding:.25rem 0 .25rem .5rem;letter-spacing:.04em;transition:.15s;border-left:2px solid transparent;margin-bottom:.1rem;line-height:1.5}
+    .toc a:hover{color:var(--accent);border-left-color:var(--accent)}
+    .toc a .num{color:var(--ink-faint);display:inline-block;width:1.5rem}
+    .toc-divider{border-top:1px solid var(--rule);margin:.85rem 0 .5rem}
+    .toc-divider-label{font-family:var(--font-mono);font-size:.5rem;letter-spacing:.18em;color:var(--ink-faint);text-transform:uppercase;padding:0 0 .35rem .5rem}
+    .toc a.ext{color:var(--accent-dim)}
+    ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--paper)}::-webkit-scrollbar-thumb{background:var(--rule)}
+
+    .content{flex:1;min-width:0;padding:3rem 0 6rem;max-width:var(--max-w)}
+
+    .masthead{border-bottom:2px solid var(--ink);padding-bottom:2rem;margin-bottom:2.5rem}
+    .masthead-eyebrow{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.2em;color:var(--ink-light);margin-bottom:.5rem;text-transform:uppercase}
+    .masthead-title{font-family:var(--font-disp);font-size:clamp(2rem,5vw,2.75rem);font-weight:900;letter-spacing:-.02em;line-height:1.1;color:var(--ink);margin-bottom:.65rem}
+    .masthead-sub{font-family:var(--font-body);font-size:1.05rem;color:var(--accent-dim);font-style:italic;font-weight:300;line-height:1.5;margin-bottom:1.25rem}
+    .masthead-meta{font-family:var(--font-mono);font-size:.62rem;color:var(--ink-light);letter-spacing:.05em;line-height:1.95}
+    .masthead-meta span{display:inline-block;margin-right:1.25rem}
+    .masthead-meta .ver{color:var(--accent-dim);border:1px solid var(--accent-pale);background:var(--accent-pale);padding:.1rem .55rem}
+    .masthead-meta .alpha{color:var(--red);border:1px solid var(--red-pale);background:var(--red-pale);padding:.1rem .55rem}
+
+    .abstract{background:var(--paper-dark);border-left:3px solid var(--ink);padding:1.5rem 1.75rem;margin-bottom:3rem}
+    .abstract-label{font-family:var(--font-mono);font-size:.58rem;letter-spacing:.2em;color:var(--ink-light);margin-bottom:.85rem;text-transform:uppercase}
+    .abstract p{font-family:var(--font-body);font-size:.95rem;color:var(--ink-mid);line-height:1.75;margin-bottom:.85rem;font-weight:300}
+    .abstract p:last-child{margin-bottom:0}
+    .abstract strong{color:var(--ink);font-weight:600}
+
+    section.s{padding-top:3rem}
+    .s-header{display:flex;align-items:baseline;gap:.85rem;padding-bottom:.75rem;border-bottom:1.5px solid var(--ink);margin-bottom:1.5rem}
+    .s-num{font-family:var(--font-mono);font-size:.65rem;color:var(--ink-light);letter-spacing:.12em;flex-shrink:0}
+    .s-title{font-family:var(--font-disp);font-size:1.5rem;font-weight:700;color:var(--ink);letter-spacing:-.01em;line-height:1.2}
+
+    p{font-size:.95rem;color:var(--ink-mid);line-height:1.85;margin-bottom:1rem;font-weight:300}
+    strong{color:var(--ink);font-weight:600}
+    em{font-style:italic}
+    a{color:var(--accent-dim);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px;transition:.15s}
+    a:hover{color:var(--accent)}
+    code{font-family:var(--font-mono);font-size:.82em;color:var(--accent-dim);background:var(--paper-dark);padding:.1em .35em;border:1px solid var(--rule);border-radius:2px}
+    ol,ul{margin:.85rem 0 1.25rem 1.5rem}
+    li{font-size:.93rem;color:var(--ink-mid);line-height:1.8;margin-bottom:.5rem;font-weight:300}
+    li strong{color:var(--ink)}
+    blockquote{border-left:3px solid var(--ink-faint);padding:.25rem 1.25rem;margin:1.5rem 0}
+    blockquote p{font-style:italic;font-size:.95rem;color:var(--ink-mid);margin-bottom:0}
+    h3.subhead{font-family:var(--font-disp);font-size:1.15rem;font-weight:600;color:var(--ink);letter-spacing:-.005em;margin:2.5rem 0 .85rem;padding-bottom:.35rem;border-bottom:1px solid var(--rule)}
+
+    .item{background:var(--paper);border:1px solid var(--rule);border-left:3px solid var(--green);padding:1.1rem 1.4rem;margin:1rem 0}
+    .item.no{border-left-color:var(--red)}
+    .item-label{font-family:var(--font-mono);font-size:.58rem;letter-spacing:.15em;color:var(--green);text-transform:uppercase;margin-bottom:.4rem}
+    .item.no .item-label{color:var(--red)}
+    .item-title{font-family:var(--font-disp);font-size:1.05rem;font-weight:600;color:var(--ink);letter-spacing:-.005em;line-height:1.3;margin-bottom:.55rem}
+    .item-text{font-size:.92rem;color:var(--ink-mid);line-height:1.75;font-weight:300}
+    .item-text:last-child{margin-bottom:0}
+    .item ul{margin:.5rem 0 .25rem 1.25rem}
+    .item li{font-size:.88rem;margin-bottom:.25rem}
+
+    .callout{background:var(--paper-dark);border-left:3px solid var(--accent);padding:1.1rem 1.4rem;margin:1.5rem 0}
+    .callout .c-label{font-family:var(--font-mono);font-size:.58rem;letter-spacing:.15em;color:var(--accent-dim);margin-bottom:.55rem;text-transform:uppercase}
+    .callout p{font-size:.9rem;color:var(--ink-mid);line-height:1.8;margin-bottom:.65rem;font-weight:300}
+    .callout p:last-child{margin-bottom:0}
+    .callout strong{color:var(--ink)}
+
+    .roadmap{margin:1.5rem 0}
+    .roadmap-item{display:flex;gap:1rem;padding:.85rem 0;border-bottom:1px solid var(--rule)}
+    .roadmap-item:last-child{border-bottom:0}
+    .roadmap-status{font-family:var(--font-mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;padding:.2rem .5rem;border:1px solid var(--rule);flex-shrink:0;align-self:flex-start;white-space:nowrap}
+    .roadmap-status.done{color:var(--green);background:var(--green-pale);border-color:var(--green-pale)}
+    .roadmap-status.planned{color:var(--accent-dim);background:var(--accent-pale);border-color:var(--accent-pale)}
+    .roadmap-text{font-size:.92rem;color:var(--ink-mid);line-height:1.75;font-weight:300}
+    .roadmap-text strong{color:var(--ink)}
+
+    .test-steps{counter-reset:step;padding:0;list-style:none;margin:1.25rem 0}
+    .test-steps li{counter-increment:step;padding-left:2.25rem;position:relative;font-size:.93rem;line-height:1.75;margin-bottom:.85rem;color:var(--ink-mid);font-weight:300}
+    .test-steps li::before{content:counter(step);position:absolute;left:0;top:.1rem;font-family:var(--font-mono);font-size:.7rem;color:var(--accent-dim);background:var(--accent-pale);border-radius:50%;width:1.4rem;height:1.4rem;display:flex;align-items:center;justify-content:center;font-weight:500}
+
+    .closing{border-top:2px solid var(--ink);margin-top:3.5rem;padding-top:1.75rem}
+    .closing-quote{font-family:var(--font-disp);font-size:1.25rem;font-style:italic;font-weight:400;color:var(--ink);line-height:1.4;margin-bottom:1.25rem;letter-spacing:-.005em}
+    .closing p{font-family:var(--font-mono);font-size:.72rem;color:var(--ink-light);line-height:1.95;margin-bottom:.4rem;font-weight:400}
+    .closing strong{color:var(--ink)}
+    .closing a{color:var(--accent-dim)}
+
+    .site-footer{border-top:1px solid var(--rule);padding:1.5rem 0;text-align:center;font-family:var(--font-mono);font-size:.6rem;color:var(--ink-light);letter-spacing:.05em;margin-top:3rem}
+    .site-footer a{color:var(--ink-mid);text-decoration:none;margin:0 .5rem}
+    .site-footer a:hover{color:var(--accent)}
+
+    @media(max-width:900px){
+      .layout{flex-direction:column;padding:0 1.5rem}
+      .toc{width:100%;position:static;padding:2rem 0 0;max-height:none}
+      .content{padding:2rem 0 4rem}
+      nav.top .nav-inner{padding:0 1.5rem}
+    }
+    @media(max-width:600px){.masthead-meta span{display:block;margin-bottom:.25rem}}
+  </style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="nav-inner">
+    <a href="https://fluidfortune.com">FLUID FORTUNE</a>
+    <a href="sovereignty.html">WHITE PAPER</a>
+    <a href="engineering-record.html">ENGINEERING RECORD</a>
+    <a href="spi-bus-treaty.html">SPI BUS TREATY</a>
+    <a href="device-architecture.html">DEVICE ARCHITECTURE</a>
+    <a href="mesh-state.html">MESH STATE</a>
+    <span class="doc-label">TECHNICAL DOCUMENTATION</span>
+  </div>
+</nav>
+
+<div class="layout">
+
+  <aside class="toc">
+    <span class="toc-label">Contents</span>
+    <a href="#tldr"><span class="num">I.</span>TL;DR</a>
+    <a href="#works"><span class="num">II.</span>What Works Today</a>
+    <a href="#doesnt"><span class="num">III.</span>What Doesn't Work</a>
+    <a href="#similar"><span class="num">IV.</span>Similar to Meshtastic</a>
+    <a href="#differs"><span class="num">V.</span>Differs from Meshtastic</a>
+    <a href="#roadmap"><span class="num">VI.</span>Interop Roadmap</a>
+    <a href="#why"><span class="num">VII.</span>Why Mention Meshtastic</a>
+    <a href="#test"><span class="num">VIII.</span>How to Test Today</a>
+    <a href="#summary"><span class="num">IX.</span>Summary</a>
+    <div class="toc-divider"></div>
+    <div class="toc-divider-label">Companion Documents</div>
+    <a href="sovereignty.html" class="ext"><span class="num">↗</span>White Paper</a>
+    <a href="engineering-record.html" class="ext"><span class="num">↗</span>Engineering Record</a>
+    <a href="spi-bus-treaty.html" class="ext"><span class="num">↗</span>SPI Bus Treaty</a>
+    <a href="device-architecture.html" class="ext"><span class="num">↗</span>Device Architecture</a>
+    <div class="toc-divider"></div>
+    <div class="toc-divider-label">Project</div>
+    <a href="pisces-moon.html" class="ext"><span class="num">↗</span>Pisces Moon OS</a>
+    <a href="https://github.com/FluidFortune/pisces-moon-os" class="ext"><span class="num">↗</span>GitHub</a>
+  </aside>
+
+  <main class="content">
+
+    <div class="masthead">
+      <div class="masthead-eyebrow">Pisces Moon OS · Mesh State</div>
+      <h1 class="masthead-title">The Current State of Mesh<br>on Pisces Moon</h1>
+      <p class="masthead-sub">A working LoRa peer-to-peer messenger across three devices, sharing radio settings with Meshtastic LongFast. What works, what doesn't, what's coming.</p>
+      <div class="masthead-meta">
+        <span>Eric Becker · Fluid Fortune</span>
+        <span>v1.2.0 · May 20, 2026</span>
+        <span class="ver">Mesh State</span>
+        <span class="alpha">ALPHA</span>
+      </div>
+    </div>
+
+    <div class="abstract">
+      <div class="abstract-label">TL;DR</div>
+      <p>Pisces Moon Mesh is a working LoRa-based peer-to-peer messenger that runs on all three Pisces Moon-supported devices (T-Deck Plus, T-LoRa Pager, and M5Stack Cardputer ADV with the Cap LoRa-1262). It uses the same radio settings as the Meshtastic LongFast preset, so Pisces Moon devices can hear Meshtastic packets and Meshtastic devices can hear Pisces packets at the radio level. <strong>However, the two systems do not yet exchange decodable text messages with each other.</strong> Read on for why, what works, and what's coming.</p>
+      <p>Pisces Moon Mesh started as a proof-of-concept while the rest of the operating system was being built. It is now evolving into completed architecture, but it is still in <strong>alpha</strong>. Features are working, but the feature set is intentionally limited while the foundation hardens.</p>
+    </div>
+
+    <!-- I. TL;DR section is the abstract above; keep anchor for TOC -->
+    <section class="s" id="tldr" style="padding-top:0">
+    </section>
+
+    <!-- II. WHAT WORKS -->
+    <section class="s" id="works">
+      <div class="s-header"><div class="s-num">II.</div><h2 class="s-title">What Works Today</h2></div>
+
+      <div class="item">
+        <div class="item-label">Verified</div>
+        <div class="item-title">Pisces-to-Pisces messaging on shared channels</div>
+        <div class="item-text">Two or more Pisces Moon devices on the same channel can send and receive text messages over LoRa, peer-to-peer, with no infrastructure. No router, no AP, no cell tower, no internet. This is the core of the system and it is confirmed working across all three supported devices. Bench validation May 20, 2026: T-Deck Plus and Cardputer ADV with Cap LoRa-1262 exchanging "test" packets on <code>#LongFast</code> concurrent with active wardrive logging on both devices.</div>
+      </div>
+
+      <div class="item">
+        <div class="item-label">Verified</div>
+        <div class="item-title">Four channels available</div>
+        <div class="item-text">
+          <ul>
+            <li><code>#LongFast</code> (channel 0) — the public Meshtastic-compatible lane (see interop section below)</li>
+            <li><code>#local</code> (channel 1) — Pisces-exclusive, plaintext, walkie-talkie style</li>
+            <li><code>#emergency</code> (channel 2) — Pisces-exclusive, plaintext</li>
+            <li><code>#pisces</code> (channel 3) — Pisces-exclusive, plaintext</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-label">Verified</div>
+        <div class="item-title">Per-device channel switching</div>
+        <div class="item-text">
+          <ul>
+            <li><strong>T-Deck Plus:</strong> Tab key</li>
+            <li><strong>T-LoRa Pager:</strong> rotary wheel (scroll up = previous channel, scroll down = next channel)</li>
+            <li><strong>Cardputer ADV:</strong> Tab key</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="item-label">Verified</div>
+        <div class="item-title">SD card transcript</div>
+        <div class="item-text">All sent and received messages are saved to <code>/mesh_logs/messages.csv</code> on the SD card in WiGLE-friendly CSV format. The transcript persists across sleep, app exit, and reboot. A crash will not lose written messages.</div>
+      </div>
+
+      <div class="item">
+        <div class="item-label">Verified</div>
+        <div class="item-title">Heard-node visibility</div>
+        <div class="item-text">When a Pisces device receives an undecodable packet on <code>#LongFast</code> — either a real Meshtastic packet whose encrypted payload Pisces cannot yet decrypt, or a packet from a device running incompatible firmware — the Mesh app displays a <code>~node</code> system-style row showing that raw or encrypted traffic was heard. This converts silent failures into actionable diagnostics: you can see whether Meshtastic devices are in range even if you can't yet read their messages.</div>
+      </div>
+
+      <div class="item">
+        <div class="item-label">Verified</div>
+        <div class="item-title">Meshtastic-compatible packet header on <code>#LongFast</code></div>
+        <div class="item-text">Pisces packets on channel 0 now use the Meshtastic 16-byte header structure (flags, channel hash, nextHop, relayNode fields) with the LongFast channel hash <code>0x02</code>. Pisces packets on the LongFast lane look like legitimate Meshtastic packets at the header layer, even though the payload format is still Pisces-specific.</div>
+      </div>
+
+      <div class="item">
+        <div class="item-label">Verified</div>
+        <div class="item-title">Concurrent with wardrive on Cardputer ADV</div>
+        <div class="item-text">Despite the Cardputer's no-PSRAM hardware constraints, the v1.2.0 architecture supports running the wardrive app and Mesh Messenger sessions in the same boot session — not simultaneously visible (wardrive is the background scanner, Mesh is the foreground app) but they share the radio and SD bus cleanly via the <a href="spi-bus-treaty.html">SPI Bus Treaty</a>.</div>
+      </div>
+
+      <div class="item">
+        <div class="item-label">Verified</div>
+        <div class="item-title">Compact input bar on Cardputer</div>
+        <div class="item-text">The 240×135 display uses a two-row input layout: channel/status on the top row, typed text on the bottom row. Long typed text rolls left and shows the newest tail of the buffer, prefixed with a <code>&lt;</code> marker when older characters have scrolled off-screen.</div>
+      </div>
+    </section>
+
+    <!-- III. WHAT DOESN'T WORK -->
+    <section class="s" id="doesnt">
+      <div class="s-header"><div class="s-num">III.</div><h2 class="s-title">What Doesn't Work Today</h2></div>
+
+      <p>Honest accounting of the current limitations. Each item is on the roadmap; none of these is a permanent state.</p>
+
+      <div class="item no">
+        <div class="item-label">Not yet</div>
+        <div class="item-title">Stock Meshtastic message decode</div>
+        <div class="item-text">Pisces will hear stock Meshtastic packets on <code>#LongFast</code> at both the RF and header layers. It cannot yet decrypt the AES-256-CTR encrypted text payloads or parse the Protocol Buffer (protobuf) structure that Meshtastic uses to wrap them. When Pisces hears such a packet, it displays a <code>~node</code> row indicating raw or encrypted traffic was heard — you'll know Meshtastic devices are in range, but you won't see their text yet.</div>
+      </div>
+
+      <div class="item no">
+        <div class="item-label">Not yet</div>
+        <div class="item-title">Stock Meshtastic message send</div>
+        <div class="item-text">Pisces' outgoing messages on <code>#LongFast</code> use Pisces' plaintext payload format inside the Meshtastic-compatible header. Stock Meshtastic devices will demodulate the RF and recognize the header, but will reject the payload because it isn't AES-encrypted protobuf. They will not display Pisces messages in their text view.</div>
+      </div>
+
+      <div class="item no">
+        <div class="item-label">Not yet</div>
+        <div class="item-title">Position beacons / node info exchange</div>
+        <div class="item-text">Stock Meshtastic devices broadcast periodic position beacons and node-info announcements so the network knows who is where. Pisces Moon does not yet implement these. Other Pisces devices will see Pisces nodes; Meshtastic devices will not learn Pisces nodes exist beyond the heard-packet signal.</div>
+      </div>
+
+      <div class="item no">
+        <div class="item-label">Not yet</div>
+        <div class="item-title">Multi-hop routing</div>
+        <div class="item-text">Stock Meshtastic supports flood-routing messages across multiple hops to reach distant nodes. Pisces Moon currently operates as a single-hop direct-broadcast system. Your message reaches everyone in radio range, but it does not get rebroadcast by intermediate nodes to extend coverage.</div>
+      </div>
+
+      <div class="item no">
+        <div class="item-label">By design (for now)</div>
+        <div class="item-title">Channel encryption on Pisces-internal channels</div>
+        <div class="item-text">Pisces channels 1–3 (<code>#local</code>, <code>#emergency</code>, <code>#pisces</code>) are plaintext by design. If two Pisces devices on <code>#local</code> are within radio range of a third device with a LoRa receiver tuned to the right parameters, the third device can read those messages. This is acceptable for the intended walkie-talkie use case, but should not be confused with the encryption Meshtastic uses on its private channels.</div>
+      </div>
+    </section>
+
+    <!-- IV. SIMILAR TO MESHTASTIC -->
+    <section class="s" id="similar">
+      <div class="s-header"><div class="s-num">IV.</div><h2 class="s-title">How Pisces Mesh Is Similar to Meshtastic</h2></div>
+
+      <h3 class="subhead">Same radio modulation</h3>
+      <p>The <code>#LongFast</code> channel on Pisces Moon uses the same LoRa physical-layer parameters as Meshtastic's LongFast preset: <strong>906.875 MHz center frequency in the US 902–928 MHz band, bandwidth 250 kHz, spreading factor 11, coding rate 4/5</strong>, with the same sync word. At the layer of LoRa physical-layer modulation, Pisces and Meshtastic are interoperable — packets sent by one are demodulated cleanly by the other.</p>
+
+      <h3 class="subhead">Same packet header on <code>#LongFast</code></h3>
+      <p>Pisces uses the 16-byte Meshtastic header structure (flags, channel hash, nextHop, relayNode fields) with the LongFast channel hash <code>0x02</code>. At the packet-header layer, Pisces packets on <code>#LongFast</code> look like legitimate Meshtastic packets.</p>
+
+      <h3 class="subhead">Same regional band</h3>
+      <p>Pisces Moon uses the 902–928 MHz US sub-GHz ISM band with the LongFast channel centered at 906.875 MHz, and supports configuration for the EU 868 MHz band. This matches Meshtastic's regional band defaults.</p>
+
+      <h3 class="subhead">Same kind of mesh philosophy</h3>
+      <p>Both projects use unlicensed LoRa to provide off-grid peer-to-peer messaging without cellular, WiFi, or internet infrastructure. Both target hobbyist, prepper, hiker, and off-grid communication use cases.</p>
+
+      <h3 class="subhead">Same hardware family</h3>
+      <p>Both run on ESP32-based LoRa-capable devices. Pisces Moon currently supports T-Deck Plus, T-LoRa Pager, and the Cardputer ADV with the Cap LoRa-1262 expansion. Meshtastic supports a wider hardware lineup including dedicated Heltec and LilyGO LoRa boards.</p>
+    </section>
+
+    <!-- V. DIFFERS FROM MESHTASTIC -->
+    <section class="s" id="differs">
+      <div class="s-header"><div class="s-num">V.</div><h2 class="s-title">How Pisces Mesh Differs from Meshtastic</h2></div>
+
+      <h3 class="subhead">Pisces is a full operating system; Meshtastic is a single-purpose firmware</h3>
+      <p>When you flash a device with Meshtastic, the device becomes a Meshtastic node and does nothing else. When you flash Pisces Moon, you get a multi-app operating system with wardriving, GPS logging, file management, games, an audio recorder, and a Mesh Messenger as one of many apps. The Mesh feature is a piece of a larger handheld computing experience.</p>
+
+      <h3 class="subhead">Pisces channels are plaintext walkie-talkie style</h3>
+      <p>Channels 1–3 in Pisces Mesh do not use the encryption layer that Meshtastic applies to its default channel. This is intentional for the use case Pisces is targeting — quick, low-friction messaging between people who know each other, with no key exchange, no setup, no "did you get the channel invite." Think of it as a digital walkie-talkie for a family, a group of friends, or a small team. Most users do not need protocol-enforced encryption for "are you ready for dinner?"</p>
+
+      <h3 class="subhead">Pisces does not yet implement the full Meshtastic protocol</h3>
+      <p>As of May 20, 2026, the Meshtastic-compatible work in Pisces Moon is limited to radio-layer compatibility and "heard nodes" visibility. Full message decode/encode, node info beacons, and multi-hop routing on the Meshtastic protocol are on the roadmap but not yet implemented.</p>
+
+      <h3 class="subhead">Pisces is alpha; Meshtastic is mature</h3>
+      <p>Meshtastic has been in active development since 2019, has a large community, and ships polished firmware with extensive documentation. Pisces Mesh started as a proof-of-concept and is still hardening. <strong>If you need a mature off-grid messenger today, install Meshtastic.</strong> If you want to experiment with what a handheld OS can do with a mesh layer integrated into a larger system, Pisces Moon is the project.</p>
+    </section>
+
+    <!-- VI. ROADMAP -->
+    <section class="s" id="roadmap">
+      <div class="s-header"><div class="s-num">VI.</div><h2 class="s-title">When Will Pisces and Meshtastic Talk to Each Other?</h2></div>
+
+      <p>During v1.2.0 planning, the right approach was identified as a layered build-out rather than a single big-bang interop release. As of v1.2.0:</p>
+
+      <div class="roadmap">
+        <div class="roadmap-item">
+          <div class="roadmap-status done">Done v1.2.0</div>
+          <div class="roadmap-text"><strong>1. Radio-layer compatibility on <code>#LongFast</code></strong> so Pisces devices can see Meshtastic packets in their area. Included a coding-rate fix from 4/8 to 4/5 to match the actual LongFast preset.</div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-status done">Done v1.2.0</div>
+          <div class="roadmap-text"><strong>2. Meshtastic 16-byte packet header</strong> (flags, channel hash, nextHop, relayNode) so Pisces packets on <code>#LongFast</code> are correctly framed for the wire.</div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-status done">Done v1.2.0</div>
+          <div class="roadmap-text"><strong>3. "Heard nodes" surface</strong> so users can see undecodable Meshtastic packets and confirm radio settings are correct.</div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-status planned">Planned</div>
+          <div class="roadmap-text"><strong>4. Meshtastic packet decryption</strong> (AES-256-CTR with the well-known LongFast PSK) so Pisces can read Meshtastic text messages.</div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-status planned">Planned</div>
+          <div class="roadmap-text"><strong>5. Meshtastic protobuf parsing</strong> for full structured message handling, then protobuf encoding for sending Meshtastic-compatible messages back.</div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-status planned">Planned</div>
+          <div class="roadmap-text"><strong>6. Position beacons, node info exchange, and multi-hop routing</strong> for full Meshtastic interoperability.</div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <div class="c-label">Pace of the work</div>
+        <p>The first three layers shipped in v1.2.0. The remaining layers are real work but they are roadmap work, not blocker work. The walkie-talkie-style Pisces channels are usable today and may be all that some users ever need.</p>
+      </div>
+    </section>
+
+    <!-- VII. WHY MENTION MESHTASTIC -->
+    <section class="s" id="why">
+      <div class="s-header"><div class="s-num">VII.</div><h2 class="s-title">Why We Mention Meshtastic at All</h2></div>
+
+      <p>Meshtastic is the dominant project in this space and the de facto reference implementation for LoRa mesh messaging on ESP32-class hardware. Honoring radio-layer compatibility with Meshtastic means Pisces Moon users have a path to participating in the wider mesh community as Pisces development progresses. It would be possible to build a Pisces-only mesh that ignores Meshtastic entirely, but that would be choosing isolation over interoperability for no good reason.</p>
+
+      <p>Meshtastic is also AGPL-licensed software, like Pisces Moon. Where Pisces Moon's mesh layer takes inspiration from or follows Meshtastic's protocol conventions, credit is given in the project license and source comments. See the Pisces Moon LICENSE document for details.</p>
+    </section>
+
+    <!-- VIII. HOW TO TEST -->
+    <section class="s" id="test">
+      <div class="s-header"><div class="s-num">VIII.</div><h2 class="s-title">How to Test Mesh on Pisces Moon Today</h2></div>
+
+      <ol class="test-steps">
+        <li>Flash Pisces Moon OS v1.2.0 onto two or more supported devices (T-Deck Plus, T-LoRa Pager, or Cardputer ADV with Cap LoRa-1262).</li>
+        <li>Open the Mesh Messenger app from the launcher.</li>
+        <li>Both devices default to <code>#LongFast</code> (channel 0).</li>
+        <li>Type a message on one device, press Enter to send.</li>
+        <li>The message should appear on the other device within 1–2 seconds.</li>
+        <li>Switch channels with <strong>Tab key</strong> on T-Deck Plus and Cardputer ADV, or the <strong>rotary wheel</strong> on T-LoRa Pager (scroll up = previous, scroll down = next).</li>
+      </ol>
+
+      <p>If you have a stock Meshtastic device, send a message from it on the default LongFast channel. You should see a <code>~node</code> row appear in the Pisces Moon Mesh view indicating raw or encrypted traffic was heard. The message content will not display because Pisces cannot yet decrypt or parse Meshtastic-format payloads — but the <code>~node</code> row confirms your radio settings are correct and Meshtastic traffic is reaching you.</p>
+    </section>
+
+    <!-- IX. SUMMARY -->
+    <section class="s" id="summary">
+      <div class="s-header"><div class="s-num">IX.</div><h2 class="s-title">In Summary</h2></div>
+
+      <p>Pisces Mesh is a real, working, peer-to-peer LoRa messenger. It runs on three different devices. It writes durable transcripts to SD card. It is part of a larger handheld operating system, not a single-purpose firmware. It shares the LongFast radio settings with Meshtastic but does not yet share the application-layer protocol that would make full message interop possible.</p>
+
+      <p>We are honest about what works and what does not. The walkie-talkie use case is solid today. The full Meshtastic interop story is in active development. Watch the changelog at <a href="https://fluidfortune.com">fluidfortune.com</a> for updates as the layers come online.</p>
+    </section>
+
+    <!-- CLOSING -->
+    <div class="closing">
+      <p class="closing-quote">"Mesh messaging works. We have proven the concept. We have not matured the application."</p>
+      <p><strong>Pisces Moon Mesh State</strong> — v1.2.0 — May 20, 2026</p>
+      <p>Eric Becker · <a href="https://fluidfortune.com">Fluid Fortune</a> · <a href="mailto:forge@fluidfortune.com">forge@fluidfortune.com</a></p>
+      <p>Companion documents: <a href="sovereignty.html">white paper</a> · <a href="engineering-record.html">engineering record</a> · <a href="spi-bus-treaty.html">SPI Bus Treaty</a> · <a href="device-architecture.html">device architecture</a></p>
+      <p>Source: <a href="https://github.com/FluidFortune/pisces-moon-os">github.com/FluidFortune/pisces-moon-os</a></p>
+      <p>Licensed under AGPL-3.0-or-later. <em>This page will be updated as Pisces Mesh features evolve. The date at the top reflects the most recent revision.</em></p>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  <a href="https://fluidfortune.com">Main Site</a> ·
+  <a href="pisces-moon.html">Pisces Moon OS</a> ·
+  <a href="sovereignty.html">White Paper</a> ·
+  <a href="https://github.com/FluidFortune">GitHub</a>
+</footer>
+
+</body>
+</html>
