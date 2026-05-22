@@ -258,12 +258,20 @@
         <h2 class="s-title">What the Talk Delivers</h2>
       </div>
 
+      <div class="callout" style="border-left-color:var(--ink);background:var(--paper-dark)">
+        <div class="c-label" style="color:var(--ink)">▸ The question that started the project</div>
+        <p>The LilyGo T-Deck Plus looks like a BlackBerry. Why doesn't it work like one?</p>
+        <p>Not "why doesn't it run BlackBerry OS" — but why doesn't this $80 device, with a QWERTY keyboard and a screen and four radios and a CPU faster than the one in a 2009 smartphone, behave like a general-purpose handheld computer? Why does the ESP32-S3 reference firmware ecosystem treat a multi-radio QWERTY pocket device as a single-purpose appliance — a Meshtastic node, a wardriver, a remote, a sensor — when the silicon is plainly capable of more?</p>
+        <p>The honest answer is: because nobody had asked the platform to be more, and the moment you ask, ten interlocking engineering problems emerge — none of them in Espressif's manual, because Espressif documents primitives, not integration targets. <strong>This paper is the record of asking that question and following the engineering wherever it led.</strong> Pisces Moon OS is the operating system that resulted. The eleventh problem is what made it portable across the entire memory tier of the chip class.</p>
+        <p><em>A note on prior art that is sometimes raised: Sailfish, postmarketOS, KaiOS, and similar handheld Linux distributions run on application processors with MMUs, virtual memory, gigabytes of RAM, and a Linux kernel underneath. This is a different engineering problem entirely. The ESP32-S3 has no MMU, no virtual address spaces, no Linux, and on the most-constrained Pisces Moon target — the Cardputer ADV — 320 KB of total SRAM. The thing that makes those distributions possible on application-processor hardware is the thing that is absent here, which is why this project exists.</em></p>
+      </div>
+
       <p>The proposed DEF CON 34 talk is a 45-minute walk through the engineering record of a multi-app operating system shipping on hardware the industry treats as single-purpose. The audience leaves with three concrete artifacts:</p>
 
       <ol>
         <li><strong>A named architectural protocol they can use immediately</strong> — the SPI Bus Treaty, presented as a four-rule contract that solves a class of bus-arbitration crashes any multi-radio ESP32-S3 project will encounter. Reference implementation is open source.</li>
         <li><strong>A methodology for solving structurally similar problems</strong> — <em>name the constraint, document the protocol, make it a platform contract.</em> The Treaty was the first expression on the S3. The UART Peripheral Map (ESP32-P4) is the second. Lazy app-state allocation (Cardputer ADV) is the third. Same methodology, three different hardware contexts.</li>
-        <li><strong>A hardware-enforced ELF sandbox on a non-MMU SoC</strong> — using the ESP32-S3 Permission Management System and a custom Xtensa exception handler. To our knowledge no general-purpose OS on this hardware class has previously published this mechanism for runtime third-party application isolation.</li>
+        <li><strong>A hardware-enforced ELF sandbox on a non-MMU SoC</strong> — using the ESP32-S3 Permission Management System and a custom Xtensa exception handler. No prior published ESP32-S3 project documents this combination for runtime third-party application isolation under a multi-app OS.</li>
       </ol>
 
       <p>The demo is live on stage. The codebase is public. The engineering is verifiable in commits and on the devices themselves. There is no theoretical content in the talk — every claim is a piece of code that runs on a $50 device the audience can buy and reproduce.</p>
@@ -281,14 +289,14 @@
     <section class="s" id="problems">
       <div class="s-header">
         <span class="s-num">II.</span>
-        <h2 class="s-title">The Eleven Engineering Problems</h2>
+        <h2 class="s-title">Eleven Engineering Problems, Solved As One Integrated Platform</h2>
       </div>
 
       <p>Each problem is presented with three components: <strong>what failed</strong>, <strong>why diagnosis was hard</strong>, and <strong>the specific solution</strong>. Problems 1–6 are T-Deck Plus discoveries. Problems 7–9 emerged porting to the T-LoRa Pager. Problem 10 is platform-wide (ELF runtime). Problem 11 is the Cardputer ADV result — proof the architecture generalizes to no-PSRAM hardware.</p>
 
       <div class="callout">
         <div class="c-label">▸ On the word "first"</div>
-        <p>The novelty claim is in the <strong>systematization</strong>, not the components. Mutex-arbitrated SPI is not new. Dual-core task pinning is in the datasheet. PSRAM heap redirection is documented in ESP-IDF. The contribution is that no prior project on this hardware class assembled these into a multi-app OS that requires all of them simultaneously, named the architectural protocol that makes them coexist, and ported it across three devices in the same chip family without breaking the protocol. The protocols are the deliverable, not the techniques they're built from. Where the term "first known documented" appears below, it refers to the named, codified, cross-component contract — not to the underlying mechanism.</p>
+        <p>The novelty claim is in the <strong>integration target</strong>, not the components. Mutex-arbitrated SPI is not new. Dual-core task pinning is in the datasheet. PSRAM heap redirection is documented in ESP-IDF. Espressif's technical reference manual is exhaustive about every individual primitive on the ESP32-S3 — and it has no reason to document, and does not document, what happens when you ask the chip to run continuous wardriving plus an LLM client plus a 60fps UI plus LoRa mesh plus GPS, on shared peripherals, under a single multi-app OS, on three physically different devices spanning the entire memory tier of the chip class. That use case is downstream of the manual. The contribution is that no prior published ESP32-S3 project documents handling all of these together as one integrated platform — and the integration itself is the engineering, because the problems are not independent. The SPI Bus Treaty constrains what the encryption solution can look like. The dense-RF instability fix consumes stack budget the dual-core sync fix is also competing for. The PSRAM redirect changes what's possible for the deferred SD mount handling on the T-LoRa Pager. Solving any one in isolation is a weekend. Solving them in coordination, so they don't interfere with each other, is the actual work. The protocols are the deliverable — not the techniques they're built from, and not any individual problem's solution viewed in isolation.</p>
       </div>
 
       <!-- PROBLEM 1 -->
@@ -525,6 +533,8 @@
       </div>
 
       <p>Pisces Moon is not a single product. It is a platform with two architecturally distinct application tiers, deployed across seven hardware targets, composable through a documented protocol.</p>
+
+      <p><em>A note on terminology: whether the Tier 1 deliverable is "an operating system" or "firmware" is sometimes debated. The honest answer is that both are true. It is an embedded OS by every definition that matters to a user — preemptive multitasking, dual-core scheduling, app runtime, persistent background services, hardware-enforced inter-app isolation, shared platform contracts — and it is firmware by the definition that matters to a chip vendor, because it is the thing that gets flashed. The distinction stopped being useful around the time iOS shipped. The paper uses "OS" because that is the property that matters for the engineering claim being made.</em></p>
 
       <h3 class="subhead">Two application tiers</h3>
 
